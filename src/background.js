@@ -1,0 +1,1 @@
+console.log('Hey! Im the background page.');
