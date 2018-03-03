@@ -4,7 +4,7 @@ import React, {Component} from 'react'
  * might be wise to rename this file since it's imported by another
  * popup.js file..
  */
-class App extends Component {
+class Popup extends Component {
     constructor(props) {
         super(props);
     }
@@ -12,10 +12,13 @@ class App extends Component {
     render() {
         return (
             <div>
-                This is the main application!
+                Hello World!
+                <div id="links">
+                    <a href="app.html" target="_blank">Application</a>
+                </div>
             </div>
         );
     }
 }
 
-export default App;
+export default Popup;

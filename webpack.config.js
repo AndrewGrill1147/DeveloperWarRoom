@@ -7,6 +7,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 module.exports = {
   entry: {
     popup: './src/popup.js',
+    app: './src/app.js',
     //setup: './src/setup.js',
     background: './src/background.js',
     //update: './src/update.js'
@@ -65,6 +66,12 @@ module.exports = {
       chunks: ['popup'],
       filename: 'popup.html',
       template: './src/popup.html'
+    }),
+    new HtmlWebpackPlugin({
+      inject: true,
+      chunks: ['app'],
+      filename: 'app.html',
+      template: './src/app.html'
     }),
 
     /* //we don't have this page to inject into
