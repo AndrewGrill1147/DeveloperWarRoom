@@ -60,7 +60,7 @@ module.exports = {
     modules: false
   },
   plugins: [
-    new ExtractTextPlugin('bundle.css'),
+    new ExtractTextPlugin('styles.css'),
     new HtmlWebpackPlugin({
       inject: true,
       chunks: ['popup'],

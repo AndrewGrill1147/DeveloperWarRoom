@@ -1,10 +1,11 @@
-import React, {Component} from 'react'
+import React, {Component} from 'react';
+import Grid from './grid';
 
 /*
  * might be wise to rename this file since it's imported by another
  * popup.js file..
  */
-class App extends Component {
+class Home extends Component {
     constructor(props) {
         super(props);
     }
@@ -12,10 +13,11 @@ class App extends Component {
     render() {
         return (
             <div>
-                This is the main application!
+                This is the applications home page.
+                <Grid />
             </div>
         );
     }
 }
 
-export default App;
+export default Home;

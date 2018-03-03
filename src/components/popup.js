@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component} from 'react';
 
 /*
  * might be wise to rename this file since it's imported by another
