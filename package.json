@@ -14,7 +14,7 @@
   "homepage": "https://github.com/marcellabillett/DeveloperWarRoom#readme",
   "main": "index.js",
   "scripts": {
-    "build": "NODE_ENV=production webpack -p",
+    "build": "webpack -p",
     "watch": "webpack --watch",
     "test": "echo \"Error: no test specified\" && exit 0"
   },
