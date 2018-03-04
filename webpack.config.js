@@ -19,7 +19,8 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(js|jsx)$/,
+        exclude: /(node_modules|bower_components)/,
         include: [
           path.resolve(__dirname, './src'),
           /pretty-bytes/ // <- ES6 module
@@ -51,6 +52,9 @@ module.exports = {
         ]
       }
     ]
+  },
+  resolve: {
+    extensions: ['.js', '.jsx']
   },
   stats: {
     children: false,
