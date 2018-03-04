@@ -1,1 +1,1 @@
-console.log('Hey! Im the background page.');
+console.error('ERR: Im the background page, but I dont do anything.');

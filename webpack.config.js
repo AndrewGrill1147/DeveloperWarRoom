@@ -6,11 +6,9 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   entry: {
-    popup: './src/popup.js',
-    app: './src/app.js',
-    //setup: './src/setup.js',
-    background: './src/background.js',
-    //update: './src/update.js'
+    popup: './src/popup.jsx',
+    app: './src/app.jsx',
+    background: './src/background.js'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -20,13 +18,21 @@ module.exports = {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        exclude: /(node_modules|bower_components)/,
+        exclude: /node_modules/,
         include: [
           path.resolve(__dirname, './src'),
           /pretty-bytes/ // <- ES6 module
         ],
         use: 'babel-loader'
       },
+      /*
+      //include to enforce eslinting pre-build
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: 'eslint-loader'
+      },
+      */
       {
         test: /\.css$/,
         loader: ExtractTextPlugin.extract({
@@ -77,15 +83,6 @@ module.exports = {
       filename: 'app.html',
       template: './src/app.html'
     }),
-
-    /* //we don't have this page to inject into
-    new HtmlWebpackPlugin({
-      inject: true,
-      chunks: ['setup'],
-      filename: 'setup.html',
-      template: './src/setup.html'
-    }),
-    */
     // copy extension manifest and icons
     new CopyWebpackPlugin([
       { from: './src/manifest.json' },

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Grid from './grid';
 
 /*
@@ -6,18 +6,18 @@ import Grid from './grid';
  * popup.js file..
  */
 class Home extends Component {
-    constructor(props) {
-        super(props);
-    }
+  constructor(props) {
+    super(props);
+  }
 
-    render() {
-        return (
-            <div>
+  render() {
+    return (
+      <div>
                 This is the applications home page.
-                <Grid />
-            </div>
-        );
-    }
+        <Grid />
+      </div>
+    );
+  }
 }
 
 export default Home;

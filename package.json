@@ -16,6 +16,8 @@
   "scripts": {
     "build": "webpack -p",
     "watch": "webpack --watch",
+    "lint": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx src/",
+    "lint:fix": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx src/ --fix",
     "test": "echo \"Error: no test specified\" && exit 0"
   },
   "dependencies": {
@@ -32,6 +34,11 @@
     "copy-webpack-plugin": "^4.4.2",
     "css-loader": "^0.28.10",
     "eslint": "^4.18.2",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-loader": "^2.0.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.7.0",
     "extract-text-webpack-plugin": "^3.0.2",
     "html-webpack-plugin": "^2.30.1",
     "style-loader": "^0.20.2",
