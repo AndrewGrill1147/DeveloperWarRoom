@@ -72,12 +72,14 @@ module.exports = {
   },
   plugins: [
     new ExtractTextPlugin('styles.css'),
+    /* currently don'tneed popup.html
     new HtmlWebpackPlugin({
       inject: true,
       chunks: ['popup'],
       filename: 'popup.html',
       template: './src/popup.html'
     }),
+    */
     new HtmlWebpackPlugin({
       inject: true,
       chunks: ['app'],
