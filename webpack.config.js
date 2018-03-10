@@ -6,7 +6,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   entry: {
-    popup: './src/popup.jsx',
+    // don't need to webpackify popup.jsx curr. (icon opens new tab) 
+    // popup: './src/popup.jsx',
     app: './src/app.jsx',
     background: './src/background.js'
   },

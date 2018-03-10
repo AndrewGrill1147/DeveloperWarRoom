@@ -13,7 +13,7 @@ class Home extends Component {
   render() {
     return (
       <div>
-                This is the applications home page.
+        This is the applications home page.
         <Grid />
       </div>
     );
