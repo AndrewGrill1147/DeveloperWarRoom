@@ -6,8 +6,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   entry: {
-    // don't need to webpackify popup.jsx curr. (icon opens new tab) 
-    // popup: './src/popup.jsx',
     app: './src/app.jsx',
     background: './src/background.js'
   },
@@ -72,14 +70,6 @@ module.exports = {
   },
   plugins: [
     new ExtractTextPlugin('styles.css'),
-    /* currently don'tneed popup.html
-    new HtmlWebpackPlugin({
-      inject: true,
-      chunks: ['popup'],
-      filename: 'popup.html',
-      template: './src/popup.html'
-    }),
-    */
     new HtmlWebpackPlugin({
       inject: true,
       chunks: ['app'],
