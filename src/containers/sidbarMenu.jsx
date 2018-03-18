@@ -3,7 +3,7 @@ import FlatButton from 'material-ui/FlatButton';
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
-import MenuList from './menuList';
+import MenuList from './../components/menuList';
 
 const appBarStyle = {
   backgroundColor: 'gray',

@@ -5,21 +5,43 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import ReactDOM from 'react-dom';
 import Home from './components/home';
-import SidebarMenu from './components/sidebarMenu';
+import SidebarMenu from './containers/sidbarMenu';
 import './index.css';
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { isDarkTheme: true, theme: getMuiTheme(darkBaseTheme) };
+    document.body.style = 'background: gray;';
+    chrome.storage.sync.get(['isDarkTheme'], (result) => {
+      if (!result.isDarkTheme) {
+        chrome.storage.sync.set({ isDarkTheme: false }, () => {
+          document.body.style = 'background: white;';
+          this.setState({ theme: getMuiTheme(lightBaseTheme) });
+        });
+      } else {
+        chrome.storage.sync.set({ isDarkTheme: true }, () => {
+          document.body.style = 'background: gray;';
+          this.setState({ theme: getMuiTheme(darkBaseTheme) });
+        });
+      }
+    });
+    this.state = { theme: getMuiTheme(darkBaseTheme) };
     this.themeButtonClicked = this.themeButtonClicked.bind(this);
   }
   themeButtonClicked() {
-    if (this.state.isDarkTheme) {
-      this.setState({ isDarkTheme: false, theme: getMuiTheme(lightBaseTheme) });
-    } else {
-      this.setState({ isDarkTheme: true, theme: getMuiTheme(darkBaseTheme) });
-    }
+    chrome.storage.sync.get(['isDarkTheme'], (result) => {
+      if (result.isDarkTheme) {
+        chrome.storage.sync.set({ isDarkTheme: false }, () => {
+          document.body.style = 'background: white;';
+          this.setState({ theme: getMuiTheme(lightBaseTheme) });
+        });
+      } else {
+        chrome.storage.sync.set({ isDarkTheme: true }, () => {
+          document.body.style = 'background: gray;';
+          this.setState({ theme: getMuiTheme(darkBaseTheme) });
+        });
+      }
+    });
   }
   render() {
     return (
