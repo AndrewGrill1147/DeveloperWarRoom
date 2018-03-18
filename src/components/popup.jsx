@@ -12,7 +12,7 @@ class Popup extends Component {
   render() {
     return (
       <div>
-                Hello World!
+        Hello World!
         <div id="links">
           <a href="app.html" target="_blank">Application</a>
         </div>
