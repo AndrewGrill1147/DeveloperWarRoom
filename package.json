@@ -14,7 +14,7 @@
   "homepage": "https://github.com/marcellabillett/DeveloperWarRoom#readme",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --devtool source-map",    
+    "build": "webpack --devtool source-map",
     "build:prod": "webpack -p",
     "watch": "webpack --devtool source-map --watch",
     "lint": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx src/",
@@ -26,7 +26,8 @@
     "react-chrome-redux": "^1.5.1",
     "react-dom": "^16.2.0",
     "react-grid-layout": "^0.16.5",
-    "react-redux": "^5.0.7"
+    "react-redux": "^5.0.7",
+    "redux-immutable-state-invariant": "^2.1.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

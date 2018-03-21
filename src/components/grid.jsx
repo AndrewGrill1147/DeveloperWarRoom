@@ -1,5 +1,7 @@
 import ReactGridLayout from 'react-grid-layout';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import * as gridActions from '../actions/gridActions';
 
 // just for testing react-grid
 const divStyle = {
@@ -10,6 +12,13 @@ const divStyle = {
 class Grid extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      gridLayout: []
+    }
+  }
+
+  componentDidMount() {
+    this.props.dispatch(gridActions.updateGrid(this.state.gridLayout))
   }
 
   render() {
@@ -34,5 +43,9 @@ class Grid extends Component {
     );
   }
 }
-
-export default Grid;
+function mapStateToProps(state, ownProps) {
+  return {
+    grid: state.gridLayout
+  }
+}
+export default connect(mapStateToProps)(Grid);
