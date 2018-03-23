@@ -1,15 +1,15 @@
 /* global chrome */
 function IsExtensionTabOpened(url, callback) {
   var result;
-  var selectedTab;
+  var applicationTab;
   chrome.tabs.query({ 'currentWindow': true }, function (tabs) {
     tabs.forEach(function (tab) {
       if (tab.url.includes(url)) {
         result = true;
-        selectedTab = tab;
+        applicationTab = tab;
       }
     });
-    return callback(result, selectedTab);
+    return callback(result, applicationTab);
   }
   )
 }
@@ -17,12 +17,12 @@ function IsExtensionTabOpened(url, callback) {
 /* Opens app when browser icon (action) is clicked */
 chrome.browserAction.onClicked.addListener(() => {
   var url = "app.html";
-  IsExtensionTabOpened(url, function (result, selectedTab) {
+  IsExtensionTabOpened(url, function (result, applicationTab) {
     if (!result) {
       chrome.tabs.create({ url: chrome.extension.getURL(url), selected: true });
     }
     else{
-      chrome.tabs.update(selectedTab.id, {active: true});
+      chrome.tabs.update(applicationTab.id, {active: true});
     }
   });
 });
