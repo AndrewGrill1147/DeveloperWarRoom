@@ -1,3 +1,5 @@
+/* global chrome */
+/* global document */
 import React, { Component } from 'react';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
