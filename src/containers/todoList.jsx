@@ -7,9 +7,6 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 
-// const todoList = ['todo item1', 'todo item2', 'todo item3', 'todo item4'];
-// const inProgressList = ['inprogress item1', 'inprogress item2', 'inprogress item3', 'inprogress item4'];
-// const doneList = ['done item1', 'done item2', 'done item3', 'done item4'];
 const iconButtonElement = (
   <IconButton
     touch
@@ -59,7 +56,13 @@ class TodoList extends Component {
     this.setState({ taskList: newTaskList });
   }
   listMapping(listValue) {
-    return <ListItem primaryText={listValue.text} secondaryText={listValue.time} rightIconButton={this.rightIconMenu(listValue)} />;
+    return (
+      <ListItem
+        primaryText={listValue.text}
+        secondaryText={listValue.time}
+        rightIconButton={this.rightIconMenu(listValue)}
+      />
+    );
   }
   addButtonClicked(userInput) {
     this.addTask(userInput);
@@ -98,7 +101,19 @@ class TodoList extends Component {
           <List>
             {this.renderList('todo')}
           </List>
-          <input className="input" type="text" name="add" value={this.state.addInput} onChange={evt => this.updateAddInput(evt)} /> <button type="button" onClick={() => this.addButtonClicked(this.state.addInput)}>add</button>
+          <input
+            className="input"
+            type="text"
+            name="add"
+            value={this.state.addInput}
+            onChange={evt => this.updateAddInput(evt)}
+          />
+          <button
+            type="button"
+            onClick={() => this.addButtonClicked(this.state.addInput)}
+          >
+            add
+          </button>
         </Tab>
         <Tab label="In progress">
           <List>
