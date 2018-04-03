@@ -10,7 +10,7 @@ const divStyle = {
 };
 const layout = [
   {
-    i: 'a', x: 0, y: 0, w: 3, h: 5,
+    i: 'a', x: 0, y: 0, w: 3, h: 5, minH: 5, minW: 3,
   },
   {
     i: 'b', x: 1, y: 0, w: 3, h: 2,

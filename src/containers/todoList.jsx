@@ -110,7 +110,7 @@ class TodoList extends Component {
           />
           <button
             type="button"
-            onClick={() => this.addButtonClicked(this.state.addInput)}
+            onClick={() => { if (this.state.addInput !== '') this.addButtonClicked(this.state.addInput); }}
           >
             add
           </button>
