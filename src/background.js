@@ -1,12 +1,13 @@
 /* global chrome */
-function IsExtensionTabOpened(url, callback) {
+function IsExtensionTabOpened(re, callback) {
   var result;
   var applicationTab;
   chrome.tabs.query({ 'currentWindow': true }, function (tabs) {
     tabs.forEach(function (tab) {
-      if (tab.url.includes(url)) {
+      if (re.test(tab.url)) {
         result = true;
         applicationTab = tab;
+        return;
       }
     });
     return callback(result, applicationTab);
@@ -16,8 +17,9 @@ function IsExtensionTabOpened(url, callback) {
 
 /* Opens app when browser icon (action) is clicked */
 chrome.browserAction.onClicked.addListener(() => {
+  var re = new RegExp("chrome-extension:\/\/*.+\/app.html");
   var url = "app.html";
-  IsExtensionTabOpened(url, function (result, applicationTab) {
+  IsExtensionTabOpened(re, function (result, applicationTab) {
     if (!result) {
       chrome.tabs.create({ url: chrome.extension.getURL(url), selected: true });
     }
