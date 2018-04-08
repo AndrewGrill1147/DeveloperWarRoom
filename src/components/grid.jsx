@@ -1,5 +1,6 @@
 import ReactGridLayout from 'react-grid-layout';
 import React, { Component } from 'react';
+import GithubWidget from './Github';
 
 // just for testing react-grid
 const divStyle = {
@@ -26,13 +27,18 @@ class Grid extends Component {
       },
     ];
     return (
-      <ReactGridLayout className="layout" layout={layout} cols={12} rowHeight={30} width={1200}>
-        <div style={divStyle} key="a">a</div>
-        <div style={divStyle} key="b">b</div>
-        <div style={divStyle} key="c">c</div>
-      </ReactGridLayout>
+      <div>
+        <GithubWidget />
+      </div>
     );
   }
 }
 
 export default Grid;
+
+/*
+<ReactGridLayout className="layout" layout={layout} cols={12} rowHeight={30} width={1200}>
+        <div style={divStyle} key="a">a</div>
+        <div style={divStyle} key="c"><GithubWidget /> </div>
+</ReactGridLayout>
+      */
