@@ -3,6 +3,7 @@ import { TextField, AutoComplete, ListItem, Checkbox, List } from 'material-ui';
 
 const ENTER_KEY = 13;
 
+//TODO: Make pure component -> move state management to parent
 class RepositoryList extends Component {
   constructor(props) {
     super(props);
@@ -34,10 +35,18 @@ class RepositoryList extends Component {
     console.log(index);
 
     // TODO: check already not in list
-    if (index === -1) {
+    let alreadyWatching = this.state.repos.map(repo => {
+      return repo.title === chosenRequest;
+    });
+
+    if (index === -1 || !alreadyWatching) {
       return;
     }
     this.setState({ repos: [...this.state.repos, ...[{ title: chosenRequest, watching: true }]] });
+    this.props.onUpdate(chosenRequest)
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
   }
 
   render() {
@@ -58,7 +67,7 @@ class RepositoryList extends Component {
       <div>
         <AutoComplete
           hintText="Would you like to add a repository to watch?"
-          fullWidth
+          fullWidth={true}
           onNewRequest={this.handleNewRequest}
           dataSource={this.props.availableRepos}
           maxSearchResults={this.state.maxResults}
@@ -71,19 +80,5 @@ class RepositoryList extends Component {
     );
   }
 }
-
-/*
-
-
-<TextField
-            id="newRepo"
-            value={this.state.newRepo}
-            hintText="What repository would your like to watch?"
-            underlineShow={true}
-            onChange={this.handleChange}
-            fullWidth={true}
-          />
-
-    */
 
 export default RepositoryList;

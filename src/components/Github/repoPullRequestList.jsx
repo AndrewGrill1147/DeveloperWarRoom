@@ -3,11 +3,11 @@ import { Subheader } from 'material-ui';
 import PullRequestCard from './pullRequestCard';
 
 
-const PullRequestList = props => (
+const RepoPullRequestList = props => (
   <div>
     <Subheader> {props.repoName} </Subheader>
     <PullRequestCard />
   </div>
 );
 
-export default PullRequestList;
+export default RepoPullRequestList;
