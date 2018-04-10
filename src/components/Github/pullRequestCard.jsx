@@ -6,18 +6,18 @@ import { Card, CardHeader, CardActions, CardText, CardTitle } from 'material-ui'
 const PullRequestCard = props => (
   <Card>
     <CardHeader
-      avatar="../../assets/icon-128.png"
-      title="Pull request title"
-      subtitle="Username"
-      actAsExpander
-      showExpandableButton
+      avatar={props.pullRequest.author.avatar}
+      title={props.pullRequest.title}
+      subtitle={props.pullRequest.author.name}
+      actAsExpander={true}
+      showExpandableButton={true}
     />
     <CardActions />
     <CardText expandable>
-      Status: GOOD <br />
+      Status: Good <br />
       Assigned: Person 1, Person 2, Person 3 <br />
-      Reviews: 1, 2, 3 <br />
-      onsadoinsionoin asdnaoisn
+      Reviews: {props.pullRequest.reviews.toString()} <br />
+      Body: {props.pullRequest.body}
     </CardText>
 
   </Card>

@@ -42,6 +42,7 @@ class RepositoryList extends Component {
     if (index === -1 || !alreadyWatching) {
       return;
     }
+    
     this.setState({ repos: [...this.state.repos, ...[{ title: chosenRequest, watching: true }]] });
     this.props.onUpdate(chosenRequest)
   }

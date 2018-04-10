@@ -80,7 +80,7 @@ class GithubWidget extends Component {
     //this might be best moved into state? so we don't do this everyime *anything* changes
     let openPullRequestsList = state.reposWatching.map(repoName => {
       return (
-        <RepoPullRequestList key={repoName} repoName={repoName} pullRequests={this.state.pullRequests.repoName}/>
+        <RepoPullRequestList key={repoName} repoName={repoName} pullRequests={this.state.pullRequests[repoName]}/>
       );
     });
     
