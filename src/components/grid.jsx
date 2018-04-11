@@ -1,5 +1,6 @@
 import ReactGridLayout from 'react-grid-layout';
 import React, { Component } from 'react';
+/* eslint react/prefer-stateless-function: 0 */
 
 // just for testing react-grid
 const divStyle = {
@@ -8,10 +9,6 @@ const divStyle = {
   backgroundColor: 'coral',
 };
 class Grid extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     // layout is an array of objects, see the demo for more complete usage
     const layout = [

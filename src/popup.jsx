@@ -3,4 +3,5 @@ import ReactDOM from 'react-dom';
 import Popup from './components/popup';
 import './index.css';
 
-ReactDOM.render(<Popup/>, document.getElementById('root'));
+/* global document */
+ReactDOM.render(<Popup />, document.getElementById('root'));
