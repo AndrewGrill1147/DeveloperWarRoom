@@ -27,7 +27,7 @@ class Grid extends Component {
   render() {
     return (
       <ReactGridLayout className="layout" draggableCancel="input,textarea" layout={layout} cols={12} rowHeight={30} width={1200}>
-        <div key="a"><TodoList /></div>
+        <div style={divStyle} key="a">a</div>
         <div style={divStyle} key="b">b</div>
         <div style={divStyle} key="c">c</div>
       </ReactGridLayout>
