@@ -9,7 +9,7 @@ import Grid from './../containers/grid';
 function Home() {
   return (
     <div>
-      This is the applications home page.
+      
       <Grid />
     </div>
   );

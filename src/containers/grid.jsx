@@ -24,10 +24,10 @@ class Grid extends Component {
   constructor(props) {
     super(props);
     console.log(this.editMode);
-    editButtonClicked: this.editButtonClicked.bind(this),
+    this.editButtonClicked = this.editButtonClicked.bind(this),
     this.state = { 
 
-      editMode: true,
+      editMode: false,
       layout: [
         {
           i: 'a', x: 0, y: 0, w: 3, h: 5, minH: 5, minW: 3, static: true,
@@ -55,6 +55,18 @@ class Grid extends Component {
     const noteditMode = !this.state.editMode;
     this.setState( { editMode: noteditMode});
     console.log(this.state.editMode);
+    const updateLayout = [
+      {
+        i: 'a', x: 0, y: 0, w: 3, h: 5, minH: 5, minW: 3, static: this.state.editMode,
+      },
+      {
+        i: 'b', x: 1, y: 0, w: 3, h: 5, minH: 5, minW: 3, static: this.state.editMode,
+      },
+      {
+        i: 'c', x: 4, y: 0, w: 3, h: 5, minH: 5, minW: 3, static: this.state.editMode,
+      },
+    ] 
+    this.setState( {layout: updateLayout});
     /*this.setState({ layout: 
     [
       {
@@ -77,7 +89,7 @@ class Grid extends Component {
     //const savedState = localStorage.getItem(this.state.storageKey);
     //if (savedState !== null) {
       /* eslint-disable-next-line */
-      //this.setState(JSON.parse(savedState));
+     // this.setState(JSON.parse(savedState));
       // this.state.storageKey = JSON.parse(savedState);
     //}
     /* global window */
