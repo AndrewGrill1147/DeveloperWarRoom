@@ -20,7 +20,7 @@ class SidebarMenu extends Component {
   render() {
     return (
       <div>
-        <RaisedButton onClick={this.menuButtonClicked} label="Menu" />
+        <RaisedButton onClick={this.menuButtonClicked} label="Edit" />
         <Drawer open={this.state.sideBarOpen} width={250} openSecondary >
           <AppBar style={appBarStyle} iconElementRight={<FlatButton label="Theme" onClick={this.props.ThemeButton} />} />
           <MenuList />
