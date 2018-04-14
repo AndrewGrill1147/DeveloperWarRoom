@@ -41,12 +41,21 @@ class Grid extends Component {
       ]
     };
   }
-
+/*
+  onToggle(toggledTodo) {
+    const updatedTodos = this.state.todos.map(todo => (todo !== toggledTodo ?
+      todo :
+      { ...todo, ...{ completed: !todo.completed } }));
+    this.setState({ todos: updatedTodos });
+  }*/
   editButtonClicked() {
     console.log("In editButtonClicked");
-    console.log(this.state.editMode);
+    {/*console.log(this.state.editMode);*/}
     {/*this.setState({ editMode: !this.state.editMode})*/}
-    this.setState({ layout: 
+    const noteditMode = !this.state.editMode;
+    this.setState( { editMode: noteditMode});
+    console.log(this.state.editMode);
+    /*this.setState({ layout: 
     [
       {
         i: 'a', x: 0, y: 0, w: 3, h: 5, minH: 5, minW: 3, static: this.state.editMode,
@@ -57,7 +66,7 @@ class Grid extends Component {
       {
         i: 'c', x: 4, y: 0, w: 3, h: 5, minH: 5, minW: 3, static: this.state.editMode,
       },
-    ] });
+    ] });*/
   }
   
   componentDidMount() {
