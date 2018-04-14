@@ -98,7 +98,7 @@ class Grid extends Component {
 
   componentWillUnmount() {
     /* global localStorage */
-    console.log("In componentWillMount");
+    console.log("In componentWillUnMount");
     localStorage.setItem(this.state.storageKey, JSON.stringify(this.state));
     /* global window */
     window.removeEventListener('beforeunload', this.componentDidUpdate);
