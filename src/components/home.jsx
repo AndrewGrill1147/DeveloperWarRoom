@@ -9,7 +9,7 @@ import Grid from './../containers/grid';
 function Home() {
   return (
     <div>
-      
+
       <Grid />
     </div>
   );
