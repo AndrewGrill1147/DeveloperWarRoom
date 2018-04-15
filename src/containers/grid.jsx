@@ -24,7 +24,6 @@ class Grid extends Component {
     this.editButtonClicked = this.editButtonClicked.bind(this),
     this.onLayoutChange = this.onLayoutChange.bind(this),
     this.state = { 
-
       editMode: false,
       //initializing states for widgets
       layout: [
@@ -47,35 +46,16 @@ class Grid extends Component {
 
   editButtonClicked() {
     console.log("In editButtonClicked");
-    const noteditMode = !this.state.editMode;
-    this.setState( { editMode: noteditMode});
-    console.log(this.state.editMode);
-
+    const flipped = !this.state.editMode;
+    this.setState({editMode: flipped});
     let updatedLayout = [...this.state.layout].map( widgetLayout => {
-      return {...widgetLayout, ...{static: noteditMode}};
+      return {...widgetLayout, ...{static: flipped}};
     });
-    /*
-    //The updateLayout should be dynamically changed with size and coordinates
-    //Not reset back to its starting point whenever someone wants to go from edit to normal mode
-    const updateLayout = [
-      {
-        i: 'a', x: 0, y: 0, w: 3, h: 5, minH: 5, minW: 3, static: this.state.editMode,
-      },
-      {
-        i: 'b', x: 1, y: 0, w: 3, h: 5, minH: 5, minW: 3, static: this.state.editMode,
-      },
-      {
-        i: 'c', x: 4, y: 0, w: 3, h: 5, minH: 5, minW: 3, static: this.state.editMode,
-      },
-    ] 
-*/
     this.setState( {layout: updatedLayout});
-
   }
   
   componentDidMount() {
     /* global localStorage */
-
     const savedState = localStorage.getItem(this.state.storageKey);
     if (savedState !== null) {
       /* eslint-disable-next-line */
@@ -95,24 +75,36 @@ class Grid extends Component {
   }
 
   render() {
-    console.log('redner');
-    console.log(this);
-    return (
-      <div>
-      <AppBar style={appBarStyle} iconElementRight={<FlatButton label="Edit" onClick={this.editButtonClicked} />} />
-      <ReactGridLayout className="layout" onLayoutChange={this.onLayoutChange} draggableCancel="input,textarea" layout={this.state.layout} cols={12} rowHeight={30} width={1200}>
-        <div key="a"><TodoList/></div>
-        <div style={divStyle} key="b">b</div>
-        <div style={divStyle} key="c">c</div>
-      </ReactGridLayout>
-      </div>
-    );
+    //console.log('render');
+    //console.log(this);
+    if(this.state.layout[0].static == true)
+    {
+      return (
+        <div>
+        <AppBar style={appBarStyle} iconElementRight={<FlatButton label="Edit" onClick={this.editButtonClicked} />} />
+        <ReactGridLayout className="layout" onLayoutChange={this.onLayoutChange} draggableCancel="input,textarea" layout={this.state.layout} cols={12} rowHeight={30} width={1200}>
+          <div key="a"><TodoList/></div>
+          <div style={divStyle} key="b">b</div>
+          <div style={divStyle} key="c">c</div>
+        </ReactGridLayout>
+        </div>
+      );
+    }
+    else {
+      return (
+        <div>
+        <AppBar style={appBarStyle} iconElementRight={<FlatButton label="Confirm" onClick={this.editButtonClicked} />} />
+        <ReactGridLayout className="layout" onLayoutChange={this.onLayoutChange} draggableCancel="input,textarea" layout={this.state.layout} cols={12} rowHeight={30} width={1200}>
+          <div key="a"><TodoList/></div>
+          <div style={divStyle} key="b">b</div>
+          <div style={divStyle} key="c">c</div>
+        </ReactGridLayout>
+        </div>
+      );
+    }
+    
   }
 }
 
 
 export default Grid;
-/*module.exports = Grid;
-if (require.main === module) {
-  require("./testHook.jsx")(module.exports);
-}*/
