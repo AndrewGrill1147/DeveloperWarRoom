@@ -42,7 +42,6 @@ class Grid extends Component {
   }
 
   onLayoutChange(layout) {
-    /*this.props.onLayoutChange(layout);*/
     this.setState({layout: layout});
   }
 
@@ -51,6 +50,11 @@ class Grid extends Component {
     const noteditMode = !this.state.editMode;
     this.setState( { editMode: noteditMode});
     console.log(this.state.editMode);
+
+    let updatedLayout = [...this.state.layout].map( widgetLayout => {
+      return {...widgetLayout, ...{static: noteditMode}};
+    });
+    /*
     //The updateLayout should be dynamically changed with size and coordinates
     //Not reset back to its starting point whenever someone wants to go from edit to normal mode
     const updateLayout = [
@@ -64,14 +68,13 @@ class Grid extends Component {
         i: 'c', x: 4, y: 0, w: 3, h: 5, minH: 5, minW: 3, static: this.state.editMode,
       },
     ] 
-    this.setState( {layout: updateLayout});
+*/
+    this.setState( {layout: updatedLayout});
 
   }
   
   componentDidMount() {
     /* global localStorage */
-    console.log("In componentDidMount");
-    console.log(this.state.editMode);
 
     const savedState = localStorage.getItem(this.state.storageKey);
     if (savedState !== null) {
@@ -92,6 +95,8 @@ class Grid extends Component {
   }
 
   render() {
+    console.log('redner');
+    console.log(this);
     return (
       <div>
       <AppBar style={appBarStyle} iconElementRight={<FlatButton label="Edit" onClick={this.editButtonClicked} />} />
