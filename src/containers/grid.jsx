@@ -3,8 +3,9 @@ import TodoList from './todoList';
 import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
 import _ from 'lodash';
-import { WidthProvider, Responsive } from 'react-grid-layout';
-const ResponsiveReactGridLayout = WidthProvider(Responsive);
+import GridLayout, { WidthProvider, Responsive } from 'react-grid-layout';
+//const ResponsiveReactGridLayout = WidthProvider(Responsive);
+
 
 
 const appBarStyle = {
@@ -34,39 +35,25 @@ class Grid extends Component {
     this.onBreakpointChange = this.onBreakpointChange.bind(this);
     this.state = {
       editMode: false,
-      counter: 0,
-      layout: [0, 1, 2].map((i, key, list) => ({
+      counter: 4,
+      layout: [0, 1, 2, 3].map((i, key, list) => ({
         i: i.toString(),
         x: i * 2,
         y: 0,
         w: 2,
         h: 2,
-        add: i === (list.length - 1).toString(),
-        static: true,
       })),
     };
   }
 
    componentDidMount() {
      console.log('In componentDidMount');
-    // global localStorage
-    /*const savedState = localStorage.getItem(this.state.storageKey);
-    if (savedState !== null) {
-      // eslint-disable-next-line
-      this.setState(JSON.parse(savedState));
-      this.state.storageKey = JSON.parse(savedState);
-    }*/
-    // global window
-    //window.addEventListener('beforeunload', this.componentWillUnmount);
   } 
 
   
   componentWillUnmount() {
     // global localStorage
     console.log('In componentWillUnMount');
-    //localStorage.setItem(this.state.storageKey, JSON.stringify(this.state));
-    // global window
-    //window.removeEventListener('beforeunload', this.componentDidUpdate);
 } 
 
   onLayoutChange(layout) {
@@ -78,14 +65,18 @@ class Grid extends Component {
     console.log('In editButtonClicked');
     const flipped = !this.state.editMode;
     this.setState({ editMode: flipped });
-    const updatedLayout = [...this.state.layout].map(widgetLayout => ({ ...widgetLayout, ...{ static: flipped } }));
-    this.setState({ layout: updatedLayout });
+    //const updatedLayout = [...this.state.layout].map(widgetLayout => ({ ...widgetLayout, ...{ static: flipped } }));
+    //this.setState({ layout: updatedLayout });
   }
 
   onRemoveItem(i) {
     console.log('removing', i);
     this.setState({ layout: _.reject(this.state.layout, { i }) });
   }
+
+  /* 
+  // this can be updated to match how we're now handling layout at the GridLayout component level
+  // rather than inline in the div.
 
   createElement(el) {
     console.log('In createElement');
@@ -121,6 +112,7 @@ class Grid extends Component {
       </div>
     );
   }
+  */
 
   onAddItem() {
     /* eslint no-console: 0 */
@@ -128,12 +120,11 @@ class Grid extends Component {
     this.setState({
       // Add a new item. It must have a unique key!
       layout: this.state.layout.concat({
-        i: `n${this.state.counter}`,
+        i: `${this.state.counter}`,
         x: (this.state.layout.length * 2) % (this.state.cols || 12),
         y: Infinity, // puts it at the bottom
         w: 2,
-        h: 2,
-        static: false,
+        h: 2
       }),
       // Increment the counter to ensure key is always unique.
       counter: this.state.counter + 1,
@@ -149,39 +140,33 @@ class Grid extends Component {
   }
 
   render() {
-    //Probably will need to change this(maybe not)
-    if (this.state.layout[0].static == true) {
-      return (
-        <div>
-          <AppBar
-            style={appBarStyle}
-            iconElementRight={<FlatButton label="Edit" onClick={this.editButtonClicked} />}
-          />
-          <ResponsiveReactGridLayout
-            onLayoutChange={this.onLayoutChange}
-            onBreakpointChange={this.onBreakpointChange}
-            {...this.props}
-          >
-            {_.map(this.state.layout, el => this.createElement(el))}
-          </ResponsiveReactGridLayout>
-        </div>
-      );
-    }
-
-    return (
-      <div>
-        <AppBar
+    let appBar = this.state.editMode ?
+      <AppBar
           style={appBarStyle}
           iconElementRight={<FlatButton label="Confirm" onClick={this.editButtonClicked} />}
-        />
-        <button onClick={this.onAddItem}>Add Item</button>
-        <ResponsiveReactGridLayout
+      /> :
+      <AppBar
+            style={appBarStyle}
+            iconElementRight={<FlatButton label="Edit" onClick={this.editButtonClicked} />}
+      />;
+    
+    return (
+      <div>
+        {appBar}
+        {this.state.editMode ? <button onClick={this.onAddItem}>Add Item</button> : null}
+        <GridLayout
+          layout={this.state.layout}
           onLayoutChange={this.onLayoutChange}
-          onBreakpointChange={this.onBreakpointChange}
+          autoSize={true}
+          width={1200}
+          isDraggable={this.state.editMode}
+          isResizable={this.state.editMode}
           {...this.props}
         >
-          {_.map(this.state.layout, el => this.createElement(el))}
-        </ResponsiveReactGridLayout>
+          {this.state.layout.map(item => {
+            return (<div style={divStyle} key={item.i}> {item.i} </div>)
+          })}
+        </GridLayout>
       </div>
     );
   }
