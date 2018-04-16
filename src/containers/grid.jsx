@@ -117,7 +117,7 @@ class Grid extends Component {
           onClick={this.onRemoveItem.bind(this, i)}
         >
           x
-        </span>
+      </span>
       </div>
     );
   }
@@ -150,6 +150,7 @@ class Grid extends Component {
 
   render() {
     //Probably will need to change this(maybe not)
+    console.log("RENDER GRID");
     if (this.state.layout[0].static == true) {
       return (
         <div>
@@ -184,6 +185,7 @@ class Grid extends Component {
         </ResponsiveReactGridLayout>
       </div>
     );
+  
   }
 }
 
