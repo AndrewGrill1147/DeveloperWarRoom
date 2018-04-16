@@ -6,7 +6,16 @@ import ActionDelete from 'material-ui/svg-icons/action/delete'
 import _ from 'lodash';
 import GridLayout, { WidthProvider, Responsive } from 'react-grid-layout';
 import IconButton from 'material-ui/IconButton/IconButton';
+import Paper from 'material-ui/Paper';
+
 //const ResponsiveReactGridLayout = WidthProvider(Responsive);
+
+const style = {
+  height: '100%',
+  width: '100%',
+  textAlign: 'left',
+  display: 'inline-block',
+};
 
 const RemoveIcon = props => (
   <IconButton >
@@ -99,7 +108,7 @@ class Grid extends Component {
         className="remove"
         style={removeStyle}
         onClick={this.onRemoveItem.bind(this, element.i)}>
-        <RemoveIcon color='white'/>
+        <RemoveIcon color='black'/>
       </span>
       : null;
     
@@ -108,10 +117,16 @@ class Grid extends Component {
     }
 
     return (
-      <div style={divStyle} key={element.i} data-grid={element}>
+      <div key={element.i} data-grid={element}>
+    <Paper style={style} zDepth={2}>
+      <span className="text">{element.i}</span>
+      {removeButton}
+    </Paper>
+      </div>
+      /*<div style={divStyle} key={element.i} data-grid={element}>
         <span className="text">{element.i}</span>
         {removeButton}
-      </div>
+    </div>*/
     );
   }
 
