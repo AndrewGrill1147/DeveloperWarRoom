@@ -61,26 +61,27 @@ class Grid extends Component {
     };
   }
 
-  /* componentDidMount() {
+   componentDidMount() {
+     console.log('In componentDidMount');
     // global localStorage
-    const savedState = localStorage.getItem(this.state.storageKey);
+    /*const savedState = localStorage.getItem(this.state.storageKey);
     if (savedState !== null) {
       // eslint-disable-next-line
       this.setState(JSON.parse(savedState));
       this.state.storageKey = JSON.parse(savedState);
-    }
+    }*/
     // global window
-    window.addEventListener('beforeunload', this.componentWillUnmount);
-  } */
+    //window.addEventListener('beforeunload', this.componentWillUnmount);
+  } 
 
-  /*
+  
   componentWillUnmount() {
     // global localStorage
-    // console.log('In componentWillUnMount');
-    localStorage.setItem(this.state.storageKey, JSON.stringify(this.state));
+    console.log('In componentWillUnMount');
+    //localStorage.setItem(this.state.storageKey, JSON.stringify(this.state));
     // global window
-    window.removeEventListener('beforeunload', this.componentDidUpdate);
-} */
+    //window.removeEventListener('beforeunload', this.componentDidUpdate);
+} 
 
   onLayoutChange(layout) {
     // console.log("In onLayoutChange");
@@ -102,7 +103,7 @@ class Grid extends Component {
 
   createElement(el) {
     console.log('In createElement');
-    console.log(el);
+    console.log(el.static);
     // Inline style for X in top right corner of widgets
     const removeStyle = {
       position: 'absolute',
