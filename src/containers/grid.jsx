@@ -35,13 +35,14 @@ class Grid extends Component {
     this.state = {
       editMode: false,
       counter: 0,
-      layout: [0, 1, 2].map((i, key, list) => ({
-        i: i.toString(),
-        x: i * 2,
+      layout: [0, 1, 2].map((val, key, list) => ({
+        i: val.toString(),
+        x: val * 2,
         y: 0,
         w: 2,
         h: 2,
-        add: i === (list.length - 1).toString(),
+        /*add: i === (list.length - 1).toString(),*/
+        add: true,
         static: true,
       })),
     };
@@ -97,9 +98,8 @@ class Grid extends Component {
       top: 0,
       cursor: 'pointer',
     };
-    const i = el.add ? '+' : el.i;
     return (
-      <div style={divStyle} key={i} data-grid={el}>
+      <div style={divStyle} key={el.i} data-grid={el}>
         {el.add ? (
           <span
             className="add text"
@@ -109,12 +109,12 @@ class Grid extends Component {
             Add +
           </span>
         ) : (
-          <span className="text">{i}</span>
+          <span className="text">{el.i}</span>
         )}
         <span
           className="remove"
           style={removeStyle}
-          onClick={this.onRemoveItem.bind(this, i)}
+          onClick={this.onRemoveItem.bind(this, el.i)}
         >
           x
       </span>
@@ -141,7 +141,7 @@ class Grid extends Component {
   }
 
   onBreakpointChange(breakpoint, cols) {
-    // console.log("In onBreakpointChange");
+    console.log("In onBreakpointChange");
     this.setState({
       breakpoint,
       cols,
@@ -160,8 +160,8 @@ class Grid extends Component {
           />
           <ResponsiveReactGridLayout
             onLayoutChange={this.onLayoutChange}
-            onBreakpointChange={this.onBreakpointChange}
-            {...this.props}
+            /*onBreakpointChange={this.onBreakpointChange}
+            {...this.props}*/
           >
             {_.map(this.state.layout, el => this.createElement(el))}
           </ResponsiveReactGridLayout>
@@ -178,8 +178,8 @@ class Grid extends Component {
         <button onClick={this.onAddItem}>Add Item</button>
         <ResponsiveReactGridLayout
           onLayoutChange={this.onLayoutChange}
-          onBreakpointChange={this.onBreakpointChange}
-          {...this.props}
+          /*onBreakpointChange={this.onBreakpointChange}
+          {...this.props}*/
         >
           {_.map(this.state.layout, el => this.createElement(el))}
         </ResponsiveReactGridLayout>
