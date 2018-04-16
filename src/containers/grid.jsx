@@ -2,11 +2,17 @@ import React, { Component } from 'react';
 import TodoList from './todoList';
 import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
+import ActionDelete from 'material-ui/svg-icons/action/delete'
 import _ from 'lodash';
 import GridLayout, { WidthProvider, Responsive } from 'react-grid-layout';
+import IconButton from 'material-ui/IconButton/IconButton';
 //const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-
+const RemoveIcon = props => (
+  <IconButton >
+    <ActionDelete {...props}/>
+  </IconButton>
+);
 
 const appBarStyle = {
   backgroundColor: 'gray',
@@ -65,8 +71,6 @@ class Grid extends Component {
     console.log('In editButtonClicked');
     const flipped = !this.state.editMode;
     this.setState({ editMode: flipped });
-    //const updatedLayout = [...this.state.layout].map(widgetLayout => ({ ...widgetLayout, ...{ static: flipped } }));
-    //this.setState({ layout: updatedLayout });
   }
 
   onRemoveItem(i) {
@@ -74,45 +78,43 @@ class Grid extends Component {
     this.setState({ layout: _.reject(this.state.layout, { i }) });
   }
 
-  /* 
+  
   // this can be updated to match how we're now handling layout at the GridLayout component level
   // rather than inline in the div.
 
-  createElement(el) {
+  createElement(element) {
     console.log('In createElement');
-    console.log(el.static);
+
     // Inline style for X in top right corner of widgets
+    // TODO: Remove from function interior
     const removeStyle = {
       position: 'absolute',
       right: '2px',
       top: 0,
       cursor: 'pointer',
     };
-    const i = el.add ? '+' : el.i;
+    
+    let removeButton = this.state.editMode ? 
+      <span
+        className="remove"
+        style={removeStyle}
+        onClick={this.onRemoveItem.bind(this, element.i)}>
+        <RemoveIcon color='white'/>
+      </span>
+      : null;
+    
+    if (removeButton) {
+      console.log('added a remove button');
+    }
+
     return (
-      <div style={divStyle} key={i} data-grid={el}>
-        {el.add ? (
-          <span
-            className="add text"
-            onClick={this.onAddItem}
-            title="You can add an item by clicking here, too."
-          >
-            Add +
-          </span>
-        ) : (
-          <span className="text">{i}</span>
-        )}
-        <span
-          className="remove"
-          style={removeStyle}
-          onClick={this.onRemoveItem.bind(this, i)}
-        >
-          x
-        </span>
+      <div style={divStyle} key={element.i} data-grid={element}>
+        <span className="text">{element.i}</span>
+        {removeButton}
       </div>
     );
   }
-  */
+
 
   onAddItem() {
     /* eslint no-console: 0 */
@@ -163,9 +165,12 @@ class Grid extends Component {
           isResizable={this.state.editMode}
           {...this.props}
         >
-          {this.state.layout.map(item => {
-            return (<div style={divStyle} key={item.i}> {item.i} </div>)
+          {this.state.layout.map(element => {
+            return this.createElement(element);
           })}
+          {/*this.state.layout.map(item => {
+            return (<div style={divStyle} key={item.i}> {item.i} </div>)
+          })*/}
         </GridLayout>
       </div>
     );
