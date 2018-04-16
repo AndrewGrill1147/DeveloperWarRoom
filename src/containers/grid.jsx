@@ -1,15 +1,11 @@
-import ReactGridLayout from 'react-grid-layout';
 import React, { Component } from 'react';
 import TodoList from './todoList';
 import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
 import _ from 'lodash';
-/** **************************** */
-// added for alternate add/remove
 import { WidthProvider, Responsive } from 'react-grid-layout';
-
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
-/** **************************** */
+
 
 const appBarStyle = {
   backgroundColor: 'gray',
@@ -28,16 +24,6 @@ const defaultProps = {
   },
   rowHeight: 100,
 };
-/** **************************** */
-// removed for alternate add/remove
-/* const removeStyle = {
-  position: 'absolute',
-  right: '2px',
-  top: 0,
-  cursor: 'pointer',
-}; */
-/** **************************** */
-
 
 class Grid extends Component {
   constructor(props) {
