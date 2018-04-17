@@ -15,6 +15,7 @@ class RepositoryList extends Component {
     };
 
     this.handleNewRequest = this.handleNewRequest.bind(this);
+    this.filterSearch = this.filterSearch.bind(this);
   }
 
   handleToggle(toggledRepo) {
@@ -47,7 +48,8 @@ class RepositoryList extends Component {
     this.props.onUpdate(chosenRequest)
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
+  filterSearch(searchText, key) {
+    return key.toLowerCase().includes(searchText.toLowerCase());
   }
 
   render() {
@@ -72,6 +74,7 @@ class RepositoryList extends Component {
           onNewRequest={this.handleNewRequest}
           dataSource={this.props.availableRepos}
           maxSearchResults={this.state.maxResults}
+          filter={this.filterSearch}
         />
 
         <List>
