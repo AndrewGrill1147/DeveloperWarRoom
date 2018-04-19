@@ -17,6 +17,11 @@ const removeStyle = {
   cursor: 'pointer',
 };
 
+const removeIconSize = {
+  width: 20,
+  height: 20,
+};
+
 const style = {
   height: '100%',
   width: '100%',
@@ -25,7 +30,7 @@ const style = {
 };
 
 const RemoveIcon = props => (
-  <IconButton >
+  <IconButton iconStyle={removeIconSize}>
     <ActionDelete {...props} />
   </IconButton>
 );
@@ -58,13 +63,33 @@ class Grid extends Component {
     this.state = {
       editMode: false,
       counter: 4,
-      layout: [0, 1, 2, 3].map((i, key, list) => ({
+      layout: [{
+        i: 'Pull Requests', x: 0, y: 0, w: 2, h: 2,
+      },
+      {
+        i: 'Todo List', x: 2, y: 0, w: 2, h: 2,
+      },
+      {
+        i: 'Reddit', x: 4, y: 0, w: 2, h: 2,
+      },
+      {
+        i: 'Stack Overflow', x: 6, y: 0, w: 2, h: 2,
+      },
+
+      ],
+      /* {
+        i: "Pull Requests", x: 0, y: 0, w: 2, h: 2,
+        i: "Todo List", x: 2, y: 0, w: 2, h: 2,
+        i: "Reddit", x: 4, y: 0, w: 2, h: 2,
+        i: "Stack Overflow", x: 6, y: 0, w: 2, h: 2,
+      } */
+      /* layout: [0, 1, 2, 3].map((i, key, list) => ({
         i: i.toString(),
         x: i * 2,
         y: 0,
         w: 2,
         h: 2,
-      })),
+      })), */
     };
   }
 
@@ -79,7 +104,7 @@ class Grid extends Component {
   }
 
   onLayoutChange(layout) {
-    // console.log("In onLayoutChange");
+    console.log('In onLayoutChange');
     this.setState({ layout });
   }
 
@@ -102,7 +127,7 @@ class Grid extends Component {
         style={removeStyle}
         onClick={this.onRemoveItem.bind(this, element.i)}
       >
-        <RemoveIcon color="black" />
+        <RemoveIcon color="grey" />
        </span>)
       : null;
 
@@ -112,7 +137,7 @@ class Grid extends Component {
 
     return (
       <div key={element.i} data-grid={element}>
-        <Paper style={style} zDepth={2}>
+        <Paper style={style} zDepth={3}>
           <span className="text">{element.i}</span>
           {removeButton}
         </Paper>
@@ -139,7 +164,7 @@ class Grid extends Component {
   }
 
   onBreakpointChange(breakpoint, cols) {
-    console.log("In onBreakpointChange");
+    console.log('In onBreakpointChange');
     this.setState({
       breakpoint,
       cols,
@@ -147,6 +172,8 @@ class Grid extends Component {
   }
 
   render() {
+    console.log('In render function');
+    console.log(this);
     const appBar = this.state.editMode ?
       (<AppBar
         style={appBarStyle}
@@ -174,7 +201,6 @@ class Grid extends Component {
         </GridLayout>
       </div>
     );
-  
   }
 }
 
