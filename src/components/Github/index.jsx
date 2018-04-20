@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { Paper, Tabs, Tab, SelectField, MenuItem} from 'material-ui';
+import { Paper, Tabs, Tab, SelectField, MenuItem, TextField } from 'material-ui';
 
 import RepoPullRequestList from './repoPullRequestList';
 import { RepositoryIcon, PullRequestIcon, SettingsIcon } from './icons';
 import RepositoryList from './repositoryList';
+
+import SuperSelectField from 'material-ui-superselectfield';
 
 const iconStyle = {
   height: '50'
@@ -83,6 +85,14 @@ class GithubWidget extends Component {
     //TODO: Finish function
   }
 
+  watch() {
+    //evrery n seconds, refresh data , foo(), foo1().... 
+  }
+
+  settings() {
+
+  }
+
   render() {
 
     let state = this.state;
@@ -105,7 +115,8 @@ class GithubWidget extends Component {
             </Tab>
 
             <Tab icon={<SettingsIcon />}>
-              <SelectField
+              
+            <SelectField
                 floatingLabelText="Refresh rate"
                 hintText="ANY"
                 value={this.state.settings.refreshRate}
@@ -116,6 +127,42 @@ class GithubWidget extends Component {
                 <MenuItem value={1} primaryText="Every 4 minutes" />
                 <MenuItem value={1} primaryText="Every 8 minutes" />
               </SelectField>
+            
+            {/* TESTING */}
+            <SuperSelectField
+              showAutocompleteThreshold={() => {}}
+              keepSearchOnSelect
+              name={'somthing'}
+              multiple={true}
+              value={[]}
+              onChange={this.handleSelection}
+              keepSearchOnSelect={true}
+              floatingLabel={'Floating Label'}
+              withResetSelectAllButtons
+              dataSource={this.state.reposAvailable}
+              showAutocompleteThreshold={'always'}
+            >
+            {this.state.reposAvailable.map(repo => {
+              return (
+                <div key={repo} id={repo} label={repo} value={repo}> {repo} </div> 
+              )
+            })}
+            </SuperSelectField>
+
+            <TextField
+              hintText={this.state.settings.username || "What is your @username?"}
+              defaultValue={this.state.settings.username}
+              floatingLabelText={"Username"}
+              fullWidth={true}
+            />
+            <TextField
+              hintText={this.state.settings.token || "I promise I won't share your token..."}
+              defaultValue={this.state.settings.oathToken}              
+              floatingLabelText={"Github Oauth Token"}
+              fullWidth={true}
+            />
+            
+              
               <RepositoryList availableRepos={state.reposAvailable} onUpdate={this.onReposWatchingChange}/>
             </Tab>
           </Tabs>

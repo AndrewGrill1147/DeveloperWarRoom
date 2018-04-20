@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "material-ui": "^0.20.0",
+    "material-ui-superselectfield": "^1.9.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-grid-layout": "^0.16.5"
