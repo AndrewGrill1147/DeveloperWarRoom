@@ -3,6 +3,7 @@ import { Paper, Tabs, Tab, SelectField, MenuItem, TextField } from 'material-ui'
 import SuperSelectField from 'material-ui-superselectfield';
 import RepoPullRequestList from './repoPullRequestList';
 import { PullRequestIcon, SettingsIcon } from './icons';
+import TextBox from './textBox';
 
 // TODO: can probably use a map to construct this
 const refreshRateMenuItems = [
@@ -77,6 +78,7 @@ class GithubWidget extends Component {
     };
     this.onRepoChange = this.onRepoChange.bind(this);
     this.onRefreshRateChange = this.onRefreshRateChange.bind(this);
+    this.onSettingsChange = this.onSettingsChange.bind(this);
   }
 
   onRefreshRateChange(event, key) {
@@ -94,11 +96,18 @@ class GithubWidget extends Component {
     this.setState({ reposWatching: updatedReposWatching });
   }
 
+  onSettingsChange(key, newValue) {
+    /* updates settings with ..{key: newvalue} */
+    const settingsSubset = {};
+    settingsSubset[key] = newValue;
+    this.setState({ settings: { ...this.state.settings, ...settingsSubset } });
+  }
+
   // TODO: Add github refresh evrery n seconds, refresh data , foo(), foo1()....
 
   render() {
     const state = this.state;
-    console.log(state.reposWatching);
+    console.log(state);
 
     // this might be best moved into state? so we don't do this everyime *anything* changes
     const openPullRequestsList = state.reposWatching.map(repoName => (
@@ -129,22 +138,23 @@ class GithubWidget extends Component {
                 {refreshRateMenuItems}
               </SelectField>
 
+              <TextBox
+                fullWidth
+                floatingLabelFixed
+                floatingLabelText="Github Token"
+                hintText={this.state.settings.oauthToken || 'Will you share your Oauth token?'}
+                onSubmit={this.onSettingsChange.bind(this, 'oauthToken')}
+              />
 
-              <TextField
-                hintText={this.state.settings.username || 'What is your @username?'}
-                defaultValue={this.state.settings.username}
+              <TextBox
+                fullWidth
+                floatingLabelFixed
                 floatingLabelText="Username"
-                fullWidth
-              />
-              <TextField
-                hintText={this.state.settings.token || "I promise I won't share your token..."}
-                defaultValue={this.state.settings.oathToken}
-                floatingLabelText="Github Oauth Token"
-                fullWidth
+                hintText={this.state.settings.username || 'What is your @username?'}
+                onSubmit={this.onSettingsChange.bind(this, 'username')}
               />
 
 
-              <br />
               {/* TESTING */}
               <SuperSelectField
                 style={{ marginTop: '45px', fontSize: '16px', lineHeight: '24px' }}
@@ -164,8 +174,6 @@ class GithubWidget extends Component {
                   <div key={repo} id={repo} label={repo} value={repo}> {repo} </div>
                 ))}
               </SuperSelectField>
-              <br />
-
             </Tab>
           </Tabs>
         </Paper>
@@ -173,5 +181,6 @@ class GithubWidget extends Component {
     );
   }
 }
+// https://www.npmjs.com/package/material-ui-superselectfield#usage
 
 export default GithubWidget;
