@@ -5,7 +5,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import TextField from 'material-ui/TextField';
 import { GridList, GridTile } from 'material-ui/GridList';
-import {FlatButton} from 'material-ui';
+import { FlatButton } from 'material-ui';
 import { SSL_OP_NETSCAPE_DEMO_CIPHER_CHANGE_BUG } from 'constants';
 
 const styles = {
@@ -23,15 +23,6 @@ const styles = {
     color: 'rgb(0, 188, 212)',
   },
 };
-
-const tilesData = [
-  {
-    title: 'Google',
-  },
-  {
-    title: 'Youtube',
-  },
-];
 
 class Bookmarkers extends Component {
 /*
@@ -90,8 +81,8 @@ class Bookmarkers extends Component {
 
     // Get form values
     const siteName = document.getElementById('siteName').value;
-    const siteUrl = document.getElementById('siteUrl').value;
-
+    let siteUrl = document.getElementById('siteUrl').value;
+    
     if (!siteName || !siteUrl) {
       alert('Please fill in the form');
       return false;
@@ -99,10 +90,16 @@ class Bookmarkers extends Component {
 
     const expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
     const regex = new RegExp(expression);
+    const checkHttp = '^https?://';
+    const httpRegex = new RegExp(checkHttp);
 
     if (!siteUrl.match(regex)) {
       alert('Please use a valid URL');
       return false;
+    }
+    if (!httpRegex.test(siteUrl)) {
+      console.log('adding https://');
+      siteUrl = `https://${siteUrl}`;
     }
     const bookmark = {
       name: siteName,
@@ -186,10 +183,11 @@ class Bookmarkers extends Component {
         <form id="myForm">
           {this.state.bookmarks.map((listValue) => { 
             return (
-              <FlatButton label= {listValue.name}
-               href= {listValue.url}
-               />
-           
+              <FlatButton
+                label={listValue.name}
+                href={listValue.url}
+                target="_blank"
+              />
             );
  })
           }
