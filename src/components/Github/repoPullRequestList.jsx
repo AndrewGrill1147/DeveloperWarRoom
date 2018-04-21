@@ -4,7 +4,7 @@ import PullRequestCard from './pullRequestCard';
 
 
 const RepoPullRequestList = (props) => {
-  const pullRequestCards = props.pullRequests.map(pullRequest => (
+  const pullRequestCards = props.pullRequests.map((pullRequest, index) => (
     <PullRequestCard key={pullRequest.title} pullRequest={pullRequest} />
   ));
   return (

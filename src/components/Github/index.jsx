@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
-import { Paper, Tabs, Tab, SelectField, MenuItem, TextField } from 'material-ui';
+import { Paper, Tabs, Tab, SelectField, MenuItem } from 'material-ui';
 import SuperSelectField from 'material-ui-superselectfield';
 import RepoPullRequestList from './repoPullRequestList';
+import _ from 'lodash';
 import { PullRequestIcon, SettingsIcon } from './icons';
 import TextBox from './textBox';
+import LocalStorageAPI from '../../helpers/localstorageAPI';
 
-// TODO: can probably use a map to construct this
 const refreshRateMenuItems = [
-  <MenuItem key={0} value={0} primaryText="Never" />,
+  <MenuItem key={1} value={0} primaryText="Never" />,
   <MenuItem key={2} value={2} primaryText="Every 2 minutes" />,
-  <MenuItem key={4} value={4} primaryText="Every 4 minutes" />,
-  <MenuItem key={8} value={8} primaryText="Every 8 minutes" />,
+  <MenuItem key={3} value={4} primaryText="Every 4 minutes" />,
+  <MenuItem key={4} value={8} primaryText="Every 8 minutes" />,
 ];
 
 class GithubWidget extends Component {
@@ -19,9 +20,12 @@ class GithubWidget extends Component {
 
     this.state = {
       settings: {
-        refreshRate: 8,
-        refreshRateOptions: [0, 2, 4, 16, 32],
+        refreshRate: null,
+        refreshRateOptions: [null, 2, 4, 8],
+        username: null,
+        oauthToken: null,
       },
+      storageKey: this.constructor.name,
       reposAvailable: [
         'admin-ui',
         'ml-projects',
@@ -81,46 +85,100 @@ class GithubWidget extends Component {
     this.onSettingsChange = this.onSettingsChange.bind(this);
   }
 
-  onRefreshRateChange(event, key) {
-    /* can expand to include args, payload */
-    // TODO: Finish function
-    console.log(`setting refresh rate to ${key}`);
-    if(key < 0) {
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    /* saves state to local storage iff settings updated */
+    if (_.isEqual(prevState.settings, {...this.state.settings})) {
       return;
     }
-    this.setState({ settings: { ...this.state.settings, ...{ refreshRate: key } } });
+    LocalStorageAPI.put(this.state.storageKey, this.state.settings);
+  }
+
+  onRefreshRateChange(event, index, value) {
+    if (index < 0) {
+      return;
+    }
+    this.setState({ settings: { ...this.state.settings, ...{ refreshRate: value } } });
   }
 
   onRepoChange(itemsSelected) {
     /* can expand to include args, name */
     /* Is sent the current selection of repos to watch */
-    console.log('selected items ', itemsSelected);
     const updatedReposWatching = itemsSelected.map(item => item.value);
     this.setState({ reposWatching: updatedReposWatching });
   }
 
   onSettingsChange(key, newValue) {
     /* updates settings with ...{key: newvalue} */
-    console.log('in settings change');
-    console.log(key)
-    console.log(newValue)    
     const settingsSubset = {};
     settingsSubset[key] = newValue;
     this.setState({ settings: { ...this.state.settings, ...settingsSubset } });
   }
 
-  // TODO: Add github refresh evrery n seconds, refresh data , foo(), foo1()....
+  renderSettingsTab() {
+    return (
+      <div>
+        <SelectField
+          fullWidth
+          floatingLabelFixed
+          floatingLabelText="Refresh rate"
+          hintText="How often should we check Github for you?"
+          value={this.state.settings.refreshRate}
+          onChange={this.onRefreshRateChange}
+        >
+          {refreshRateMenuItems}
+        </SelectField>
+
+        <TextBox
+          fullWidth
+          floatingLabelFixed
+          floatingLabelText="Github Token"
+          settingskey="oauthToken"
+          hintText={this.state.settings.oauthToken || 'Will you share your Oauth token?'}
+          onSubmit={this.onSettingsChange}
+        />
+
+        <TextBox
+          fullWidth
+          floatingLabelFixed
+          floatingLabelText="Username"
+          settingskey="username"
+          hintText={this.state.settings.username || 'What is your @username?'}
+          onSubmit={this.onSettingsChange}
+        />
+
+        {/* https://www.npmjs.com/package/material-ui-superselectfield#usage */}
+        <SuperSelectField
+          style={{ marginTop: '45px', fontSize: '16px', lineHeight: '24px' }}
+          checkPosition="left"
+          keepSearchOnSelect
+          withResetSelectAllButtons
+          multiple
+          name="ReposToWatch"
+          value={this.state.reposWatching.map(repo => ({ value: repo }))}
+          onSelect={this.onRepoChange}
+          floatingLabel="Repository List"
+          dataSource={this.state.reposAvailable}
+          hintTextAutocomplete={'Let\'s find a repo to add...'}
+          showAutocompleteThreshold="always"
+        >
+          {this.state.reposAvailable.map(repo => (
+            <div key={repo} id={repo} label={repo} value={repo}> {repo} </div>
+                ))}
+        </SuperSelectField>
+      </div>
+
+    );
+  }
 
   render() {
-    const state = this.state;
-    console.log(state);
-
     // this might be best moved into state? so we don't do this everyime *anything* changes
+    const state = { ...this.state };
     const openPullRequestsList = state.reposWatching.map(repoName => (
       <RepoPullRequestList
         key={repoName}
         repoName={repoName}
-        pullRequests={this.state.pullRequests[repoName] || []}
+        pullRequests={state.pullRequests[repoName] || []}
       />
     ));
 
@@ -128,60 +186,11 @@ class GithubWidget extends Component {
       <div>
         <Paper>
           <Tabs>
-
             <Tab icon={<PullRequestIcon />}>
               {openPullRequestsList}
             </Tab>
-
             <Tab icon={<SettingsIcon />}>
-              <SelectField
-                floatingLabelFixed
-                floatingLabelText="Refresh rate"
-                hintText="How often should we check Github for you?"
-                value={this.state.settings.refreshRate}
-                onChange={this.onRefreshRateChange}
-              >
-                {refreshRateMenuItems}
-              </SelectField>
-
-              <TextBox
-                fullWidth
-                floatingLabelFixed
-                floatingLabelText="Github Token"
-                settingskey="oauthToken"
-                hintText={this.state.settings.oauthToken || 'Will you share your Oauth token?'}
-                onSubmit={this.onSettingsChange}
-              />
-
-              <TextBox
-                fullWidth
-                floatingLabelFixed
-                floatingLabelText="Username"
-                settingskey="username"
-                hintText={this.state.settings.username || 'What is your @username?'}
-                onSubmit={this.onSettingsChange}
-              />
-
-
-              {/* TESTING */}
-              <SuperSelectField
-                style={{ marginTop: '45px', fontSize: '16px', lineHeight: '24px' }}
-                checkPosition="left"
-                keepSearchOnSelect
-                withResetSelectAllButtons
-                multiple
-                name="ReposToWatch"
-                value={this.state.reposWatching.map(repo => ({ value: repo }))}
-                onSelect={this.onRepoChange}
-                floatingLabel="Repository List"
-                dataSource={this.state.reposAvailable}
-                hintTextAutocomplete={'Let\'s find a repo to add...'}
-                showAutocompleteThreshold="always"
-              >
-                {this.state.reposAvailable.map(repo => (
-                  <div key={repo} id={repo} label={repo} value={repo}> {repo} </div>
-                ))}
-              </SuperSelectField>
+              {this.renderSettingsTab()}
             </Tab>
           </Tabs>
         </Paper>
@@ -189,6 +198,5 @@ class GithubWidget extends Component {
     );
   }
 }
-// https://www.npmjs.com/package/material-ui-superselectfield#usage
 
 export default GithubWidget;

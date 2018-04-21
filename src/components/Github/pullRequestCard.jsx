@@ -1,5 +1,6 @@
 import React from 'react';
-import { Card, CardHeader, CardActions, CardText } from 'material-ui';
+import { Card, CardHeader, CardActions, CardText, RaisedButton } from 'material-ui';
+import { GithubLogo } from './icons';
 
 const multiLineStyle = {
   whiteSpace: 'pre-line',
@@ -24,6 +25,16 @@ const PullRequestCard = props => (
       {props.pullRequest.reviews.toString()} <br />
       <h4> Descriptions </h4>
       {props.pullRequest.body}
+      <br />
+      <RaisedButton
+        fullWidth
+        secondary
+        href="github.com"
+        target="_blank"
+        label="view pull request"
+        labelPosition="before"
+        icon={<GithubLogo />}
+      />
     </CardText>
   </Card>
 );

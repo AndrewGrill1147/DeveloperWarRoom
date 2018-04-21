@@ -10,7 +10,6 @@ class TextBox extends Component {
     super(props);
     this.state = {
       value: '',
-      key: props.specialKey,
     };
 
     this.onChange = this.onChange.bind(this);
@@ -29,14 +28,14 @@ class TextBox extends Component {
 
     const val = this.state.value.trim();
     const key = this.props.settingskey;
-    if (val) {
+    if (key && val) {
       this.props.onSubmit(key, val);
       this.setState({ value: '' });
     }
   }
 
   render() {
-    //note: settingskey prop gets passed all the way down to DOM element
+    // note: settingskey prop gets passed all the way down to DOM element
     return (
       <TextField
         {...this.props}
@@ -51,14 +50,3 @@ class TextBox extends Component {
 
 export default TextBox;
 
-/*
-<TextField
-                hintText={this.props.hintText}
-                defaultValue={this.props.defaultValue}
-                value={this.state.value}
-                onChange={this.onChange}
-                onKeyDown={this.onKeyDown}
-                floatingLabelText={this.props.floatingLabelText}
-                fullWidth
-              />
-*/
