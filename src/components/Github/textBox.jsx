@@ -28,13 +28,15 @@ class TextBox extends Component {
     event.preventDefault();
 
     const val = this.state.value.trim();
+    const key = this.props.settingskey;
     if (val) {
-      this.props.onSubmit(val);
+      this.props.onSubmit(key, val);
       this.setState({ value: '' });
     }
   }
 
   render() {
+    //note: settingskey prop gets passed all the way down to DOM element
     return (
       <TextField
         {...this.props}

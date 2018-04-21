@@ -85,6 +85,9 @@ class GithubWidget extends Component {
     /* can expand to include args, payload */
     // TODO: Finish function
     console.log(`setting refresh rate to ${key}`);
+    if(key < 0) {
+      return;
+    }
     this.setState({ settings: { ...this.state.settings, ...{ refreshRate: key } } });
   }
 
@@ -97,7 +100,10 @@ class GithubWidget extends Component {
   }
 
   onSettingsChange(key, newValue) {
-    /* updates settings with ..{key: newvalue} */
+    /* updates settings with ...{key: newvalue} */
+    console.log('in settings change');
+    console.log(key)
+    console.log(newValue)    
     const settingsSubset = {};
     settingsSubset[key] = newValue;
     this.setState({ settings: { ...this.state.settings, ...settingsSubset } });
@@ -142,16 +148,18 @@ class GithubWidget extends Component {
                 fullWidth
                 floatingLabelFixed
                 floatingLabelText="Github Token"
+                settingskey="oauthToken"
                 hintText={this.state.settings.oauthToken || 'Will you share your Oauth token?'}
-                onSubmit={this.onSettingsChange.bind(this, 'oauthToken')}
+                onSubmit={this.onSettingsChange}
               />
 
               <TextBox
                 fullWidth
                 floatingLabelFixed
                 floatingLabelText="Username"
+                settingskey="username"
                 hintText={this.state.settings.username || 'What is your @username?'}
-                onSubmit={this.onSettingsChange.bind(this, 'username')}
+                onSubmit={this.onSettingsChange}
               />
 
 
