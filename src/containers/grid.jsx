@@ -7,8 +7,27 @@ import _ from 'lodash';
 import GridLayout, { WidthProvider, Responsive } from 'react-grid-layout';
 import IconButton from 'material-ui/IconButton/IconButton';
 import Paper from 'material-ui/Paper';
+import { SettingsIcon, ActionCheckCircle } from './icon';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import MenuItem from 'material-ui/MenuItem';
+import IconMenu from 'material-ui/IconMenu/IconMenu';
 
 // const ResponsiveReactGridLayout = WidthProvider(Responsive);
+
+/*const SettingsMenu = props => (
+  <IconMenu
+    {...props}
+    iconButtonElement={
+      <IconButton ><MoreVertIcon /></IconButton>
+    }
+    targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+    anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+  >
+    <MenuItem primaryText="Edit Widgets" />
+    <MenuItem primaryText="Change Theme" />
+    <MenuItem primaryText="Add Widgets" />
+  </IconMenu>
+);*/
 
 const removeStyle = {
   position: 'absolute',
@@ -60,6 +79,24 @@ class Grid extends Component {
     this.onLayoutChange = this.onLayoutChange.bind(this),
     this.onAddItem = this.onAddItem.bind(this);
     this.onBreakpointChange = this.onBreakpointChange.bind(this);
+    this.menuOptions = this.menuOptions.bind(this);
+  
+    //I think I need this inline so I can work with current object along with modularity
+    this.SettingsMenu = props => (
+      <IconMenu
+        {...props}
+        iconButtonElement={
+          <IconButton ><MoreVertIcon /></IconButton>
+        }
+        targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+        onItemClick={this.menuOptions}
+      >
+        <MenuItem primaryText="Edit Widgets" />
+        <MenuItem primaryText="Change Theme" />
+        <MenuItem primaryText="Add Widgets" />
+      </IconMenu>)
+
     this.state = {
       editMode: false,
       counter: 4,
@@ -171,17 +208,34 @@ class Grid extends Component {
     });
   }
 
+  menuOptions(e, key, menuItem) {
+
+    console.log("Key:  ", key);
+
+    if(key.props.primaryText == "Edit Widgets"){
+
+      console.log("in if statement");
+      this.editButtonClicked;
+    }
+
+    /*switch(key.props.primaryText) {
+      case "Edit Widgets": this.editButtonClicked;
+      default:             null;
+    }*/
+   
+  }
+
   render() {
     console.log('In render function');
     console.log(this);
     const appBar = this.state.editMode ?
       (<AppBar
         style={appBarStyle}
-        iconElementRight={<FlatButton label="Confirm" onClick={this.editButtonClicked} />}
+        iconElementRight={<FlatButton icon={<ActionCheckCircle />} onClick={this.editButtonClicked} />}
       />) :
       (<AppBar
         style={appBarStyle}
-        iconElementRight={<FlatButton label="Edit" onClick={this.editButtonClicked} />}
+      iconElementRight={<this.SettingsMenu/>}
       />);
 
     return (
@@ -192,7 +246,7 @@ class Grid extends Component {
           layout={this.state.layout}
           onLayoutChange={this.onLayoutChange}
           autoSize
-          width={1200}
+          width={1400}
           isDraggable={this.state.editMode}
           isResizable={this.state.editMode}
           {...this.props}
