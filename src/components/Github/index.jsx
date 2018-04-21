@@ -85,6 +85,14 @@ class GithubWidget extends Component {
     this.onSettingsChange = this.onSettingsChange.bind(this);
   }
 
+  componentDidMount() {
+    /* retrieves settings from storage */
+    let savedSettings = LocalStorageAPI.get(this.state.storageKey);
+    if(savedSettings) {
+      this.setState({settings: savedSettings});
+    }
+  }
+
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     /* saves state to local storage iff settings updated */
