@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import TodoList from './todoList';
 import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
 import ActionDelete from 'material-ui/svg-icons/action/delete';
@@ -11,10 +10,11 @@ import { SettingsIcon, ActionCheckCircle } from './icon';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import MenuItem from 'material-ui/MenuItem';
 import IconMenu from 'material-ui/IconMenu/IconMenu';
+import Toggle from 'material-ui/Toggle';
+import Drawer from 'material-ui/Drawer';
+import { List, ListItem } from 'material-ui/List';
 
-// const ResponsiveReactGridLayout = WidthProvider(Responsive);
-
-/*const SettingsMenu = props => (
+/* const SettingsMenu = props => (
   <IconMenu
     {...props}
     iconButtonElement={
@@ -27,7 +27,7 @@ import IconMenu from 'material-ui/IconMenu/IconMenu';
     <MenuItem primaryText="Change Theme" />
     <MenuItem primaryText="Add Widgets" />
   </IconMenu>
-);*/
+); */
 
 const removeStyle = {
   position: 'absolute',
@@ -57,6 +57,10 @@ const RemoveIcon = props => (
 const appBarStyle = {
   backgroundColor: 'gray',
 };
+const menuBarStyle = {
+  backgroundColor: 'blue',
+
+};
 // just for testing react-grid
 const divStyle = {
   color: 'gray',
@@ -80,8 +84,9 @@ class Grid extends Component {
     this.onAddItem = this.onAddItem.bind(this);
     this.onBreakpointChange = this.onBreakpointChange.bind(this);
     this.menuOptions = this.menuOptions.bind(this);
-  
-    //I think I need this inline so I can work with current object along with modularity
+    this.createMenuElement = this.createMenuElement.bind(this);
+    this.elementinArray = this.elementinArray.bind(this);
+    // I think I need this inline so I can work with the current object along with modularity for render function
     this.SettingsMenu = props => (
       <IconMenu
         {...props}
@@ -95,11 +100,27 @@ class Grid extends Component {
         <MenuItem primaryText="Edit Widgets" />
         <MenuItem primaryText="Change Theme" />
         <MenuItem primaryText="Add Widgets" />
-      </IconMenu>)
+      </IconMenu>
+    );
 
     this.state = {
       editMode: false,
-      counter: 4,
+      sideBarMenu: false,
+      // Every possible widget
+      allWidgets: [{
+        i: 'Pull Requests',
+      },
+      {
+        i: 'Todo List',
+      },
+      {
+        i: 'Reddit',
+      },
+      {
+        i: 'Stack Overflow',
+      }],
+
+      // Default view when user first opens chrome extension
       layout: [{
         i: 'Pull Requests', x: 0, y: 0, w: 2, h: 2,
       },
@@ -114,19 +135,6 @@ class Grid extends Component {
       },
 
       ],
-      /* {
-        i: "Pull Requests", x: 0, y: 0, w: 2, h: 2,
-        i: "Todo List", x: 2, y: 0, w: 2, h: 2,
-        i: "Reddit", x: 4, y: 0, w: 2, h: 2,
-        i: "Stack Overflow", x: 6, y: 0, w: 2, h: 2,
-      } */
-      /* layout: [0, 1, 2, 3].map((i, key, list) => ({
-        i: i.toString(),
-        x: i * 2,
-        y: 0,
-        w: 2,
-        h: 2,
-      })), */
     };
   }
 
@@ -149,6 +157,9 @@ class Grid extends Component {
     console.log('In editButtonClicked');
     const flipped = !this.state.editMode;
     this.setState({ editMode: flipped });
+    if (flipped == false && this.state.sideBarMenu == true) {
+      this.setState({ sideBarMenu: false });
+    }
   }
 
   onRemoveItem(i) {
@@ -167,14 +178,10 @@ class Grid extends Component {
         <RemoveIcon color="grey" />
        </span>)
       : null;
-
-    if (removeButton) {
-      console.log('added a remove button');
-    }
-
     return (
       <div key={element.i} data-grid={element}>
         <Paper style={style} zDepth={3}>
+
           <span className="text">{element.i}</span>
           {removeButton}
         </Paper>
@@ -182,23 +189,35 @@ class Grid extends Component {
     );
   }
 
-
-  onAddItem() {
-    /* eslint no-console: 0 */
-    console.log('adding', 'n', this.state.counter);
-    this.setState({
-      // Add a new item. It must have a unique key!
-      layout: this.state.layout.concat({
-        i: `${this.state.counter}`,
-        x: (this.state.layout.length * 2) % (this.state.cols || 12),
-        y: Infinity, // puts it at the bottom
-        w: 2,
-        h: 2,
-      }),
-      // Increment the counter to ensure key is always unique.
-      counter: this.state.counter + 1,
-    });
+  elementinArray(key) {
+    for (let i = 0; i < this.state.layout.length; ++i) {
+      if (this.state.layout[i].i == key) {
+        return true;
+      }
+    }
+    return false;
   }
+
+  onAddItem(key) {
+    /* eslint no-console: 0 */
+    // return 0;
+    if (this.elementinArray(key) == false) {
+      console.log('Key not in layout, adding to list');
+      this.setState({
+      // Add a new item. It must have a unique key!
+        layout: this.state.layout.concat({
+          i: key,
+          x: (this.state.layout.length * 2) % (this.state.cols || 12),
+          y: Infinity, // puts it at the bottom
+          w: 2,
+          h: 2,
+        }),
+      });
+    } else {
+      console.log('Key in layout. NOT ADDING TO LIST');
+    }
+  }
+
 
   onBreakpointChange(breakpoint, cols) {
     console.log('In onBreakpointChange');
@@ -209,20 +228,30 @@ class Grid extends Component {
   }
 
   menuOptions(e, key, menuItem) {
-
-    console.log("Key:  ", key);
-
-    if(key.props.primaryText == "Edit Widgets"){
-
-      console.log("in if statement");
-      this.editButtonClicked;
+    console.log('In menuOptions');
+    switch (key.props.primaryText) {
+      case 'Edit Widgets':
+        this.editButtonClicked();
+        break;
+      case 'Change Theme': // Not Working this.props.ThemeButton; break;
+        break;
+      case 'Add Widgets':
+        this.editButtonClicked();
+        const flipped = !this.state.sideBarMenul;
+        this.setState({ sideBarMenu: flipped });
+        break;
+      default: null;
     }
+  }
 
-    /*switch(key.props.primaryText) {
-      case "Edit Widgets": this.editButtonClicked;
-      default:             null;
-    }*/
-   
+  createMenuElement(element) {
+    return (
+      <div key={element.i} data-grid={element}>
+        <List >
+          <ListItem primaryText={element.i} onClick={() => this.onAddItem(element.i)} />
+        </List>
+      </div>
+    );
   }
 
   render() {
@@ -231,17 +260,18 @@ class Grid extends Component {
     const appBar = this.state.editMode ?
       (<AppBar
         style={appBarStyle}
+        showMenuIconButton={false}
         iconElementRight={<FlatButton icon={<ActionCheckCircle />} onClick={this.editButtonClicked} />}
       />) :
       (<AppBar
         style={appBarStyle}
-      iconElementRight={<this.SettingsMenu/>}
+        showMenuIconButton={false}
+        iconElementRight={<this.SettingsMenu />}
       />);
 
     return (
       <div>
         {appBar}
-        {this.state.editMode ? <button onClick={this.onAddItem}>Add Item</button> : null}
         <GridLayout
           layout={this.state.layout}
           onLayoutChange={this.onLayoutChange}
@@ -253,6 +283,11 @@ class Grid extends Component {
         >
           {this.state.layout.map(element => this.createElement(element))}
         </GridLayout>
+        {this.state.sideBarMenu && this.state.editMode ? 
+          (<Drawer open={this.state.sideBarOpen} width={200}>
+          <AppBar style={menuBarStyle} title="Widgets" showMenuIconButton={false} />
+          {this.state.allWidgets.map(element => this.createMenuElement(element))}
+          </Drawer>) : null}
       </div>
     );
   }

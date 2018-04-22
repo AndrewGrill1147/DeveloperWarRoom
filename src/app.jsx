@@ -7,7 +7,6 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import ReactDOM from 'react-dom';
 import Home from './components/home';
-import SidebarMenu from './containers/sidbarMenu';
 import './index.css';
 
 class App extends Component {
@@ -49,7 +48,7 @@ class App extends Component {
     return (
       <MuiThemeProvider muiTheme={this.state.theme}>
         {/* <SidebarMenu ThemeButton={this.themeButtonClicked} /> */}
-        <Home />
+        <Home ThemeButton={this.themeButtonClicked} />
       </MuiThemeProvider>
     );
   }
