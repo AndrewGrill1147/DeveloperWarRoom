@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Paper, Tabs, Tab, SelectField, MenuItem } from 'material-ui';
 import SuperSelectField from 'material-ui-superselectfield';
-import RepoPullRequestList from './repoPullRequestList';
 import _ from 'lodash';
+import RepoPullRequestList from './repoPullRequestList';
 import { PullRequestIcon, SettingsIcon } from './icons';
 import TextBox from './textBox';
 import LocalStorageAPI from '../../helpers/localstorageAPI';
@@ -85,18 +85,18 @@ class GithubWidget extends Component {
     this.onSettingsChange = this.onSettingsChange.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     /* retrieves settings from storage */
-    let savedSettings = LocalStorageAPI.get(this.state.storageKey);
-    if(savedSettings) {
-      this.setState({settings: savedSettings});
+    const savedSettings = LocalStorageAPI.get(this.state.storageKey);
+    if (savedSettings) {
+      this.setState({ settings: savedSettings });
     }
   }
 
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
+  componentDidUpdate(prevProps, prevState) {
     /* saves state to local storage iff settings updated */
-    if (_.isEqual(prevState.settings, {...this.state.settings})) {
+    if (_.isEqual(prevState.settings, { ...this.state.settings })) {
       return;
     }
     LocalStorageAPI.put(this.state.storageKey, this.state.settings);
