@@ -2,22 +2,44 @@
 /* eslint-env browser */
 import React, { Component } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
+import IconButton from 'material-ui/IconButton';
+import IconMenu from 'material-ui/IconMenu';
+import MenuItem from 'material-ui/MenuItem';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import TextField from 'material-ui/TextField';
-import { GridList, GridTile } from 'material-ui/GridList';
 import { FlatButton } from 'material-ui';
-import { SSL_OP_NETSCAPE_DEMO_CIPHER_CHANGE_BUG } from 'constants';
+
+const iconButtonElement = (
+  <IconButton
+    touch
+    tooltipPosition="bottom-left"
+  >
+    <MoreVertIcon />
+  </IconButton>
+);
 
 const styles = {
+  horizontalListElement: {
+    display: 'inline',
+    width: 'auto',
+    whiteSpace: 'nowrap',
+  },
+  buttonAlignment: {
+    display: 'inline-flex',
+    verticalAlign: 'middle',
+  },
+  iconAlignment: {
+    display: 'inline-flex',
+    verticalAlign: 'middle',
+  },
   root: {
     display: 'flex',
     flexWrap: 'wrap',
-    justifyContent: 'space-around',
   },
   gridList: {
     display: 'flex',
     flexWrap: 'noWrap',
-    overflowX: 'auto',
+    overflowX: 'scroll',
   },
   titleStyle: {
     color: 'rgb(0, 188, 212)',
@@ -25,67 +47,54 @@ const styles = {
 };
 
 class Bookmarkers extends Component {
-/*
-  deleteBookmark(url) {
-    const bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
-    for (let i = 0; i < bookmarks.length; i++) {
-      if (bookmarks[i].url == url) {
-        bookmarks.splice(i, 1);
-      }
-    }
-    localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-    const bookmarker = JSON.parse(localStorage.getItem('bookmarks'));
-    const bookmarksResults = document.getElementById('bookmarksResults');
-    bookmarksResults.innerHTML = '';
-    for (let i = 0; i < bookmarker.length; i++) {
-      const name = bookmarks[i].name;
-      const url = bookmarks[i].url;
-      bookmarksResults.innerHTML += (<div> +
-        <h3>'+name+
-          <a className="btn btn-default" target="_blank" href="'+url+'">Visit</a>  +
-          <a onClick="deleteBookmark(\''+url+'\')" className="btn btn-danger" href="#">Delete</a> +
-        </h3>+
-      </div>);
-    }
-  }
-  /* getBookmarks(){
-    const bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
-    const bookmarksResults = document.getElementById('bookmarksResults');
-    bookmarksResults.innerHTML = '';
-    for (let i = 0; i < bookmarks.length; i++) {
-      const name = bookmarks[i].name;
-      const url = bookmarks[i].url;
-      bookmarksResults.innerHTML += (<div> +
-        <h3>'+name+
-          <a className="btn btn-default" target="_blank" href="'+url+'">Visit</a>  +
-          <a onClick="deleteBookmark(\''+url+'\')" className="btn btn-danger" href="#">Delete</a> +
-        </h3>+
-      </div>);
-    }
-  } */
   constructor(props) {
     super(props);
-
+    let localBookmarks = [];
+    if (localStorage.getItem('bookmarks') !== null) {
+      localBookmarks = JSON.parse(localStorage.getItem('bookmarks'));
+    }
     this.state = {
-      bookmarks: [],
-
+      bookmarks: localBookmarks,
     };
-
     this.clicked = this.clicked.bind(this);
-    this.state.bookmarks.map = this.state.bookmarks.map.bind(this);
+    this.listMapping = this.listMapping.bind(this);
   }
-
+  rightIconMenu(listValue) {
+    return (
+      <IconMenu iconButtonElement={iconButtonElement} style={styles.buttonAlignment}>
+        <MenuItem >Rename</MenuItem>
+        <MenuItem >Url Change</MenuItem>
+        <MenuItem onClick={evt => this.deleteItem(evt, listValue)}>Delete</MenuItem>
+      </IconMenu>
+    );
+  }
+  listMapping(listValue) {
+    return (
+      <div style={styles.horizontalListElement}>
+        <FlatButton
+          style={styles.buttonAlignment}
+          label={listValue.name}
+          href={listValue.url}
+          target="_blank"
+        />
+        <div style={styles.iconAlignment}>
+          {this.rightIconMenu(listValue)}
+        </div>
+      </div>
+    );
+  }
+  deleteItem(evt, listValue) {
+    const newBookmarks = this.state.bookmarks.filter(bookmark => bookmark.id !== listValue.id);
+    localStorage.setItem('bookmarks', JSON.stringify(newBookmarks));
+    this.setState({ bookmarks: newBookmarks });
+  }
   clicked(event) {
     event.preventDefault();
-
-
     // Get form values
     const siteName = document.getElementById('siteName').value;
     let siteUrl = document.getElementById('siteUrl').value;
-    
     if (!siteName || !siteUrl) {
-      alert('Please fill in the form');
-      return false;
+      return;
     }
 
     const expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
@@ -95,114 +104,43 @@ class Bookmarkers extends Component {
 
     if (!siteUrl.match(regex)) {
       alert('Please use a valid URL');
-      return false;
+      return;
     }
     if (!httpRegex.test(siteUrl)) {
       console.log('adding https://');
       siteUrl = `https://${siteUrl}`;
     }
+    let bookmarkId = 0;
+    if (this.state.bookmarks.length > 0) {
+      const lastBookmark = this.state.bookmarks[this.state.bookmarks.length - 1];
+      bookmarkId = lastBookmark.id + 1;
+    }
     const bookmark = {
       name: siteName,
       url: siteUrl,
+      id: bookmarkId,
     };
-
-
-    if (localStorage.getItem('bookmarks') === null) {
-      const listArray = this.state.bookmarks;
-
-      listArray.push(bookmark);
-
-      this.setState({
-
-        bookmarks: listArray,
-      });
-
-      localStorage.setItem('bookmarks', JSON.stringify(this.state.bookmarks));
-    } else {
-      const bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
-      // Add bookmark to array
-      if (bookmarks.length < 5) {
-        const listArray = this.state.bookmarks;
-
-        listArray.push(bookmark);
-
-        this.setState({
-
-          bookmarks: listArray,
-        });
-      } else {
-        alert('Please only up to 5 bookmarks');
-      }
-
-      localStorage.setItem('bookmarks', JSON.stringify(this.state.bookmarks));
-    }
-
-
-    document.getElementById('myForm').reset();
-
-
-    const listArray = JSON.parse(localStorage.getItem('bookmarks'));
-
-    this.setState({
-
-      bookmarks: listArray,
-    });
-
-
-    const bookmarksResults = document.getElementById('bookmarksresults');
-
-    //  bookmarksResults.innerHTML = '';
-
-
-    // for (let i = 0; i < this.state.bookmarks.length; i++) {
-    // const name = this.state.bookmarks[i].name;
-    // const url = this.state.bookmarks[i].url;
-
-    // console.log(this.state.bookmarks[i].name);
-    /*
-      const output = this.state.bookmarks.map(function(name, url)
-      {
-        return (
-          <div>
-          <GridTile
-          title={name}
-          url={url}
-          rows={0.25}
-          cols={0.3}
-        /> </div>)});
-        */
-
-    // document.getElementById("link").addEventListener("click", deleteBookmark(url));
-
-
-    // event.preventDefault();
+    const newBookmarks = this.state.bookmarks;
+    console.log(newBookmarks);
+    newBookmarks.push(bookmark);
+    this.setState({ bookmarks: newBookmarks });
+    console.log(this.state.bookmarks);
+    localStorage.setItem('bookmarks', JSON.stringify(this.state.bookmarks));
   }
   render() {
     return (
       <div className="nav">
         <form id="myForm">
-          {this.state.bookmarks.map((listValue) => { 
-            return (
-              <FlatButton
-                label={listValue.name}
-                href={listValue.url}
-                target="_blank"
-              />
-            );
- })
-          }
+          <div style={styles.gridList}>
+            {this.state.bookmarks.map(this.listMapping)}
+          </div>
           <div className="favorites-bar" />
-          <RaisedButton label="Site Name" />
           <TextField type="text" className="form-control" id="siteName" placeholder="  Website Name" />
-          <RaisedButton label="Site URL" />
           <TextField type="text" className="form-control" id="siteUrl" placeholder="  Website URL" />
           <button onClick={this.clicked}>Save Bookmark</button>
         </form>
         <div className="resul">
           <div id="bookmarksresults" />
-          )}
-
-
         </div>
       </div>
     );
