@@ -2,11 +2,12 @@
 /* eslint-env browser */
 import React, { Component } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
+import Dialog from 'material-ui/Dialog';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import TextField from 'material-ui/TextField';
 import { FlatButton } from 'material-ui';
 
 const iconButtonElement = (
@@ -23,6 +24,9 @@ const styles = {
     display: 'inline',
     width: 'auto',
     whiteSpace: 'nowrap',
+  },
+  dialogStyle: {
+    maxWidth: '450px',
   },
   buttonAlignment: {
     display: 'inline-flex',
@@ -58,17 +62,75 @@ class Bookmarkers extends Component {
     };
     this.clicked = this.clicked.bind(this);
     this.listMapping = this.listMapping.bind(this);
+    this.dialogEvent = this.dialogEvent.bind(this);
+    this.handleNameChange = this.handleNameChange.bind(this);
+    this.handleUrlChange = this.handleUrlChange.bind(this);
+    this.cancelDialogEvent = this.cancelDialogEvent.bind(this);
+    this.saveDialogEvent = this.saveDialogEvent.bind(this);
+  }
+  dialogEvent(evt, listValue) {
+    const objIndex = this.state.bookmarks.findIndex((obj => obj.id === listValue.id));
+    const newBookmarks = this.state.bookmarks;
+    newBookmarks[objIndex].dialogOpen = !(listValue.dialogOpen);
+    this.setState({ bookmarks: newBookmarks });
+  }
+  cancelDialogEvent(evt, listValue) {
+    const objIndex = this.state.bookmarks.findIndex((obj => obj.id === listValue.id));
+    const newBookmarks = this.state.bookmarks;
+    newBookmarks[objIndex].dialogOpen = false;
+    newBookmarks[objIndex].nameInput = listValue.name;
+    newBookmarks[objIndex].urlInput = listValue.url;
+    this.setState({ bookmarks: newBookmarks });
+  }
+  saveDialogEvent(evt, listValue) {
+    const objIndex = this.state.bookmarks.findIndex((obj => obj.id === listValue.id));
+    const newBookmarks = this.state.bookmarks;
+    newBookmarks[objIndex].dialogOpen = false;
+    newBookmarks[objIndex].name = listValue.nameInput;
+    const checkHttp = '^https?://';
+    const httpRegex = new RegExp(checkHttp);
+    let siteUrl = listValue.urlInput;
+    if (!httpRegex.test(siteUrl)) {
+      console.log('adding https://');
+      siteUrl = `https://${siteUrl}`;
+    }
+    newBookmarks[objIndex].url = siteUrl;
+    this.setState({ bookmarks: newBookmarks });
   }
   rightIconMenu(listValue) {
     return (
       <IconMenu iconButtonElement={iconButtonElement} style={styles.buttonAlignment}>
-        <MenuItem >Rename</MenuItem>
-        <MenuItem >Url Change</MenuItem>
+        <MenuItem onClick={evt => this.dialogEvent(evt, listValue)}>Edit</MenuItem>
         <MenuItem onClick={evt => this.deleteItem(evt, listValue)}>Delete</MenuItem>
       </IconMenu>
     );
   }
+  handleUrlChange(evt, listValue) {
+    const objIndex = this.state.bookmarks.findIndex((obj => obj.id === listValue.id));
+    const newBookmarks = this.state.bookmarks;
+    newBookmarks[objIndex].urlInput = evt.target.value;
+    this.setState({ bookmarks: newBookmarks });
+  }
+  handleNameChange(evt, listValue) {
+    const objIndex = this.state.bookmarks.findIndex((obj => obj.id === listValue.id));
+    const newBookmarks = this.state.bookmarks;
+    newBookmarks[objIndex].nameInput = evt.target.value;
+    this.setState({ bookmarks: newBookmarks });
+  }
   listMapping(listValue) {
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary
+        onClick={evt => this.cancelDialogEvent(evt, listValue)}
+      />,
+      <FlatButton
+        label="Save"
+        primary
+        keyboardFocused
+        onClick={evt => this.saveDialogEvent(evt, listValue)}
+      />,
+    ];
     return (
       <div style={styles.horizontalListElement}>
         <FlatButton
@@ -80,6 +142,23 @@ class Bookmarkers extends Component {
         <div style={styles.iconAlignment}>
           {this.rightIconMenu(listValue)}
         </div>
+        <Dialog
+          open={listValue.dialogOpen}
+          title="Edit"
+          actions={actions}
+          contentStyle={styles.dialogStyle}
+        >
+          <TextField
+            defaultValue={listValue.name}
+            floatingLabelText="name"
+            onInput={evt => this.handleNameChange(evt, listValue)}
+          /><br />
+          <TextField
+            defaultValue={listValue.url}
+            floatingLabelText="link"
+            onInput={evt => this.handleUrlChange(evt, listValue)}
+          /><br />
+        </Dialog>
       </div>
     );
   }
@@ -93,6 +172,9 @@ class Bookmarkers extends Component {
     // Get form values
     const siteName = document.getElementById('siteName').value;
     let siteUrl = document.getElementById('siteUrl').value;
+    document.getElementById('siteName').value = '';
+    document.getElementById('siteUrl').value = '';
+
     if (!siteName || !siteUrl) {
       return;
     }
@@ -119,6 +201,9 @@ class Bookmarkers extends Component {
       name: siteName,
       url: siteUrl,
       id: bookmarkId,
+      dialogOpen: false,
+      urlInput: siteUrl,
+      nameInput: siteName,
     };
     const newBookmarks = this.state.bookmarks;
     console.log(newBookmarks);
