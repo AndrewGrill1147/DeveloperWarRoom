@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Grid from './../containers/grid';
 
 /*
@@ -6,12 +6,18 @@ import Grid from './../containers/grid';
  * popup.js file..
  */
 
-function Home() {
-  return (
-    <div>
-      <Grid />
-    </div>
-  );
+class Home extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { };
+  }
+  render() {
+    return (
+      <div>
+        <Grid ThemeButton={this.props.ThemeButton} />
+      </div>
+    );
+  }
 }
 
 export default Home;

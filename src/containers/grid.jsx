@@ -234,6 +234,7 @@ class Grid extends Component {
         this.editButtonClicked();
         break;
       case 'Change Theme': // Not Working this.props.ThemeButton; break;
+        this.props.ThemeButton();
         break;
       case 'Add Widgets':
         this.editButtonClicked();
