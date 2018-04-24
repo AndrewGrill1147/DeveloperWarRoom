@@ -48,7 +48,7 @@ const styles = {
   gridList: {
     display: 'flex',
     flexWrap: 'noWrap',
-    overflowX: 'scroll',
+    overflowX: 'auto',
   },
   divContainer: {
     display: 'flex',
@@ -145,6 +145,11 @@ class Bookmarkers extends Component {
     ];
     return (
       <div style={styles.horizontalListElement}>
+        <img
+          src={`chrome://favicon/${listValue.url}`}
+          alt={listValue.name}
+          style={styles.iconAlignment}
+        />
         <FlatButton
           style={styles.buttonAlignment}
           label={listValue.name}
