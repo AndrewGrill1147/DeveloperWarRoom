@@ -1,12 +1,12 @@
 
 /* eslint-env browser */
 import React, { Component } from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
+import ContentAdd from 'material-ui/svg-icons/content/add';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { FlatButton } from 'material-ui';
 
@@ -36,6 +36,11 @@ const styles = {
     display: 'inline-flex',
     verticalAlign: 'middle',
   },
+  iconButonAlignment: {
+    display: 'inline-block',
+    verticalAlign: 'middle',
+    whiteSpace: 'noWrap',
+  },
   root: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -44,6 +49,10 @@ const styles = {
     display: 'flex',
     flexWrap: 'noWrap',
     overflowX: 'scroll',
+  },
+  divContainer: {
+    display: 'flex',
+    flexWrap: 'noWrap',
   },
   titleStyle: {
     color: 'rgb(0, 188, 212)',
@@ -59,8 +68,11 @@ class Bookmarkers extends Component {
     }
     this.state = {
       bookmarks: localBookmarks,
+      nameInput: null,
+      urlInput: null,
+      dialogOpen: false,
     };
-    this.clicked = this.clicked.bind(this);
+    this.saveClicked = this.saveClicked.bind(this);
     this.listMapping = this.listMapping.bind(this);
     this.dialogEvent = this.dialogEvent.bind(this);
     this.handleNameChange = this.handleNameChange.bind(this);
@@ -167,15 +179,14 @@ class Bookmarkers extends Component {
     localStorage.setItem('bookmarks', JSON.stringify(newBookmarks));
     this.setState({ bookmarks: newBookmarks });
   }
-  clicked(event) {
-    event.preventDefault();
+  saveClicked() {
     // Get form values
-    const siteName = document.getElementById('siteName').value;
-    let siteUrl = document.getElementById('siteUrl').value;
-    document.getElementById('siteName').value = '';
-    document.getElementById('siteUrl').value = '';
+    console.log('got click');
+    const siteName = this.state.nameInput;
+    let siteUrl = this.state.urlInput;
 
     if (!siteName || !siteUrl) {
+      console.log('empty');
       return;
     }
 
@@ -185,7 +196,8 @@ class Bookmarkers extends Component {
     const httpRegex = new RegExp(checkHttp);
 
     if (!siteUrl.match(regex)) {
-      alert('Please use a valid URL');
+      console.log('failed');
+      this.setState({ dialogOpen: false, urlInput: null, nameInput: null });
       return;
     }
     if (!httpRegex.test(siteUrl)) {
@@ -208,25 +220,57 @@ class Bookmarkers extends Component {
     const newBookmarks = this.state.bookmarks;
     console.log(newBookmarks);
     newBookmarks.push(bookmark);
-    this.setState({ bookmarks: newBookmarks });
+    this.setState({
+      bookmarks: newBookmarks,
+      dialogOpen: false,
+      nameInput: null,
+      urlInput: null,
+    });
     console.log(this.state.bookmarks);
     localStorage.setItem('bookmarks', JSON.stringify(this.state.bookmarks));
   }
   render() {
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary
+        onClick={() => this.setState({ dialogOpen: false, nameInput: null, urlInput: null })}
+      />,
+      <FlatButton
+        label="Save"
+        primary
+        onClick={this.saveClicked}
+      />,
+    ];
     return (
       <div className="nav">
         <form id="myForm">
-          <div style={styles.gridList}>
-            {this.state.bookmarks.map(this.listMapping)}
+          <div style={styles.divContainer} >
+            <IconButton style={styles.iconButtonAlignment} onClick={() => this.setState({ dialogOpen: true })}>
+              <ContentAdd />
+            </IconButton>
+            <div style={styles.gridList}>
+              {this.state.bookmarks.map(this.listMapping)}
+            </div>
           </div>
-          <div className="favorites-bar" />
-          <TextField type="text" className="form-control" id="siteName" placeholder="  Website Name" />
-          <TextField type="text" className="form-control" id="siteUrl" placeholder="  Website URL" />
-          <button onClick={this.clicked}>Save Bookmark</button>
+          <Dialog
+            open={this.state.dialogOpen}
+            title="Add Link"
+            actions={actions}
+            contentStyle={styles.dialogStyle}
+          >
+            <TextField
+              defaultValue=""
+              floatingLabelText="name"
+              onInput={evt => this.setState({ nameInput: evt.target.value })}
+            /><br />
+            <TextField
+              defaultValue=""
+              floatingLabelText="link"
+              onInput={evt => this.setState({ urlInput: evt.target.value })}
+            /><br />
+          </Dialog>
         </form>
-        <div className="resul">
-          <div id="bookmarksresults" />
-        </div>
       </div>
     );
   }
