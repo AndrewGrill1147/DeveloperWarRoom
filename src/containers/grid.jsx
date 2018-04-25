@@ -1,19 +1,17 @@
 import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
-import FlatButton from 'material-ui/FlatButton';
 import ActionDelete from 'material-ui/svg-icons/action/delete';
 import _ from 'lodash';
-import Bookmarker from './../components/bookmarker';
-import GridLayout, { WidthProvider, Responsive } from 'react-grid-layout';
+import GridLayout from 'react-grid-layout';
 import IconButton from 'material-ui/IconButton/IconButton';
 import Paper from 'material-ui/Paper';
-import { SettingsIcon, ActionCheckCircle } from './icon';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import MenuItem from 'material-ui/MenuItem';
 import IconMenu from 'material-ui/IconMenu/IconMenu';
-import Toggle from 'material-ui/Toggle';
 import Drawer from 'material-ui/Drawer';
 import { List, ListItem } from 'material-ui/List';
+import { ActionCheckCircle } from './icon';
+import Bookmarker from './../components/bookmarker';
 
 /* const SettingsMenu = props => (
   <IconMenu
@@ -89,8 +87,8 @@ const defaultProps = {
 class Grid extends Component {
   constructor(props) {
     super(props);
-    this.editButtonClicked = this.editButtonClicked.bind(this),
-    this.onLayoutChange = this.onLayoutChange.bind(this),
+    this.editButtonClicked = this.editButtonClicked.bind(this);
+    this.onLayoutChange = this.onLayoutChange.bind(this);
     this.onAddItem = this.onAddItem.bind(this);
     this.onBreakpointChange = this.onBreakpointChange.bind(this);
     this.menuOptions = this.menuOptions.bind(this);
@@ -168,7 +166,7 @@ class Grid extends Component {
     console.log('In editButtonClicked');
     const flipped = !this.state.editMode;
     this.setState({ editMode: flipped });
-    if (flipped == false && this.state.sideBarMenu == true) {
+    if (flipped === false && this.state.sideBarMenu === true) {
       this.setState({ sideBarMenu: false });
     }
   }
@@ -201,8 +199,8 @@ class Grid extends Component {
   }
 
   elementinArray(key) {
-    for (let i = 0; i < this.state.layout.length; ++i) {
-      if (this.state.layout[i].i == key) {
+    for (let i = 0; i < this.state.layout.length; i += 1) {
+      if (this.state.layout[i].i === key) {
         return true;
       }
     }
@@ -212,7 +210,7 @@ class Grid extends Component {
   onAddItem(key) {
     /* eslint no-console: 0 */
     // return 0;
-    if (this.elementinArray(key) == false) {
+    if (this.elementinArray(key) === false) {
       console.log('Key not in layout, adding to list');
       this.setState({
       // Add a new item. It must have a unique key!
@@ -247,12 +245,13 @@ class Grid extends Component {
       case 'Change Theme': // Not Working this.props.ThemeButton; break;
         this.props.ThemeButton();
         break;
-      case 'Add Widgets':
+      case 'Add Widgets': {
         this.editButtonClicked();
         const flipped = !this.state.sideBarMenul;
         this.setState({ sideBarMenu: flipped });
         break;
-      default: null;
+      }
+      default:
     }
   }
 
@@ -269,19 +268,6 @@ class Grid extends Component {
   render() {
     console.log('In render function');
     console.log(this);
- /*   const appBar = this.state.editMode ?
-      (<AppBar
-        style={appBarStyle}
-        showMenuIconButton={false}
-        iconElementRight={<FlatButton icon={<ActionCheckCircle />} onClick={this.editButtonClicked} />}
-      />) :
-      (
-        <AppBar
-          style={appBarStyle}
-          showMenuIconButton={false}
-          iconElementRight={<this.SettingsMenu />}
-        />
-      ); */
     const appBar = this.state.editMode ?
       (
         <IconButton
@@ -310,11 +296,12 @@ class Grid extends Component {
         >
           {this.state.layout.map(element => this.createElement(element))}
         </GridLayout>
-        {this.state.sideBarMenu && this.state.editMode ? 
-          (<Drawer open={this.state.sideBarOpen} width={200}>
-          <AppBar style={menuBarStyle} title="Widgets" showMenuIconButton={false} />
-          {this.state.allWidgets.map(element => this.createMenuElement(element))}
-          </Drawer>) : null}
+        {this.state.sideBarMenu && this.state.editMode ?
+          (
+            <Drawer open={this.state.sideBarOpen} width={200}>
+              <AppBar style={menuBarStyle} title="Widgets" showMenuIconButton={false} />
+              {this.state.allWidgets.map(element => this.createMenuElement(element))}
+            </Drawer>) : null}
       </div>
     );
   }

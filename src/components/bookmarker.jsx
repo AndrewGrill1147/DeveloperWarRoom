@@ -195,7 +195,7 @@ class Bookmarkers extends Component {
       return;
     }
 
-    const expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+    const expression = /[-a-zA-Z0-9@:%_+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?/gi;
     const regex = new RegExp(expression);
     const checkHttp = '^https?://';
     const httpRegex = new RegExp(checkHttp);
@@ -253,7 +253,12 @@ class Bookmarkers extends Component {
           <div style={styles.gridList}>
             {this.state.bookmarks.map(this.listMapping)}
           </div>
-          <IconButton style={styles.iconButtonAlignment} onClick={() => this.setState({ dialogOpen: true })}>
+          <IconButton
+            style={styles.iconButtonAlignment}
+            onClick={
+              () => this.setState({ dialogOpen: true })
+            }
+          >
             <ContentAdd />
           </IconButton>
         </div>
