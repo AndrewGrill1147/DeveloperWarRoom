@@ -22,7 +22,6 @@ const iconButtonElement = (
 const styles = {
   horizontalListElement: {
     display: 'inline',
-    width: 'auto',
     whiteSpace: 'nowrap',
   },
   dialogStyle: {
@@ -53,6 +52,7 @@ const styles = {
   divContainer: {
     display: 'flex',
     flexWrap: 'noWrap',
+    paddingRight: '20px',
   },
   titleStyle: {
     color: 'rgb(0, 188, 212)',
@@ -248,34 +248,32 @@ class Bookmarkers extends Component {
       />,
     ];
     return (
-      <div className="nav">
-        <form id="myForm">
-          <div style={styles.divContainer} >
-            <IconButton style={styles.iconButtonAlignment} onClick={() => this.setState({ dialogOpen: true })}>
-              <ContentAdd />
-            </IconButton>
-            <div style={styles.gridList}>
-              {this.state.bookmarks.map(this.listMapping)}
-            </div>
+      <div>
+        <div style={styles.divContainer} >
+          <div style={styles.gridList}>
+            {this.state.bookmarks.map(this.listMapping)}
           </div>
-          <Dialog
-            open={this.state.dialogOpen}
-            title="Add Link"
-            actions={actions}
-            contentStyle={styles.dialogStyle}
-          >
-            <TextField
-              defaultValue=""
-              floatingLabelText="name"
-              onInput={evt => this.setState({ nameInput: evt.target.value })}
-            /><br />
-            <TextField
-              defaultValue=""
-              floatingLabelText="link"
-              onInput={evt => this.setState({ urlInput: evt.target.value })}
-            /><br />
-          </Dialog>
-        </form>
+          <IconButton style={styles.iconButtonAlignment} onClick={() => this.setState({ dialogOpen: true })}>
+            <ContentAdd />
+          </IconButton>
+        </div>
+        <Dialog
+          open={this.state.dialogOpen}
+          title="Add Link"
+          actions={actions}
+          contentStyle={styles.dialogStyle}
+        >
+          <TextField
+            defaultValue=""
+            floatingLabelText="name"
+            onInput={evt => this.setState({ nameInput: evt.target.value })}
+          /><br />
+          <TextField
+            defaultValue=""
+            floatingLabelText="link"
+            onInput={evt => this.setState({ urlInput: evt.target.value })}
+          /><br />
+        </Dialog>
       </div>
     );
   }

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import Grid from './grid';
-import Bookmarkers from './bookmarker';
+import Grid from './../containers/grid';
 
 /*
  * might be wise to rename this file since it's imported by another
@@ -9,15 +8,12 @@ import Bookmarkers from './bookmarker';
 class Home extends Component {
   constructor(props) {
     super(props);
+    this.state = { };
   }
-
   render() {
     return (
       <div>
-        
-        <Bookmarkers />
-        
-        <Grid />
+        <Grid ThemeButton={this.props.ThemeButton} />
       </div>
     );
   }
