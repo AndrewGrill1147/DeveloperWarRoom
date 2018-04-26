@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
+import Paper from 'material-ui/Paper';
 import ActionDelete from 'material-ui/svg-icons/action/delete';
 import _ from 'lodash';
 import GridLayout from 'react-grid-layout';
 import IconButton from 'material-ui/IconButton/IconButton';
-import Paper from 'material-ui/Paper';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import MenuItem from 'material-ui/MenuItem';
 import IconMenu from 'material-ui/IconMenu/IconMenu';
@@ -94,8 +94,7 @@ class Grid extends Component {
     this.menuOptions = this.menuOptions.bind(this);
     this.createMenuElement = this.createMenuElement.bind(this);
     this.elementinArray = this.elementinArray.bind(this);
-    // I think I need this inline so I can work with the current object along with modularity for render function
-    this.SettingsMenu = props => (
+    this.SettingsMenu = () => (
       <IconMenu
         {...props}
         iconButtonElement={
@@ -281,10 +280,12 @@ class Grid extends Component {
 
     return (
       <div>
-        <div style={horizontalHeaderBarStyle}>
-          {appBar}
-          <Bookmarker />
-        </div>
+        <Paper zDepth={2}>
+          <div style={horizontalHeaderBarStyle}>
+            {appBar}
+            <Bookmarker />
+          </div>
+        </Paper>
         <GridLayout
           layout={this.state.layout}
           onLayoutChange={this.onLayoutChange}
