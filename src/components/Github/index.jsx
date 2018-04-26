@@ -6,6 +6,8 @@ import RepoPullRequestList from './repoPullRequestList';
 import { PullRequestIcon, SettingsIcon } from './icons';
 import TextBox from './textBox';
 import LocalStorageAPI from '../../helpers/localstorageAPI';
+import GithubAPI from '../../helpers/githubAPI';
+import AuthenticationService from '../../helpers/authenticationService';
 
 const refreshRateMenuItems = [
   <MenuItem key={1} value={0} primaryText="Never" />,
@@ -26,6 +28,7 @@ class GithubWidget extends Component {
         oauthToken: null,
       },
       storageKey: this.constructor.name,
+      
       reposAvailable: [
         'admin-ui',
         'ml-projects',
@@ -36,7 +39,9 @@ class GithubWidget extends Component {
         'DeveloperWarRoom',
         'MachineLearningProjects',
       ],
+
       reposWatching: ['DeveloperWarRoom'],
+      
       pullRequests: {
         DeveloperWarRoom: [
           {
@@ -180,6 +185,10 @@ class GithubWidget extends Component {
   }
 
   render() {
+    new AuthenticationService().login(()=>{});
+    let githubAPI = new GithubAPI();
+    githubAPI.getRepositories();
+
     // this might be best moved into state? so we don't do this everyime *anything* changes
     const state = { ...this.state };
     const openPullRequestsList = state.reposWatching.map(repoName => (

@@ -22,6 +22,7 @@
     "test": "echo \"Error: no test specified\" && exit 0"
   },
   "dependencies": {
+    "buffer": "^5.1.0",
     "lodash": "^4.17.5",
     "material-ui": "^0.20.0",
     "material-ui-superselectfield": "^1.9.2",
