@@ -9,7 +9,7 @@ class TextBox extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: '',
+      value: props.value || '',
     };
 
     this.onChange = this.onChange.bind(this);
@@ -30,7 +30,7 @@ class TextBox extends Component {
     const key = this.props.settingskey;
     if (key && val) {
       this.props.onSubmit(key, val);
-      this.setState({ value: '' });
+      //this.setState({ value: '' });
     }
   }
 

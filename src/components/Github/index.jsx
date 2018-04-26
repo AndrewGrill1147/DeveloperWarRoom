@@ -147,7 +147,8 @@ class GithubWidget extends Component {
           floatingLabelFixed
           floatingLabelText="Github Token"
           settingskey="oauthToken"
-          hintText={this.state.settings.oauthToken || 'Will you share your Oauth token?'}
+          value={this.state.settings.oauthToken|| ''}
+          hintText={'Will you share your Oauth token?'}
           onSubmit={this.onSettingsChange}
         />
 
@@ -156,7 +157,8 @@ class GithubWidget extends Component {
           floatingLabelFixed
           floatingLabelText="Username"
           settingskey="username"
-          hintText={this.state.settings.username || 'What is your @username?'}
+          value={this.state.settings.username|| ''}          
+          hintText={'What is your @username?'}
           onSubmit={this.onSettingsChange}
         />
 
