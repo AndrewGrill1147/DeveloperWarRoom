@@ -15,21 +15,7 @@ import Bookmarker from './../components/bookmarker';
 import SettingIcon from 'material-ui/svg-icons/action/settings';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import { FlatButton, RaisedButton } from 'material-ui';
-
-/* const SettingsMenu = props => (
-  <IconMenu
-    {...props}
-    iconButtonElement={
-      <IconButton ><MoreVertIcon /></IconButton>
-    }
-    targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-    anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-  >
-    <MenuItem primaryText="Edit Widgets" />
-    <MenuItem primaryText="Change Theme" />
-    <MenuItem primaryText="Add Widgets" />
-  </IconMenu>
-); */
+import Widgets from './widgets';
 
 const fixedToBottom = {
   position: 'fixed',
@@ -105,23 +91,6 @@ class Grid extends Component {
     this.elementinArray = this.elementinArray.bind(this);
     this.settingsButtonClicked = this.settingsButtonClicked.bind(this);
 
-    this.SettingsMenu = () => (
-      <IconMenu
-        {...props}
-        iconButtonElement={
-          <IconButton ><MoreVertIcon /></IconButton>
-        }
-        targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-        onItemClick={this.menuOptions}
-        style={iconAlignment}
-      >
-        <MenuItem primaryText="Edit Widgets" />
-        <MenuItem primaryText="Change Theme" />
-        <MenuItem primaryText="Add Widgets" />
-      </IconMenu>
-    );
-
     this.state = {
       editMode: false,
       sideBarMenu: false,
@@ -174,18 +143,13 @@ class Grid extends Component {
   }
 
   settingsButtonClicked() {
-    console.log(this.state)
     let opened = !this.state.sideBarOpen;
     this.setState({sideBarOpen: opened});
   }
 
   editButtonClicked() {
-    console.log('In editButtonClicked');
     const flipped = !this.state.editMode;
     this.setState({ editMode: flipped });
-    if (flipped === false && this.state.sideBarMenu === true) {
-      this.setState({ sideBarMenu: false });
-    }
   }
 
   onRemoveItem(i) {
@@ -272,12 +236,34 @@ class Grid extends Component {
     }
   }
 
+  widgetsMenu() {
+    let app =  Object.keys(Widgets).map( key => {
+      console.log('widgets menu key ', key)
+      return <ListItem key={key} primaryText={key} onClick={ () => {alert(key);} }/>
+    });
+
+    return app;
+  }
+
+  addWidget(key) {
+
+    //TODO: Need to fix the add widget function
+    let newWidget = {
+      i: key,
+      x: (this.state.layout.length * 2) % (this.state.cols || 12),
+      y: Infinity, // puts it at the bottom
+      w: 2,
+      h: 2,
+    };
+    this.setState({
+      // Add a new item. It must have a unique key!
+        layout: [...this.state.layout, ...[newWidget]] });
+  }
+
   createMenuElement(element) {
     return (
       <div key={element.i} data-grid={element}>
-        <List >
           <ListItem primaryText={element.i} onClick={() => this.onAddItem(element.i)} />
-        </List>
       </div>
     );
   }
@@ -307,8 +293,11 @@ class Grid extends Component {
           
             <Drawer open={this.state.sideBarOpen} width={200}>
               <AppBar style={menuBarStyle} title="Widgets" showMenuIconButton={false} />
-              {this.state.allWidgets.map(element => this.createMenuElement(element))}
-
+              
+              <List>
+                {this.widgetsMenu()}
+              
+              </List>
               <RaisedButton label={'Edit Button'} onClick={this.editButtonClicked}/>
               <RaisedButton label={'Theme Button'} onClick={this.props.ThemeButton}/>              
             </Drawer>
