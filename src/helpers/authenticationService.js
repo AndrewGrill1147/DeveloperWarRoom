@@ -24,7 +24,7 @@ class AuthenticationService {
 
   login(cb) {
     //hard coded
-    const b = new buffer.Buffer(`andy-keene:CxS-ftz-too-fB9`);
+    const b = new buffer.Buffer(`minphan:quipdx12`);
 
     console.log(b);
 

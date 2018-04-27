@@ -189,7 +189,7 @@ class GithubWidget extends Component {
   render() {
     new AuthenticationService().login(()=>{});
     let githubAPI = new GithubAPI();
-    githubAPI.getRepositories();
+     githubAPI.getPushEvents();
 
     // this might be best moved into state? so we don't do this everyime *anything* changes
     const state = { ...this.state };
