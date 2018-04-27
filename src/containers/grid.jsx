@@ -12,6 +12,9 @@ import Drawer from 'material-ui/Drawer';
 import { List, ListItem } from 'material-ui/List';
 import { ActionCheckCircle } from './icon';
 import Bookmarker from './../components/bookmarker';
+import SettingIcon from 'material-ui/svg-icons/action/settings';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import { FlatButton, RaisedButton } from 'material-ui';
 
 /* const SettingsMenu = props => (
   <IconMenu
@@ -28,6 +31,12 @@ import Bookmarker from './../components/bookmarker';
   </IconMenu>
 ); */
 
+const fixedToBottom = {
+  position: 'fixed',
+  bottom: '0',
+  right: '0',
+  margin: '10px'
+}
 const removeStyle = {
   position: 'absolute',
   right: '2px',
@@ -94,6 +103,8 @@ class Grid extends Component {
     this.menuOptions = this.menuOptions.bind(this);
     this.createMenuElement = this.createMenuElement.bind(this);
     this.elementinArray = this.elementinArray.bind(this);
+    this.settingsButtonClicked = this.settingsButtonClicked.bind(this);
+
     this.SettingsMenu = () => (
       <IconMenu
         {...props}
@@ -114,6 +125,7 @@ class Grid extends Component {
     this.state = {
       editMode: false,
       sideBarMenu: false,
+      sideBarOpen: false,
       // Every possible widget
       allWidgets: [{
         i: 'Pull Requests',
@@ -159,6 +171,12 @@ class Grid extends Component {
   onLayoutChange(layout) {
     console.log('In onLayoutChange');
     this.setState({ layout });
+  }
+
+  settingsButtonClicked() {
+    console.log(this.state)
+    let opened = !this.state.sideBarOpen;
+    this.setState({sideBarOpen: opened});
   }
 
   editButtonClicked() {
@@ -267,44 +285,39 @@ class Grid extends Component {
   render() {
     console.log('In render function');
     console.log(this);
-    const appBar = this.state.editMode ?
-      (
-        <IconButton
-          onClick={this.editButtonClicked}
-          style={iconAlignment}
-        >
-          <ActionCheckCircle />
-        </IconButton>
-      ) :
-      (<this.SettingsMenu />);
-
-    return (
-      <div>
-        <Paper zDepth={2}>
+   
+      return (
+        <div>
+          <Paper zDepth={2}>
           <div style={horizontalHeaderBarStyle}>
-            {appBar}
             <Bookmarker />
           </div>
         </Paper>
-        <GridLayout
-          layout={this.state.layout}
-          onLayoutChange={this.onLayoutChange}
-          autoSize
-          width={1400}
-          isDraggable={this.state.editMode}
-          isResizable={this.state.editMode}
-          {...this.props}
-        >
-          {this.state.layout.map(element => this.createElement(element))}
-        </GridLayout>
-        {this.state.sideBarMenu && this.state.editMode ?
-          (
+          <GridLayout
+            layout={this.state.layout}
+            onLayoutChange={this.onLayoutChange}
+            autoSize
+            width={1400}
+            isDraggable={this.state.editMode}
+            isResizable={this.state.editMode}
+            {...this.props}
+          >
+            {this.state.layout.map(element => this.createElement(element))}
+          </GridLayout>
+          
             <Drawer open={this.state.sideBarOpen} width={200}>
               <AppBar style={menuBarStyle} title="Widgets" showMenuIconButton={false} />
               {this.state.allWidgets.map(element => this.createMenuElement(element))}
-            </Drawer>) : null}
-      </div>
-    );
+
+              <RaisedButton label={'Edit Button'} onClick={this.editButtonClicked}/>
+              <RaisedButton label={'Theme Button'} onClick={this.props.ThemeButton}/>              
+            </Drawer>
+  
+            <FloatingActionButton style={fixedToBottom} onClick={this.settingsButtonClicked}>
+              <SettingIcon/>
+            </FloatingActionButton>
+        </div>
+      );
   }
 }
 
