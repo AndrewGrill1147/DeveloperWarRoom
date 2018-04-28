@@ -1,7 +1,5 @@
 
-import AuthenticationService from './authenticationService';
 import buffer from 'buffer';
-const authService = new AuthenticationService();
 
 class GithubApi {
 
@@ -13,8 +11,6 @@ class GithubApi {
       Authorization: `Basic ${this.creds}`
     };
     this.isAuthenticated = false;
-
-    console.log('creds ', this.creds);
 
     this.get('https://api.github.com/user', this.setAuth.bind(this));
   }
@@ -30,12 +26,11 @@ class GithubApi {
   }
 
   getPushEvents() {
-    let url = `https://api.github.com/users/${this.username}/received_events`;
-    
+    let url = `https://api.github.com/users/${this.username}/received_events`;    
   }
 
   getPullRequestById(id) {
-    const url = `https://api.github.com/users/${authInfo.user.login}/received_events`;
+    const url = `https://api.github.com/users/${this.username}/received_events`;
   }
 
   /* Get url and return Error or Data to call back */
@@ -43,7 +38,6 @@ class GithubApi {
     fetch(url, {
       headers: this.headers
     }).then( response => {
-      console.log(response);
       if (response.status >= 200 && response.status < 300) {
         return response;
       }
@@ -55,7 +49,6 @@ class GithubApi {
       return response.json()
     })
     .then(response => {
-      console.log('Success ', response);
       // return to caller, success!
       callback( {
         success: true,
@@ -68,7 +61,6 @@ class GithubApi {
         data: {},
         error: error
       });
-      console.log('error ', error);
     });
   }
 }

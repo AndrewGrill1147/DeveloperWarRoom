@@ -7,7 +7,6 @@ import { PullRequestIcon, SettingsIcon } from './icons';
 import TextBox from './textBox';
 import LocalStorageAPI from '../../helpers/localstorageAPI';
 import GithubAPI from '../../helpers/githubAPI';
-import AuthenticationService from '../../helpers/authenticationService';
 
 const refreshRateMenuItems = [
   <MenuItem key={1} value={0} primaryText="Never" />,
@@ -21,6 +20,8 @@ class GithubWidget extends Component {
     super(props);
 
     this.state = {
+      //TODO: Review, should we put this here?...
+      githubAPI: new GithubAPI(),
       settings: {
         refreshRate: null,
         refreshRateOptions: [null, 2, 4, 8],
@@ -29,6 +30,15 @@ class GithubWidget extends Component {
       },
       storageKey: this.constructor.name,
       
+      /* TODO: save ID and name??
+      reposAvailable: [
+        {
+          id: 'someID',
+          name: 'repoName'
+        },
+        //...
+      ],
+      */
       reposAvailable: [
         'admin-ui',
         'ml-projects',
@@ -40,7 +50,7 @@ class GithubWidget extends Component {
         'MachineLearningProjects',
       ],
 
-      reposWatching: ['DeveloperWarRoom'],
+      reposWatching: [],
       
       pullRequests: {
         DeveloperWarRoom: [
@@ -88,6 +98,7 @@ class GithubWidget extends Component {
     this.onRepoChange = this.onRepoChange.bind(this);
     this.onRefreshRateChange = this.onRefreshRateChange.bind(this);
     this.onSettingsChange = this.onSettingsChange.bind(this);
+    this.updateRepos = this.updateRepos.bind(this);
   }
 
   componentWillMount() {
@@ -96,8 +107,26 @@ class GithubWidget extends Component {
     if (savedSettings) {
       this.setState({ settings: savedSettings });
     }
+    
   }
 
+  componentDidMount() {
+
+    //get repos
+    this.state.githubAPI.getRepos(this.updateRepos);
+  }
+
+  /* handles the response from the githubAPI.getRepos() */
+  updateRepos(resp) {
+    console.log('In update repos = ', resp);
+    if (!resp.success) {
+      return;
+    }
+    let availableRepoNames = resp.data.map(repo => {
+      return repo.name;
+    });
+    this.setState({reposAvailable: availableRepoNames});
+  }
 
   componentDidUpdate(prevProps, prevState) {
     /* saves state to local storage iff settings updated */
@@ -187,10 +216,7 @@ class GithubWidget extends Component {
   }
 
   render() {
-    new AuthenticationService().login(()=>{});
-    let githubAPI = new GithubAPI();
-     githubAPI.getPushEvents();
-
+    
     // this might be best moved into state? so we don't do this everyime *anything* changes
     const state = { ...this.state };
     const openPullRequestsList = state.reposWatching.map(repoName => (
