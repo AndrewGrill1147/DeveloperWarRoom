@@ -107,10 +107,6 @@ class GithubWidget extends Component {
     if (savedSettings) {
       this.setState({ settings: savedSettings });
     }
-    
-  }
-
-  componentDidMount() {
 
     //get repos
     this.state.githubAPI.getRepos(this.updateRepos);
