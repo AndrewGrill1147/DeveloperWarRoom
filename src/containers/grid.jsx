@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
-import Paper from 'material-ui/Paper';
 import ActionDelete from 'material-ui/svg-icons/action/delete';
 import _ from 'lodash';
 import GridLayout from 'react-grid-layout';
 import IconButton from 'material-ui/IconButton/IconButton';
+import Paper from 'material-ui/Paper';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import MenuItem from 'material-ui/MenuItem';
 import IconMenu from 'material-ui/IconMenu/IconMenu';
@@ -12,6 +12,9 @@ import Drawer from 'material-ui/Drawer';
 import { List, ListItem } from 'material-ui/List';
 import { ActionCheckCircle } from './icon';
 import Bookmarker from './../components/bookmarker';
+
+
+
 
 /* const SettingsMenu = props => (
   <IconMenu
@@ -94,7 +97,13 @@ class Grid extends Component {
     this.menuOptions = this.menuOptions.bind(this);
     this.createMenuElement = this.createMenuElement.bind(this);
     this.elementinArray = this.elementinArray.bind(this);
-    this.SettingsMenu = () => (
+    this.onLayoutChange = this.onLayoutChange.bind(this);
+    let locallayout = [];
+    if (localStorage.getItem('layouts') !== null) {
+      locallayout = JSON.parse(localStorage.getItem('layouts'));
+    }
+    // I think I need this inline so I can work with the current object along with modularity for render function
+    this.SettingsMenu = props => (
       <IconMenu
         {...props}
         iconButtonElement={
@@ -110,6 +119,24 @@ class Grid extends Component {
         <MenuItem primaryText="Add Widgets" />
       </IconMenu>
     );
+
+
+         
+      let layoutDefault = [{
+        i: 'Pull Requests', x: 0, y: 0, w: 2, h: 2,
+      },
+      {
+        i: 'Todo List', x: 2, y: 0, w: 2, h: 2,
+      },
+      {
+        i: 'Reddit', x: 4, y: 0, w: 2, h: 2,
+      },
+      {
+        i: 'Stack Overflow', x: 6, y: 0, w: 2, h: 2,
+      },
+
+      ]
+    
 
     this.state = {
       editMode: false,
@@ -128,21 +155,13 @@ class Grid extends Component {
         i: 'Stack Overflow',
       }],
 
-      // Default view when user first opens chrome extension
-      layout: [{
-        i: 'Pull Requests', x: 0, y: 0, w: 2, h: 2,
-      },
-      {
-        i: 'Todo List', x: 2, y: 0, w: 2, h: 2,
-      },
-      {
-        i: 'Reddit', x: 4, y: 0, w: 2, h: 2,
-      },
-      {
-        i: 'Stack Overflow', x: 6, y: 0, w: 2, h: 2,
-      },
+      
+      layouts: locallayout,
 
-      ],
+      // Default view when user first opens chrome extension
+     
+
+      
     };
   }
 
@@ -156,11 +175,6 @@ class Grid extends Component {
     console.log('In componentWillUnMount');
   }
 
-  onLayoutChange(layout) {
-    console.log('In onLayoutChange');
-    this.setState({ layout });
-  }
-
   editButtonClicked() {
     console.log('In editButtonClicked');
     const flipped = !this.state.editMode;
@@ -172,7 +186,8 @@ class Grid extends Component {
 
   onRemoveItem(i) {
     console.log('removing', i);
-    this.setState({ layout: _.reject(this.state.layout, { i }) });
+    this.setState({ layouts: _.reject(this.state.layouts, { i }) });
+    localStorage.setItem('layouts', this.state.layouts);
   }
 
   createElement(element) {
@@ -198,8 +213,8 @@ class Grid extends Component {
   }
 
   elementinArray(key) {
-    for (let i = 0; i < this.state.layout.length; i += 1) {
-      if (this.state.layout[i].i === key) {
+    for (let i = 0; i < this.state.layouts.length; i += 1) {
+      if (this.state.layouts[i].i === key) {
         return true;
       }
     }
@@ -213,14 +228,15 @@ class Grid extends Component {
       console.log('Key not in layout, adding to list');
       this.setState({
       // Add a new item. It must have a unique key!
-        layout: this.state.layout.concat({
+        layouts: this.state.layouts.concat({
           i: key,
-          x: (this.state.layout.length * 2) % (this.state.cols || 12),
+          x: (this.state.layouts.length * 2) % (this.state.cols || 12),
           y: Infinity, // puts it at the bottom
           w: 2,
           h: 2,
         }),
       });
+      localStorage.setItem('layouts', this.state.layouts);
     } else {
       console.log('Key in layout. NOT ADDING TO LIST');
     }
@@ -264,6 +280,14 @@ class Grid extends Component {
     );
   }
 
+  onLayoutChange(layout) {
+
+    localStorage.setItem('layouts', JSON.stringify(layout));
+    this.setState({ layouts: layout });
+
+  }
+
+
   render() {
     console.log('In render function');
     console.log(this);
@@ -280,14 +304,12 @@ class Grid extends Component {
 
     return (
       <div>
-        <Paper zDepth={2}>
-          <div style={horizontalHeaderBarStyle}>
-            {appBar}
-            <Bookmarker />
-          </div>
-        </Paper>
+        <div style={horizontalHeaderBarStyle}>
+          {appBar}
+          <Bookmarker />
+        </div>
         <GridLayout
-          layout={this.state.layout}
+          layout={this.state.layouts}
           onLayoutChange={this.onLayoutChange}
           autoSize
           width={1400}
@@ -295,7 +317,7 @@ class Grid extends Component {
           isResizable={this.state.editMode}
           {...this.props}
         >
-          {this.state.layout.map(element => this.createElement(element))}
+          {this.state.layouts.map(element => this.createElement(element))}
         </GridLayout>
         {this.state.sideBarMenu && this.state.editMode ?
           (
@@ -310,3 +332,4 @@ class Grid extends Component {
 
 
 export default Grid;
+
