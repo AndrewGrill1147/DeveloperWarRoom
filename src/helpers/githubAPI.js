@@ -4,16 +4,45 @@ import buffer from 'buffer';
 const authService = new AuthenticationService();
 
 class GithubApi {
-  constructor() {
-    const b = new buffer.Buffer(`user:psw`);
-    console.log(b);
 
-    const encodedAuth = b.toString('base64');
-    fetch('https://api.github.com/user', {
-      headers: {
-        Authorization: `Basic ${encodedAuth}`,
-      },
-    }).then((response) => {
+  constructor() {
+    this.username = 'GroupCWR';
+    this.password = 'GroupCWR000';
+    this.creds = new buffer.Buffer(`${this.username}:${this.password}`).toString('base64');
+    this.headers = {
+      Authorization: `Basic ${this.creds}`
+    };
+    this.isAuthenticated = false;
+
+    console.log('creds ', this.creds);
+
+    this.get('https://api.github.com/user', this.setAuth.bind(this));
+  }
+
+  setAuth(resp) {
+    this.isAuthenticated = resp.success;
+    console.log('Authenticated = ', this.isAuthenticated);
+  }
+
+  getRepos(callback) {
+    const url = `https://api.github.com/user/repos`;
+    this.get(url, callback);
+  }
+
+  getPushEvents() {
+    let url = `https://api.github.com/users/${this.username}/received_events`;
+    
+  }
+
+  getPullRequestById(id) {
+    const url = `https://api.github.com/users/${authInfo.user.login}/received_events`;
+  }
+
+  /* Get url and return Error or Data to call back */
+  get(url, callback) {
+    fetch(url, {
+      headers: this.headers
+    }).then( response => {
       console.log(response);
       if (response.status >= 200 && response.status < 300) {
         return response;
@@ -22,109 +51,26 @@ class GithubApi {
         badCredentials: response.status == 401,
         unknownError: response.status != 401,
       };
+    }).then(response => {
+      return response.json()
     })
-      .then(response => response.json())
-      .then((results) => {
-        console.log("from constr");
-        console.log(results);
-        localStorage.setItem('auth', encodedAuth);
-        localStorage.setItem('user', JSON.stringify(results));
-      })
-      .catch(function (error) {
-        console.log(error);
+    .then(response => {
+      console.log('Success ', response);
+      // return to caller, success!
+      callback( {
+        success: true,
+        data: response,
+        error: {}
       });
-  }
-
-  getAuthInfo(cb) {
-    const auth = localStorage.getItem('auth');
-    const user = localStorage.getItem('user');
-
-    if (!auth || !user) {
-      return cb();
-    }
-    const authInfo = {
-      header: {
-        Authorization: `Basic ${auth}`,
-      },
-      user: JSON.parse(user),
-    };
-    return cb(authInfo);
-  }
-
-  getPushEvents() {
-    this.getAuthInfo((authInfo) => {
-      var url = `https://api.github.com/users/${
-        authInfo.user.login
-        }/received_events`;
-        this.fetchData(url, authInfo);
+    }).catch(function (error) {
+      callback( {
+        success: false,
+        data: {},
+        error: error
+      });
+      console.log('error ', error);
     });
   }
-
-  fetchData(url, authInfo){
-    fetch(url, {
-      headers: authInfo.header,
-    })
-      .then(response =>
-        response.json())
-      .then((responseData) => {
-        const feedItems = responseData.filter(ev =>
-          ev.type == 'PushEvent');
-        console.log(feedItems);
-      });
-  }
-
-  // getRepositories() {
-  //   authService.getAuthInfo((authInfo) => {
-  //     const url = `https://api.github.com/user/repos`;
-  //     fetch(url, {
-  //       headers: authInfo.header,
-  //     })
-  //       .then(response =>
-  //         response.json())
-  //       .then((responseData) => {
-  //         console.log(responseData);
-  //       });
-  //   });
-  // }
-
-  // getPushEventById(id) {
-  //   authService.getAuthInfo((authInfo) => {
-  //     const url = `https://api.github.com/users/${
-  //       authInfo.user.login
-  //       }/received_events`;
-  //   });
-  //   fetch(url, {
-  //     headers: authInfo.header,
-  //   })
-  //     .then(response =>
-  //       response.json())
-  //     .then((responseData) => {
-  //       const pushEvent = responseData.filter(ev =>
-  //         ev.id == id);
-  //       console.log(pushEvent);
-  //     });
-
-  // }
-
-  // getAuthorByPushEventId(id) {
-  //   console.log(id);
-  //   authService.getAuthInfo((authInfo) => {
-  //     const url = `https://api.github.com/users/${
-  //       authInfo.user.login
-  //       }/received_events`;
-  //   });
-  //   fetch(url, {
-  //     headers: authInfo.header,
-  //   })
-  //     .then(response =>
-  //       response.json())
-  //     .then((responseData) => {
-  //       const pushEvent = responseData.filter(ev =>
-  //         ev.id == id);
-  //       console.log(pushEvent[0].actor.login);
-  //     });
-  // }
 }
-
 
 export default GithubApi;
