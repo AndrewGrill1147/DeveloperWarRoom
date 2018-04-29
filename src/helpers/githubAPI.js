@@ -26,7 +26,7 @@ class GithubApi {
   }
 
   getPullRequestsByRepo(callback, reponame) {
-    let url = `https://api.github.com/repos/${this.username}/pulls`;
+    let url = `https://api.github.com/repos/marcellabillett/${reponame}/pulls`;
     this.get(url, callback);
   }
 

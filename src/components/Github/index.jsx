@@ -30,17 +30,11 @@ class GithubWidget extends Component {
       },
       storageKey: this.constructor.name,
       
-      /* TODO: save ID and name??
-      reposAvailable: [
-        {
-          id: 'someID',
-          name: 'repoName'
-        },
-        //...
-      ],
-      */
+      
       reposAvailable: [],
-      reposWatching: ['DeveloperWarRoom'],
+     
+      reposAvailable: [],
+      reposWatching: ['super-special-code'],
       
       pullRequests: {
         DeveloperWarRoom: [
@@ -88,7 +82,7 @@ class GithubWidget extends Component {
     this.onRepoChange = this.onRepoChange.bind(this);
     this.onRefreshRateChange = this.onRefreshRateChange.bind(this);
     this.onSettingsChange = this.onSettingsChange.bind(this);
-    this.updateRepos = this.updateRepos.bind(this);
+    this.updateReposAvailable = this.updateReposAvailable.bind(this);
   }
 
   componentWillMount() {
@@ -99,8 +93,8 @@ class GithubWidget extends Component {
     }
 
     //get repos
-    this.state.githubAPI.getRepos(this.updateRepos);
-    this.sata.GithubAPI
+    this.state.githubAPI.getRepos(this.updateReposAvailable);
+    this.state.githubAPI.getPullRequestsByRepo(this.refreshPullRequests,"DeveloperWarRoom");
   }
 
   componentDidMount() {
@@ -126,17 +120,25 @@ class GithubWidget extends Component {
 
     //clearn up the timer
   }
+// TODO: saving full object - possible memories hog
+// OR saving only what we need
+  refreshPullRequests(resp){
+    console.log('Pull requests for this repo ', resp);
+
+
+
+  }
 
   /* handles the response from the githubAPI.getRepos() */
-  updateRepos(resp) {
+  updateReposAvailable(resp) {
     console.log('In update repos = ', resp);
     if (!resp.success) {
       return;
     }
-    let availableRepoNames = resp.data.map(repo => {
-      return repo.name;
+    let availableRepos = resp.data.map(repo => {
+      return repo;
     });
-    this.setState({reposAvailable: availableRepoNames});
+    this.setState({reposAvailable: availableRepos});
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -218,7 +220,7 @@ class GithubWidget extends Component {
           showAutocompleteThreshold="always"
         >
           {this.state.reposAvailable.map(repo => (
-            <div key={repo} id={repo} label={repo} value={repo}> {repo} </div>
+            <div key={repo.id} id={repo.id} label={repo.name} value={repo.name}> {repo.name} </div>
                 ))}
         </SuperSelectField>
       </div>
