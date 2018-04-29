@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
-import Paper from 'material-ui/Paper';
 import ActionDelete from 'material-ui/svg-icons/action/delete';
 import _ from 'lodash';
 import GridLayout from 'react-grid-layout';
 import IconButton from 'material-ui/IconButton/IconButton';
+import Paper from 'material-ui/Paper';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import MenuItem from 'material-ui/MenuItem';
 import IconMenu from 'material-ui/IconMenu/IconMenu';
@@ -12,6 +12,8 @@ import Drawer from 'material-ui/Drawer';
 import { List, ListItem } from 'material-ui/List';
 import { ActionCheckCircle } from './icon';
 import Bookmarker from './../components/bookmarker';
+/* eslint-env browser */
+/* eslint react/jsx-no-bind: 0 */
 
 /* const SettingsMenu = props => (
   <IconMenu
@@ -62,27 +64,13 @@ const RemoveIcon = props => (
   </IconButton>
 );
 
-const appBarStyle = {
-  backgroundColor: 'gray',
-};
+
 const menuBarStyle = {
   backgroundColor: 'blue',
 
 };
 // just for testing react-grid
-const divStyle = {
-  color: 'gray',
-  fontWeight: 'bold',
-  backgroundColor: 'coral',
-};
 
-const defaultProps = {
-  className: 'layout',
-  cols: {
-    lg: 12, md: 10, sm: 6, xs: 4, xxs: 2,
-  },
-  rowHeight: 100,
-};
 
 class Grid extends Component {
   constructor(props) {
@@ -94,7 +82,14 @@ class Grid extends Component {
     this.menuOptions = this.menuOptions.bind(this);
     this.createMenuElement = this.createMenuElement.bind(this);
     this.elementinArray = this.elementinArray.bind(this);
-    this.SettingsMenu = () => (
+    this.onLayoutChange = this.onLayoutChange.bind(this);
+    let locallayout = [];
+    if (localStorage.getItem('layouts') !== null) {
+      locallayout = JSON.parse(localStorage.getItem('layouts'));
+    }
+    // I think I need this inline so I can work with the
+    // current object along with modularity for render function
+    this.SettingsMenu = props => (
       <IconMenu
         {...props}
         iconButtonElement={
@@ -110,6 +105,7 @@ class Grid extends Component {
         <MenuItem primaryText="Add Widgets" />
       </IconMenu>
     );
+
 
     this.state = {
       editMode: false,
@@ -128,21 +124,12 @@ class Grid extends Component {
         i: 'Stack Overflow',
       }],
 
-      // Default view when user first opens chrome extension
-      layout: [{
-        i: 'Pull Requests', x: 0, y: 0, w: 2, h: 2,
-      },
-      {
-        i: 'Todo List', x: 2, y: 0, w: 2, h: 2,
-      },
-      {
-        i: 'Reddit', x: 4, y: 0, w: 2, h: 2,
-      },
-      {
-        i: 'Stack Overflow', x: 6, y: 0, w: 2, h: 2,
-      },
 
-      ],
+      layouts: locallayout,
+
+      // Default view when user first opens chrome extension
+
+
     };
   }
 
@@ -156,55 +143,13 @@ class Grid extends Component {
     console.log('In componentWillUnMount');
   }
 
-  onLayoutChange(layout) {
-    console.log('In onLayoutChange');
-    this.setState({ layout });
-  }
-
-  editButtonClicked() {
-    console.log('In editButtonClicked');
-    const flipped = !this.state.editMode;
-    this.setState({ editMode: flipped });
-    if (flipped === false && this.state.sideBarMenu === true) {
-      this.setState({ sideBarMenu: false });
-    }
-  }
 
   onRemoveItem(i) {
     console.log('removing', i);
-    this.setState({ layout: _.reject(this.state.layout, { i }) });
+    this.setState({ layouts: _.reject(this.state.layouts, { i }) });
+    localStorage.setItem('layouts', this.state.layouts);
   }
 
-  createElement(element) {
-    console.log('In createElement');
-    const removeButton = this.state.editMode ?
-      (<span
-        className="remove"
-        style={removeStyle}
-        onClick={this.onRemoveItem.bind(this, element.i)}
-      >
-        <RemoveIcon color="grey" />
-       </span>)
-      : null;
-    return (
-      <div key={element.i} data-grid={element}>
-        <Paper style={style} zDepth={3}>
-
-          <span className="text">{element.i}</span>
-          {removeButton}
-        </Paper>
-      </div>
-    );
-  }
-
-  elementinArray(key) {
-    for (let i = 0; i < this.state.layout.length; i += 1) {
-      if (this.state.layout[i].i === key) {
-        return true;
-      }
-    }
-    return false;
-  }
 
   onAddItem(key) {
     /* eslint no-console: 0 */
@@ -213,14 +158,15 @@ class Grid extends Component {
       console.log('Key not in layout, adding to list');
       this.setState({
       // Add a new item. It must have a unique key!
-        layout: this.state.layout.concat({
+        layouts: this.state.layouts.concat({
           i: key,
-          x: (this.state.layout.length * 2) % (this.state.cols || 12),
+          x: (this.state.layouts.length * 2) % (this.state.cols || 12),
           y: Infinity, // puts it at the bottom
           w: 2,
           h: 2,
         }),
       });
+      localStorage.setItem('layouts', this.state.layouts);
     } else {
       console.log('Key in layout. NOT ADDING TO LIST');
     }
@@ -235,13 +181,32 @@ class Grid extends Component {
     });
   }
 
-  menuOptions(e, key, menuItem) {
+
+  onLayoutChange(layout) {
+    localStorage.setItem('layouts', JSON.stringify(layout));
+    this.setState({ layouts: layout });
+  }
+
+
+  createMenuElement(element) {
+    return (
+      <div key={element.i} data-grid={element}>
+        <List >
+          <ListItem primaryText={element.i} onClick={() => this.onAddItem(element.i)} />
+        </List>
+      </div>
+    );
+  }
+
+
+  menuOptions(e, key) {
     console.log('In menuOptions');
     switch (key.props.primaryText) {
       case 'Edit Widgets':
         this.editButtonClicked();
         break;
       case 'Change Theme': // Not Working this.props.ThemeButton; break;
+        /* eslint react/prop-types: 0 */
         this.props.ThemeButton();
         break;
       case 'Add Widgets': {
@@ -254,14 +219,52 @@ class Grid extends Component {
     }
   }
 
-  createMenuElement(element) {
+
+  elementinArray(key) {
+    for (let i = 0; i < this.state.layouts.length; i += 1) {
+      if (this.state.layouts[i].i === key) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
+  createElement(element) {
+    console.log('In createElement');
+    const removeButton = this.state.editMode ?
+      (
+        <span
+          className="remove"
+          style={removeStyle}
+          onClick={this.onRemoveItem.bind(this, element.i)}
+          onKeyDown={this.handleKeyPress}
+
+        >
+          <RemoveIcon color="grey" />
+        </span>
+
+      )
+      : null;
     return (
       <div key={element.i} data-grid={element}>
-        <List >
-          <ListItem primaryText={element.i} onClick={() => this.onAddItem(element.i)} />
-        </List>
+        <Paper style={style} zDepth={3}>
+
+          <span className="text">{element.i}</span>
+          {removeButton}
+        </Paper>
       </div>
     );
+  }
+
+
+  editButtonClicked() {
+    console.log('In editButtonClicked');
+    const flipped = !this.state.editMode;
+    this.setState({ editMode: flipped });
+    if (flipped === false && this.state.sideBarMenu === true) {
+      this.setState({ sideBarMenu: false });
+    }
   }
 
   render() {
@@ -280,14 +283,12 @@ class Grid extends Component {
 
     return (
       <div>
-        <Paper zDepth={2}>
-          <div style={horizontalHeaderBarStyle}>
-            {appBar}
-            <Bookmarker />
-          </div>
-        </Paper>
+        <div style={horizontalHeaderBarStyle}>
+          {appBar}
+          <Bookmarker />
+        </div>
         <GridLayout
-          layout={this.state.layout}
+          layout={this.state.layouts}
           onLayoutChange={this.onLayoutChange}
           autoSize
           width={1400}
@@ -295,7 +296,7 @@ class Grid extends Component {
           isResizable={this.state.editMode}
           {...this.props}
         >
-          {this.state.layout.map(element => this.createElement(element))}
+          {this.state.layouts.map(element => this.createElement(element))}
         </GridLayout>
         {this.state.sideBarMenu && this.state.editMode ?
           (
