@@ -39,18 +39,8 @@ class GithubWidget extends Component {
         //...
       ],
       */
-      reposAvailable: [
-        'admin-ui',
-        'ml-projects',
-        'rick-and-morty-ui',
-        'java-backend',
-        'js-frontend',
-        'golang-playground',
-        'DeveloperWarRoom',
-        'MachineLearningProjects',
-      ],
-
-      reposWatching: [],
+      reposAvailable: [],
+      reposWatching: ['DeveloperWarRoom'],
       
       pullRequests: {
         DeveloperWarRoom: [
@@ -110,6 +100,31 @@ class GithubWidget extends Component {
 
     //get repos
     this.state.githubAPI.getRepos(this.updateRepos);
+    this.sata.GithubAPI
+  }
+
+  componentDidMount() {
+
+    //set timer 
+
+    //setTimeout(callback, time);
+  }
+
+  checkPullRequests() {
+    // invoked every x minutes
+    
+    //for each REPO get all the pull requests
+
+    // ..then call model pull requests?
+  }
+
+  mapPullRequestsToState() {
+
+  }
+
+  componentWillUnmount() {
+
+    //clearn up the timer
   }
 
   /* handles the response from the githubAPI.getRepos() */

@@ -25,6 +25,11 @@ class GithubApi {
     this.get(url, callback);
   }
 
+  getPullRequestsByRepo(callback, reponame) {
+    let url = `https://api.github.com/repos/${this.username}/pulls`;
+    this.get(url, callback);
+  }
+
   getPushEvents() {
     let url = `https://api.github.com/users/${this.username}/received_events`;    
   }
