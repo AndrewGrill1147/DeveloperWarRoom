@@ -23,11 +23,14 @@ class GithubWidget extends Component {
       //TODO: Review, should we put this here?...
       githubAPI: new GithubAPI(),
       settings: {
-        refreshRate: null,
+        refreshRate: 2,
         refreshRateOptions: [null, 2, 4, 8],
         username: null,
         oauthToken: null,
       },
+
+      timer: null,
+
       storageKey: this.constructor.name,
       
       reposAvailable: [],
@@ -80,6 +83,7 @@ class GithubWidget extends Component {
     this.onRefreshRateChange = this.onRefreshRateChange.bind(this);
     this.onSettingsChange = this.onSettingsChange.bind(this);
     this.updateReposAvailable = this.updateReposAvailable.bind(this);
+    this.checkPullRequests = this.checkPullRequests.bind(this);
   }
 
   componentWillMount() {
@@ -91,25 +95,37 @@ class GithubWidget extends Component {
 
     //get repos
     this.state.githubAPI.getRepos(this.updateReposAvailable);
-    this.state.githubAPI.getPullRequestsByRepo(this.refreshPullRequests,"DeveloperWarRoom");
   }
 
   componentDidMount() {
 
+
     //set timer 
+    let timerObject = setInterval(this.checkPullRequests, this.state.settings.refreshRate * 1000);
+
+    this.setState({timer: timerObject });
 
     //setTimeout(callback, time);
   }
 
   checkPullRequests() {
+    console.log("test");
     // invoked every x minutes
-    
     //for each REPO get all the pull requests
+    this.state.reposWatching.forEach(repo => {
 
+      console.log(repo);
+
+        this.state.githubAPI.getPullRequestsByRepo(this.mapPullRequestsToState.bind(this, repo.name), repo.name, repo.owner.login);
+    });
     // ..then call model pull requests?
   }
 
-  mapPullRequestsToState() {
+  mapPullRequestsToState(reponame, resp) {
+      console.log(reponame, resp);
+      
+
+
 
   }
 
