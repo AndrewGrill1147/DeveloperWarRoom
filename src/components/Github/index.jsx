@@ -30,11 +30,8 @@ class GithubWidget extends Component {
       },
       storageKey: this.constructor.name,
       
-      
       reposAvailable: [],
-     
-      reposAvailable: [],
-      reposWatching: ['super-special-code'],
+      reposWatching: [],
       
       pullRequests: {
         DeveloperWarRoom: [
@@ -120,13 +117,9 @@ class GithubWidget extends Component {
 
     //clearn up the timer
   }
-// TODO: saving full object - possible memories hog
-// OR saving only what we need
+
   refreshPullRequests(resp){
     console.log('Pull requests for this repo ', resp);
-
-
-
   }
 
   /* handles the response from the githubAPI.getRepos() */
@@ -135,6 +128,8 @@ class GithubWidget extends Component {
     if (!resp.success) {
       return;
     }
+
+    //TODO: Compress data saved? This repo object is LARGE
     let availableRepos = resp.data.map(repo => {
       return repo;
     });
@@ -159,7 +154,20 @@ class GithubWidget extends Component {
   onRepoChange(itemsSelected) {
     /* can expand to include args, name */
     /* Is sent the current selection of repos to watch */
-    const updatedReposWatching = itemsSelected.map(item => item.value);
+
+    //TODO: Refactor
+    const updatedReposWatching = [];
+    
+    itemsSelected.forEach(item => {
+      
+      let matchingRepos = this.state.reposAvailable.filter(repo => {
+        return repo.id === item.value;
+      });
+
+      if (matchingRepos.length === 1) {
+        updatedReposWatching.push(matchingRepos[0]);
+      }
+    });
     this.setState({ reposWatching: updatedReposWatching });
   }
 
@@ -212,7 +220,7 @@ class GithubWidget extends Component {
           withResetSelectAllButtons
           multiple
           name="ReposToWatch"
-          value={this.state.reposWatching.map(repo => ({ value: repo }))}
+          value={this.state.reposWatching.map(repo => ({ value: repo.id, label: repo.name }))}
           onSelect={this.onRepoChange}
           floatingLabel="Repository List"
           dataSource={this.state.reposAvailable}
@@ -220,7 +228,7 @@ class GithubWidget extends Component {
           showAutocompleteThreshold="always"
         >
           {this.state.reposAvailable.map(repo => (
-            <div key={repo.id} id={repo.id} label={repo.name} value={repo.name}> {repo.name} </div>
+            <div key={repo.id} id={repo.id} label={repo.name} value={repo.id}> {repo.name} </div>
                 ))}
         </SuperSelectField>
       </div>
@@ -232,20 +240,19 @@ class GithubWidget extends Component {
     
     // this might be best moved into state? so we don't do this everyime *anything* changes
     const state = { ...this.state };
-    const openPullRequestsList = state.reposWatching.map(repoName => (
+    const openPullRequestsList = state.reposWatching.map(repo => (
       <RepoPullRequestList
-        key={repoName}
-        repoName={repoName}
-        pullRequests={state.pullRequests[repoName] || []}
+        key={repo.name}
+        repoName={repo.name}
+        pullRequests={state.pullRequests[repo.name] || []}
       />
     ));
-
     return (
       <div>
         <Paper>
           <Tabs>
             <Tab icon={<PullRequestIcon />}>
-              {openPullRequestsList}
+              {/*openPullRequestsList*/}
             </Tab>
             <Tab icon={<SettingsIcon />}>
               {this.renderSettingsTab()}
