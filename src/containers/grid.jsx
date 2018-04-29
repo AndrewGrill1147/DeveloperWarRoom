@@ -12,9 +12,8 @@ import Drawer from 'material-ui/Drawer';
 import { List, ListItem } from 'material-ui/List';
 import { ActionCheckCircle } from './icon';
 import Bookmarker from './../components/bookmarker';
-
-
-
+/* eslint-env browser */
+/* eslint react/jsx-no-bind: 0 */
 
 /* const SettingsMenu = props => (
   <IconMenu
@@ -65,27 +64,13 @@ const RemoveIcon = props => (
   </IconButton>
 );
 
-const appBarStyle = {
-  backgroundColor: 'gray',
-};
+
 const menuBarStyle = {
   backgroundColor: 'blue',
 
 };
 // just for testing react-grid
-const divStyle = {
-  color: 'gray',
-  fontWeight: 'bold',
-  backgroundColor: 'coral',
-};
 
-const defaultProps = {
-  className: 'layout',
-  cols: {
-    lg: 12, md: 10, sm: 6, xs: 4, xxs: 2,
-  },
-  rowHeight: 100,
-};
 
 class Grid extends Component {
   constructor(props) {
@@ -102,7 +87,8 @@ class Grid extends Component {
     if (localStorage.getItem('layouts') !== null) {
       locallayout = JSON.parse(localStorage.getItem('layouts'));
     }
-    // I think I need this inline so I can work with the current object along with modularity for render function
+    // I think I need this inline so I can work with the
+    // current object along with modularity for render function
     this.SettingsMenu = props => (
       <IconMenu
         {...props}
@@ -121,23 +107,6 @@ class Grid extends Component {
     );
 
 
-         
-      let layoutDefault = [{
-        i: 'Pull Requests', x: 0, y: 0, w: 2, h: 2,
-      },
-      {
-        i: 'Todo List', x: 2, y: 0, w: 2, h: 2,
-      },
-      {
-        i: 'Reddit', x: 4, y: 0, w: 2, h: 2,
-      },
-      {
-        i: 'Stack Overflow', x: 6, y: 0, w: 2, h: 2,
-      },
-
-      ]
-    
-
     this.state = {
       editMode: false,
       sideBarMenu: false,
@@ -155,13 +124,12 @@ class Grid extends Component {
         i: 'Stack Overflow',
       }],
 
-      
+
       layouts: locallayout,
 
       // Default view when user first opens chrome extension
-     
 
-      
+
     };
   }
 
@@ -175,14 +143,6 @@ class Grid extends Component {
     console.log('In componentWillUnMount');
   }
 
-  editButtonClicked() {
-    console.log('In editButtonClicked');
-    const flipped = !this.state.editMode;
-    this.setState({ editMode: flipped });
-    if (flipped === false && this.state.sideBarMenu === true) {
-      this.setState({ sideBarMenu: false });
-    }
-  }
 
   onRemoveItem(i) {
     console.log('removing', i);
@@ -190,36 +150,6 @@ class Grid extends Component {
     localStorage.setItem('layouts', this.state.layouts);
   }
 
-  createElement(element) {
-    console.log('In createElement');
-    const removeButton = this.state.editMode ?
-      (<span
-        className="remove"
-        style={removeStyle}
-        onClick={this.onRemoveItem.bind(this, element.i)}
-      >
-        <RemoveIcon color="grey" />
-       </span>)
-      : null;
-    return (
-      <div key={element.i} data-grid={element}>
-        <Paper style={style} zDepth={3}>
-
-          <span className="text">{element.i}</span>
-          {removeButton}
-        </Paper>
-      </div>
-    );
-  }
-
-  elementinArray(key) {
-    for (let i = 0; i < this.state.layouts.length; i += 1) {
-      if (this.state.layouts[i].i === key) {
-        return true;
-      }
-    }
-    return false;
-  }
 
   onAddItem(key) {
     /* eslint no-console: 0 */
@@ -251,13 +181,32 @@ class Grid extends Component {
     });
   }
 
-  menuOptions(e, key, menuItem) {
+
+  onLayoutChange(layout) {
+    localStorage.setItem('layouts', JSON.stringify(layout));
+    this.setState({ layouts: layout });
+  }
+
+
+  createMenuElement(element) {
+    return (
+      <div key={element.i} data-grid={element}>
+        <List >
+          <ListItem primaryText={element.i} onClick={() => this.onAddItem(element.i)} />
+        </List>
+      </div>
+    );
+  }
+
+
+  menuOptions(e, key) {
     console.log('In menuOptions');
     switch (key.props.primaryText) {
       case 'Edit Widgets':
         this.editButtonClicked();
         break;
       case 'Change Theme': // Not Working this.props.ThemeButton; break;
+        /* eslint react/prop-types: 0 */
         this.props.ThemeButton();
         break;
       case 'Add Widgets': {
@@ -270,23 +219,53 @@ class Grid extends Component {
     }
   }
 
-  createMenuElement(element) {
+
+  elementinArray(key) {
+    for (let i = 0; i < this.state.layouts.length; i += 1) {
+      if (this.state.layouts[i].i === key) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
+  createElement(element) {
+    console.log('In createElement');
+    const removeButton = this.state.editMode ?
+      (
+        <span
+          className="remove"
+          style={removeStyle}
+          onClick={this.onRemoveItem.bind(this, element.i)}
+          onKeyDown={this.handleKeyPress}
+
+        >
+          <RemoveIcon color="grey" />
+        </span>
+
+      )
+      : null;
     return (
       <div key={element.i} data-grid={element}>
-        <List >
-          <ListItem primaryText={element.i} onClick={() => this.onAddItem(element.i)} />
-        </List>
+        <Paper style={style} zDepth={3}>
+
+          <span className="text">{element.i}</span>
+          {removeButton}
+        </Paper>
       </div>
     );
   }
 
-  onLayoutChange(layout) {
 
-    localStorage.setItem('layouts', JSON.stringify(layout));
-    this.setState({ layouts: layout });
-
+  editButtonClicked() {
+    console.log('In editButtonClicked');
+    const flipped = !this.state.editMode;
+    this.setState({ editMode: flipped });
+    if (flipped === false && this.state.sideBarMenu === true) {
+      this.setState({ sideBarMenu: false });
+    }
   }
-
 
   render() {
     console.log('In render function');
@@ -332,4 +311,3 @@ class Grid extends Component {
 
 
 export default Grid;
-
