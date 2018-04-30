@@ -103,7 +103,6 @@ class Bookmarkers extends Component {
     const httpRegex = new RegExp(checkHttp);
     let siteUrl = listValue.urlInput;
     if (!httpRegex.test(siteUrl)) {
-      console.log('adding https://');
       siteUrl = `https://${siteUrl}`;
     }
     newBookmarks[objIndex].url = siteUrl;
@@ -186,12 +185,10 @@ class Bookmarkers extends Component {
   }
   saveClicked() {
     // Get form values
-    console.log('got click');
     const siteName = this.state.nameInput;
     let siteUrl = this.state.urlInput;
 
     if (!siteName || !siteUrl) {
-      console.log('empty');
       return;
     }
 
@@ -201,12 +198,10 @@ class Bookmarkers extends Component {
     const httpRegex = new RegExp(checkHttp);
 
     if (!siteUrl.match(regex)) {
-      console.log('failed');
       this.setState({ dialogOpen: false, urlInput: null, nameInput: null });
       return;
     }
     if (!httpRegex.test(siteUrl)) {
-      console.log('adding https://');
       siteUrl = `https://${siteUrl}`;
     }
     let bookmarkId = 0;
@@ -223,7 +218,6 @@ class Bookmarkers extends Component {
       nameInput: siteName,
     };
     const newBookmarks = this.state.bookmarks;
-    console.log(newBookmarks);
     newBookmarks.push(bookmark);
     this.setState({
       bookmarks: newBookmarks,
@@ -231,7 +225,6 @@ class Bookmarkers extends Component {
       nameInput: null,
       urlInput: null,
     });
-    console.log(this.state.bookmarks);
     localStorage.setItem('bookmarks', JSON.stringify(this.state.bookmarks));
   }
   render() {

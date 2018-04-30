@@ -89,7 +89,7 @@ class Grid extends Component {
     }
     // I think I need this inline so I can work with the
     // current object along with modularity for render function
-    this.SettingsMenu = props => (
+    this.SettingsMenu = () => (
       <IconMenu
         {...props}
         iconButtonElement={
@@ -237,11 +237,8 @@ class Grid extends Component {
         <span
           className="remove"
           style={removeStyle}
-          onClick={this.onRemoveItem.bind(this, element.i)}
-          onKeyDown={this.handleKeyPress}
-
         >
-          <RemoveIcon color="grey" />
+          <RemoveIcon color="grey" onClick={this.onRemoveItem.bind(this, element.i)} onKeyDown={this.handleKeyPress} />
         </span>
 
       )
