@@ -15,7 +15,7 @@ const iconButtonElement = (
     touch
     tooltipPosition="bottom-left"
   >
-    <MoreVertIcon />
+    <MoreVertIcon color="gray" />
   </IconButton>
 );
 
@@ -35,7 +35,7 @@ const styles = {
     display: 'inline-flex',
     verticalAlign: 'middle',
   },
-  iconButonAlignment: {
+  iconButtonAlignment: {
     display: 'inline-block',
     verticalAlign: 'middle',
     whiteSpace: 'noWrap',
@@ -62,12 +62,10 @@ const styles = {
 class Bookmarkers extends Component {
   constructor(props) {
     super(props);
-    let localBookmarks = [];
-    if (localStorage.getItem('bookmarks') !== null) {
-      localBookmarks = JSON.parse(localStorage.getItem('bookmarks'));
-    }
+    const localBookmarks = localStorage.getItem('bookmarks');
+    const defaultBookmarks = localBookmarks ? JSON.parse(localBookmarks) : [];
     this.state = {
-      bookmarks: localBookmarks,
+      bookmarks: defaultBookmarks,
       nameInput: null,
       urlInput: null,
       dialogOpen: false,
@@ -252,7 +250,7 @@ class Bookmarkers extends Component {
               () => this.setState({ dialogOpen: true })
             }
           >
-            <ContentAdd />
+            <ContentAdd color="gray" />
           </IconButton>
         </div>
         <Dialog

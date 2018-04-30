@@ -14,22 +14,6 @@ import { ActionCheckCircle } from './icon';
 import Bookmarker from './../components/bookmarker';
 /* eslint-env browser */
 /* eslint react/jsx-no-bind: 0 */
-
-/* const SettingsMenu = props => (
-  <IconMenu
-    {...props}
-    iconButtonElement={
-      <IconButton ><MoreVertIcon /></IconButton>
-    }
-    targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-    anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-  >
-    <MenuItem primaryText="Edit Widgets" />
-    <MenuItem primaryText="Change Theme" />
-    <MenuItem primaryText="Add Widgets" />
-  </IconMenu>
-); */
-
 const removeStyle = {
   position: 'absolute',
   right: '2px',
@@ -93,7 +77,7 @@ class Grid extends Component {
       <IconMenu
         {...props}
         iconButtonElement={
-          <IconButton ><MoreVertIcon /></IconButton>
+          <IconButton ><MoreVertIcon color="gray" /></IconButton>
         }
         targetOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
@@ -281,8 +265,10 @@ class Grid extends Component {
     return (
       <div>
         <div style={horizontalHeaderBarStyle}>
-          {appBar}
-          <Bookmarker />
+          <Paper sDepth={2}>
+            {appBar}
+            <Bookmarker />
+          </Paper>
         </div>
         <GridLayout
           layout={this.state.layouts}
