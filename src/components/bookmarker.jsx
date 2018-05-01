@@ -142,16 +142,16 @@ class Bookmarkers extends Component {
     ];
     return (
       <div style={styles.horizontalListElement}>
-        <img
-          src={`chrome://favicon/${listValue.url}`}
-          alt={listValue.name}
-          style={styles.iconAlignment}
-        />
         <FlatButton
           style={styles.buttonAlignment}
           label={listValue.name}
           href={listValue.url}
           target="_blank"
+          icon={<img
+            src={`chrome://favicon/${listValue.url}`}
+            alt={listValue.name}
+            style={styles.iconAlignment}
+          />}
         />
         <div style={styles.iconAlignment}>
           {this.rightIconMenu(listValue)}
