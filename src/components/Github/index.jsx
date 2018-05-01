@@ -19,6 +19,8 @@ class GithubWidget extends Component {
   constructor(props) {
     super(props);
 
+    this.timerObject = null;
+
     this.state = {
       //TODO: Review, should we put this here?...
       githubAPI: new GithubAPI(),
@@ -36,47 +38,8 @@ class GithubWidget extends Component {
       reposAvailable: [],
       reposWatching: [],
       
-      pullRequests: {
-        DeveloperWarRoom: [
-          {
-            branch: 'bug/110/update-bindings',
-            title: 'Remove bindings in the render() functions ets.',
-            body: 'Lorem ipsum dolor sit amet, ut blandit constituto deterruisset vim. Elitr ponderum instructior id has, ut unum nostrud offendit has, graecis vulputate scriptorem est id. Has vidisse repudiandae ei, mei fierent suscipiantur ad, an eam aeterno praesent. Ea reprimique omittantur mei, diam graeco menandri mel te. Mei laudem everti vivendo ei, sit ea eleifend constituto.',
-            author: {
-              name: '@rogger-rabbit',
-              avatar: 'https://vignette.wikia.nocookie.net/spongebobandfriendsadventures/images/c/c0/Cliprogerrabbit.gif/revision/latest?cb=20110625150437',
-            },
-            reviews: [],
-            comments: [],
-          },
-          {
-            branch: 'feature/99/create-ui-prototype',
-            title: 'Make the UI for the github thingy',
-            body: 'Lorem ipsum dolor sit amet, ut blandit constituto deterruisset vim. Elitr ponderum instructior id has, ut unum nostrud offendit has, graecis vulputate scriptorem est id. Has vidisse repudiandae ei, mei fierent suscipiantur ad, an eam aeterno praesent. Ea reprimique omittantur mei, diam graeco menandri mel te. Mei laudem everti vivendo ei, sit ea eleifend constituto.',
-            author: {
-              name: '@andy-keene',
-              avatar: 'https://avatars1.githubusercontent.com/u/20017363?s=400&u=ead1539b261e59b39c7ae4dbabad4ad9e27525f1&v=4',
-            },
-            reviews: [],
-            comments: [],
-          },
-          // ...
-        ],
-        MachineLearningProjects: [
-          {
-            branch: 'project/n-puzzle',
-            title: 'Prove invariant of test cases',
-            body: 'Lorem ipsum dolor sit amet, ut blandit constituto deterruisset vim. Elitr ponderum instructior id has, ut unum nostrud offendit has, graecis vulputate scriptorem est id. Has vidisse repudiandae ei, mei fierent suscipiantur ad, an eam aeterno praesent. Ea reprimique omittantur mei, diam graeco menandri mel te. Mei laudem everti vivendo ei, sit ea eleifend constituto.',
-            author: {
-              name: 'andy keene',
-              avatar: 'https://avatars1.githubusercontent.com/u/20017363?s=400&u=ead1539b261e59b39c7ae4dbabad4ad9e27525f1&v=4',
-            },
-            reviews: [],
-            comments: [],
-          },
-        ],
-        // ...
-      },
+      pullRequests: []
+      
 
     };
     this.onRepoChange = this.onRepoChange.bind(this);
@@ -98,18 +61,15 @@ class GithubWidget extends Component {
   }
 
   componentDidMount() {
-
-
     //set timer 
-    let timerObject = setInterval(this.checkPullRequests, this.state.settings.refreshRate * 1000);
+    this.timerObject = setInterval(this.checkPullRequests, this.state.settings.refreshRate * 1000);
 
-    this.setState({timer: timerObject });
+    this.setState({timer: this.timerObject });
 
     //setTimeout(callback, time);
   }
 
   checkPullRequests() {
-    console.log("test");
     // invoked every x minutes
     //for each REPO get all the pull requests
     this.state.reposWatching.forEach(repo => {
@@ -123,19 +83,19 @@ class GithubWidget extends Component {
 
   mapPullRequestsToState(reponame, resp) {
       console.log(reponame, resp);
-      
-
-
+      //map the resp pull requests to state pull requests var
+      if (!resp.success) {
+        return;
+      }
+  
+      //TODO: Compress data saved? This repo object is LARGE
+      this.setState({pullRequests: resp.data});
+      console.log(this.state.pullRequests);
 
   }
 
   componentWillUnmount() {
-
-    //clearn up the timer
-  }
-
-  refreshPullRequests(resp){
-    console.log('Pull requests for this repo ', resp);
+    clearInterval(this.timerObject);
   }
 
   /* handles the response from the githubAPI.getRepos() */
@@ -171,7 +131,7 @@ class GithubWidget extends Component {
     /* can expand to include args, name */
     /* Is sent the current selection of repos to watch */
 
-    //TODO: Refactor
+    //TODO: Refactor & DEEP COPY THE OBJECT REPO
     const updatedReposWatching = [];
     
     itemsSelected.forEach(item => {
