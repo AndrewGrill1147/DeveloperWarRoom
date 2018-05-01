@@ -1,19 +1,15 @@
 
 
 const Widgets = {
-    'Key': () => {
-        return (
-            <div> Here is some react </div>
-        );
-    },
+  Key: () => (
+    <div> Here is some react </div>
+  ),
 
-    'key 2': () => {
-        return (
-            <div> KEY TWO YO </div>
-        )
-    }
+  'key 2': () => (
+    <div> KEY TWO YO </div>
+  ),
 
 
-}
+};
 
 export default Widgets;

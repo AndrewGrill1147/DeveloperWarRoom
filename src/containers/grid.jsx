@@ -9,6 +9,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import MenuItem from 'material-ui/MenuItem';
 import IconMenu from 'material-ui/IconMenu/IconMenu';
 import Drawer from 'material-ui/Drawer';
+import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
 import { ActionCheckCircle } from './icon';
 import Bookmarker from './../components/bookmarker';
@@ -21,8 +22,8 @@ const fixedToBottom = {
   position: 'fixed',
   bottom: '0',
   right: '0',
-  margin: '10px'
-}
+  margin: '10px',
+};
 const removeStyle = {
   position: 'absolute',
   right: '2px',
@@ -61,8 +62,7 @@ const appBarStyle = {
   backgroundColor: 'gray',
 };
 const menuBarStyle = {
-  backgroundColor: 'blue',
-
+  backgroundColor: 'rgb(0, 188, 212)',
 };
 // just for testing react-grid
 const divStyle = {
@@ -143,8 +143,8 @@ class Grid extends Component {
   }
 
   settingsButtonClicked() {
-    let opened = !this.state.sideBarOpen;
-    this.setState({sideBarOpen: opened});
+    const opened = !this.state.sideBarOpen;
+    this.setState({ sideBarOpen: opened });
   }
 
   editButtonClicked() {
@@ -160,14 +160,15 @@ class Grid extends Component {
   createElement(element) {
     console.log('In createElement');
     const removeButton = this.state.editMode ?
-      (<span
-        className="remove"
-        style={removeStyle}
-        onClick={this.onRemoveItem.bind(this, element.i)}
-      >
-        <RemoveIcon color="grey" />
-       </span>)
-      : null;
+      (
+        <span
+          className="remove"
+          style={removeStyle}
+          onClick={this.onRemoveItem.bind(this, element.i)}
+        >
+          <RemoveIcon color="grey" />
+        </span>
+      ) : null;
     return (
       <div key={element.i} data-grid={element}>
         <Paper style={style} zDepth={3}>
@@ -237,18 +238,17 @@ class Grid extends Component {
   }
 
   widgetsMenu() {
-    let app =  Object.keys(Widgets).map( key => {
-      console.log('widgets menu key ', key)
-      return <ListItem key={key} primaryText={key} onClick={ () => {alert(key);} }/>
+    const app = Object.keys(Widgets).map((key) => {
+      console.log('widgets menu key ', key);
+      return <ListItem key={key} primaryText={key} onClick={() => { alert(key); }} />;
     });
 
     return app;
   }
 
   addWidget(key) {
-
-    //TODO: Need to fix the add widget function
-    let newWidget = {
+    // TODO: Need to fix the add widget function
+    const newWidget = {
       i: key,
       x: (this.state.layout.length * 2) % (this.state.cols || 12),
       y: Infinity, // puts it at the bottom
@@ -257,13 +257,14 @@ class Grid extends Component {
     };
     this.setState({
       // Add a new item. It must have a unique key!
-        layout: [...this.state.layout, ...[newWidget]] });
+      layout: [...this.state.layout, ...[newWidget]],
+    });
   }
 
   createMenuElement(element) {
     return (
       <div key={element.i} data-grid={element}>
-          <ListItem primaryText={element.i} onClick={() => this.onAddItem(element.i)} />
+        <ListItem primaryText={element.i} onClick={() => this.onAddItem(element.i)} />
       </div>
     );
   }
@@ -271,42 +272,50 @@ class Grid extends Component {
   render() {
     console.log('In render function');
     console.log(this);
-   
-      return (
-        <div>
-          <Paper zDepth={2}>
+
+    return (
+      <div>
+        <Paper zDepth={2}>
           <div style={horizontalHeaderBarStyle}>
             <Bookmarker />
           </div>
         </Paper>
-          <GridLayout
-            layout={this.state.layout}
-            onLayoutChange={this.onLayoutChange}
-            autoSize
-            width={1400}
-            isDraggable={this.state.editMode}
-            isResizable={this.state.editMode}
-            {...this.props}
-          >
-            {this.state.layout.map(element => this.createElement(element))}
-          </GridLayout>
-          
-            <Drawer open={this.state.sideBarOpen} width={200}>
-              <AppBar style={menuBarStyle} title="Widgets" showMenuIconButton={false} />
-              
-              <List>
-                {this.widgetsMenu()}
-              
-              </List>
-              <RaisedButton label={'Edit Button'} onClick={this.editButtonClicked}/>
-              <RaisedButton label={'Theme Button'} onClick={this.props.ThemeButton}/>              
-            </Drawer>
-  
-            <FloatingActionButton style={fixedToBottom} onClick={this.settingsButtonClicked}>
-              <SettingIcon/>
-            </FloatingActionButton>
-        </div>
-      );
+        <GridLayout
+          layout={this.state.layout}
+          onLayoutChange={this.onLayoutChange}
+          autoSize
+          width={1400}
+          isDraggable={this.state.editMode}
+          isResizable={this.state.editMode}
+          {...this.props}
+        >
+          {this.state.layout.map(element => this.createElement(element))}
+        </GridLayout>
+
+        <Drawer open={this.state.sideBarOpen} width={200}>
+          <AppBar style={menuBarStyle} title="Widgets" showMenuIconButton={false} />
+
+          <List>
+            <ListItem
+              primaryText="Widget List"
+              initiallyOpen
+              primaryTogglesNestedList
+              nestedItems={this.widgetsMenu()}
+            />
+            <Divider />
+            <ListItem primaryText="Toggle Edit" onClick={this.editButtonClicked} />
+            <Divider />
+            <ListItem primaryText="Switch Theme" onClick={this.props.ThemeButton} />
+            <Divider />
+          </List>
+
+        </Drawer>
+
+        <FloatingActionButton style={fixedToBottom} onClick={this.settingsButtonClicked}>
+          <SettingIcon />
+        </FloatingActionButton>
+      </div>
+    );
   }
 }
 
