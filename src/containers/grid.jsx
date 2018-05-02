@@ -1,7 +1,11 @@
+/* eslint-env browser */
+/* eslint react/jsx-no-bind: 0 */
 import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
 import ActionDelete from 'material-ui/svg-icons/action/delete';
 import _ from 'lodash';
+import SettingIcon from 'material-ui/svg-icons/action/settings';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
 import GridLayout from 'react-grid-layout';
 import IconButton from 'material-ui/IconButton/IconButton';
 import Paper from 'material-ui/Paper';
@@ -9,11 +13,17 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import MenuItem from 'material-ui/MenuItem';
 import IconMenu from 'material-ui/IconMenu/IconMenu';
 import Drawer from 'material-ui/Drawer';
+import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
-import { ActionCheckCircle } from './icon';
 import Bookmarker from './../components/bookmarker';
-/* eslint-env browser */
-/* eslint react/jsx-no-bind: 0 */
+import Widgets from './widgets';
+
+const fixedToBottom = {
+  position: 'fixed',
+  bottom: '0',
+  right: '0',
+  margin: '10px',
+};
 const removeStyle = {
   position: 'absolute',
   right: '2px',
@@ -50,11 +60,9 @@ const RemoveIcon = props => (
 
 
 const menuBarStyle = {
-  backgroundColor: 'blue',
-
+  backgroundColor: 'rgb(0, 188, 212)',
 };
 // just for testing react-grid
-
 
 class Grid extends Component {
   constructor(props) {
@@ -67,6 +75,7 @@ class Grid extends Component {
     this.createMenuElement = this.createMenuElement.bind(this);
     this.elementinArray = this.elementinArray.bind(this);
     this.onLayoutChange = this.onLayoutChange.bind(this);
+    this.settingsButtonClicked = this.settingsButtonClicked.bind(this);
     let locallayout = [];
     if (localStorage.getItem('layouts') !== null) {
       locallayout = JSON.parse(localStorage.getItem('layouts'));
@@ -90,25 +99,11 @@ class Grid extends Component {
       </IconMenu>
     );
 
-
     this.state = {
       editMode: false,
       sideBarMenu: false,
+      sideBarOpen: false,
       // Every possible widget
-      allWidgets: [{
-        i: 'Pull Requests',
-      },
-      {
-        i: 'Todo List',
-      },
-      {
-        i: 'Reddit',
-      },
-      {
-        i: 'Stack Overflow',
-      }],
-
-
       layouts: locallayout,
 
       // Default view when user first opens chrome extension
@@ -127,13 +122,11 @@ class Grid extends Component {
     console.log('In componentWillUnMount');
   }
 
-
   onRemoveItem(i) {
     console.log('removing', i);
     this.setState({ layouts: _.reject(this.state.layouts, { i }) });
     localStorage.setItem('layouts', this.state.layouts);
   }
-
 
   onAddItem(key) {
     /* eslint no-console: 0 */
@@ -171,6 +164,10 @@ class Grid extends Component {
     this.setState({ layouts: layout });
   }
 
+  settingsButtonClicked() {
+    const opened = !this.state.sideBarOpen;
+    this.setState({ sideBarOpen: opened });
+  }
 
   createMenuElement(element) {
     return (
@@ -203,7 +200,6 @@ class Grid extends Component {
     }
   }
 
-
   elementinArray(key) {
     for (let i = 0; i < this.state.layouts.length; i += 1) {
       if (this.state.layouts[i].i === key) {
@@ -212,7 +208,6 @@ class Grid extends Component {
     }
     return false;
   }
-
 
   createElement(element) {
     console.log('In createElement');
@@ -238,6 +233,29 @@ class Grid extends Component {
     );
   }
 
+  widgetsMenu() {
+    const app = Object.keys(Widgets).map((key) => {
+      console.log('widgets menu key ', key);
+      return <ListItem key={key} primaryText={key} onClick={() => { alert(key); }} />;
+    });
+
+    return app;
+  }
+
+  addWidget(key) {
+    // TODO: Need to fix the add widget function
+    const newWidget = {
+      i: key,
+      x: (this.state.layout.length * 2) % (this.state.cols || 12),
+      y: Infinity, // puts it at the bottom
+      w: 2,
+      h: 2,
+    };
+    this.setState({
+      // Add a new item. It must have a unique key!
+      layout: [...this.state.layout, ...[newWidget]],
+    });
+  }
 
   editButtonClicked() {
     console.log('In editButtonClicked');
@@ -251,22 +269,11 @@ class Grid extends Component {
   render() {
     console.log('In render function');
     console.log(this);
-    const appBar = this.state.editMode ?
-      (
-        <IconButton
-          onClick={this.editButtonClicked}
-          style={iconAlignment}
-        >
-          <ActionCheckCircle />
-        </IconButton>
-      ) :
-      (<this.SettingsMenu />);
 
     return (
       <div>
         <div style={horizontalHeaderBarStyle}>
-          <Paper sDepth={2}>
-            {appBar}
+          <Paper zDepth={2}>
             <Bookmarker />
           </Paper>
         </div>
@@ -281,12 +288,29 @@ class Grid extends Component {
         >
           {this.state.layouts.map(element => this.createElement(element))}
         </GridLayout>
-        {this.state.sideBarMenu && this.state.editMode ?
-          (
-            <Drawer open={this.state.sideBarOpen} width={200}>
-              <AppBar style={menuBarStyle} title="Widgets" showMenuIconButton={false} />
-              {this.state.allWidgets.map(element => this.createMenuElement(element))}
-            </Drawer>) : null}
+
+        <Drawer open={this.state.sideBarOpen} width={200}>
+          <AppBar style={menuBarStyle} title="Widgets" showMenuIconButton={false} />
+
+          <List>
+            <ListItem
+              primaryText="Widget List"
+              initiallyOpen
+              primaryTogglesNestedList
+              nestedItems={this.widgetsMenu()}
+            />
+            <Divider />
+            <ListItem primaryText="Toggle Edit" onClick={this.editButtonClicked} />
+            <Divider />
+            <ListItem primaryText="Switch Theme" onClick={this.props.ThemeButton} />
+            <Divider />
+          </List>
+
+        </Drawer>
+
+        <FloatingActionButton style={fixedToBottom} onClick={this.settingsButtonClicked}>
+          <SettingIcon />
+        </FloatingActionButton>
       </div>
     );
   }
