@@ -68,7 +68,6 @@ class Grid extends Component {
     super(props);
     this.editButtonClicked = this.editButtonClicked.bind(this);
     this.onLayoutChange = this.onLayoutChange.bind(this);
-    this.onBreakpointChange = this.onBreakpointChange.bind(this);
     this.menuOptions = this.menuOptions.bind(this);
     this.elementinArray = this.elementinArray.bind(this);
     this.onLayoutChange = this.onLayoutChange.bind(this);
@@ -102,13 +101,6 @@ class Grid extends Component {
   onRemoveItem(i) {
     this.setState({ layout: _.reject(this.state.layout, { i }) });
     localStorage.setItem('layout', this.state.layout);
-  }
-
-  onBreakpointChange(breakpoint, cols) {
-    this.setState({
-      breakpoint,
-      cols,
-    });
   }
 
   onLayoutChange(newLayout) {
@@ -172,14 +164,22 @@ class Grid extends Component {
   }
 
   widgetsMenu() {
-    const app = Object.keys(Widgets).map((key) => {
-      return <ListItem key={key} primaryText={key} onClick={() => { this.addWidget(key); }} />;
+    const widgetList = Object.keys(Widgets).map((key) => {
+      const returnVal = (<ListItem
+        key={key}
+        primaryText={key}
+        onClick={() => { this.addWidget(key); }}
+      />);
+      return returnVal;
     });
 
-    return app;
+    return widgetList;
   }
 
   addWidget(key) {
+    if (this.state.layout.filter(widgetLayout => widgetLayout.i === key).length !== 0) {
+      return;
+    }
     const newWidget = {
       i: key,
       x: (this.state.layout.length * 3) % (this.state.cols || 12),
