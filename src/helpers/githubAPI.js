@@ -16,7 +16,7 @@ class GithubApi {
 
   setAuth(resp) {
     this.isAuthenticated = resp.success;
-    console.log('Authenticated = ', this.isAuthenticated);
+    // console.log('Authenticated = ', this.isAuthenticated);
   }
 
   getRepos(callback) {
@@ -46,8 +46,8 @@ class GithubApi {
         return response;
       }
       throw {
-        badCredentials: response.status == 401,
-        unknownError: response.status != 401,
+        badCredentials: response.status === 401,
+        unknownError: response.status !== 401,
       };
     }).then(response => response.json())
       .then((response) => {

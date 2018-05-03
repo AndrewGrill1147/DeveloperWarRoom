@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import Home from './components/home';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import './index.css';
+/* global document */
 
 const App = () => (
   <MuiThemeProvider>

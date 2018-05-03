@@ -95,23 +95,21 @@ class GithubWidget extends Component {
     if (savedSettings) {
       this.setState({ settings: savedSettings });
     }
-    console.log('In componentWillMount');
+    // console.log('In componentWillMount');
     // get repos
     this.state.githubAPI.getRepos(this.updateReposAvailable);
   }
 
   componentDidMount() {
-    console.log('In componentDidMount');
+    // console.log('In componentDidMount');
     // setTimeout(callback, time);
   }
 
   checkPullRequests() {
-   //  console.log('test');
+    // console.log('test');
     // invoked every x minutes
     // for each REPO get all the pull requests
-    this.state.reposWatching.forEach((repo) => {
-      // console.log(repo);
-
+      this.state.reposWatching.forEach((repo) => {
       this.state.githubAPI.getPullRequestsByRepo(this.mapPullRequestsToState.bind(this, repo.name), repo.name, repo.owner.login);
     });
     // ..then call model pull requests?
@@ -124,8 +122,16 @@ class GithubWidget extends Component {
         return;
       }
       //TODO: Compress data saved? This repo object is LARGE
-      this.setState({pullRequests: resp.data});
+      this.setState({ pullRequests: resp.data });
       // console.log(this.state.pullRequests);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    /* saves state to local storage iff settings updated */
+    if (_.isEqual(prevState.settings, { ...this.state.settings })) {
+      return;
+    }
+    LocalStorageAPI.put(this.state.storageKey, this.state.settings);
   }
 
   componentWillUnmount() {
@@ -139,18 +145,10 @@ class GithubWidget extends Component {
       return;
     }
     // TODO: Compress data saved? This repo object is LARGE
-    let availableRepos = resp.data.map(repo => {
+    const availableRepos = resp.data.map(repo => {
       return repo;
     });
-    this.setState({reposAvailable: availableRepos});
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    /* saves state to local storage iff settings updated */
-    if (_.isEqual(prevState.settings, { ...this.state.settings })) {
-      return;
-    }
-    LocalStorageAPI.put(this.state.storageKey, this.state.settings);
+    this.setState({ reposAvailable: availableRepos });
   }
 
   onRefreshRateChange(event, index, value) {
