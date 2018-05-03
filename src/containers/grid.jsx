@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
 import ActionDelete from 'material-ui/svg-icons/action/delete';
 import ActionLockClosed from 'material-ui/svg-icons/action/lock';
-import ActionLockOpen from 'material-ui/svg-icons/action/lock-open';
 import EditorEdit from 'material-ui/svg-icons/editor/mode-edit';
 import _ from 'lodash';
 import SettingIcon from 'material-ui/svg-icons/action/settings';
@@ -79,7 +78,7 @@ class Grid extends Component {
     this.settingsButtonClicked = this.settingsButtonClicked.bind(this);
     const localValue = JSON.parse(localStorage.getItem('layout'));
     console.log(localValue);
-    const locallayout = localValue ? localValue : [];
+    const locallayout = localValue || [];
     this.state = {
       editMode: false,
       sideBarMenu: false,
