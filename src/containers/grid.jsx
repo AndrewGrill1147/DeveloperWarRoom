@@ -77,7 +77,8 @@ class Grid extends Component {
     this.onLayoutChange = this.onLayoutChange.bind(this);
     this.settingsButtonClicked = this.settingsButtonClicked.bind(this);
     const localValue = JSON.parse(localStorage.getItem('layout'));
-    const locallayout = localValue ? localValue : [];
+    console.log(localValue);
+    const locallayout = localValue || [];
     this.state = {
       editMode: false,
       sideBarMenu: false,
