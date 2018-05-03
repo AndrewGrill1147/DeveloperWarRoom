@@ -17,12 +17,15 @@
     "build": "webpack --devtool source-map",
     "build:prod": "webpack -p",
     "watch": "webpack --devtool source-map --watch",
-    "lint": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx src/",
-    "lint:fix": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx src/ --fix",
+    "lint": "node ./node_modules/eslint/bin/eslint.js --ext .js,.jsx src/",
+    "lint:fix": "node ./node_modules/eslint/bin/eslint.js --ext .js,.jsx src/ --fix",
     "test": "echo \"Error: no test specified\" && exit 0"
   },
   "dependencies": {
+    "buffer": "^5.1.0",
+    "lodash": "^4.17.5",
     "material-ui": "^0.20.0",
+    "material-ui-superselectfield": "^1.9.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-grid-layout": "^0.16.5"

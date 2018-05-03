@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
-/* eslint react/prefer-stateless-function: 0 */
 
+/*
+ * might be wise to rename this file since it's imported by another
+ * popup.js file..
+ */
 class Popup extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
     return (
       <div>
