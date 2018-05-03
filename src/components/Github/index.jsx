@@ -118,15 +118,20 @@ class GithubWidget extends Component {
   }
 
   mapPullRequestsToState(reponame, resp) {
-    console.log(reponame, resp);
+      console.log(reponame, resp);
+      //map the resp pull requests to state pull requests var
+      if (!resp.success) {
+        return;
+      }
+  
+      //TODO: Compress data saved? This repo object is LARGE
+      this.setState({pullRequests: resp.data});
+      console.log(this.state.pullRequests);
+
   }
 
   componentWillUnmount() {
     clearInterval(this.timerObject);
-  }
-
-  refreshPullRequests(resp) {
-    console.log('Pull requests for this repo ', resp);
   }
 
   /* handles the response from the githubAPI.getRepos() */
@@ -139,6 +144,11 @@ class GithubWidget extends Component {
     // TODO: Compress data saved? This repo object is LARGE
     const availableRepos = resp.data.map(repo => repo);
     this.setState({ reposAvailable: availableRepos });
+    //TODO: Compress data saved? This repo object is LARGE
+    let availableRepos = resp.data.map(repo => {
+      return repo;
+    });
+    this.setState({reposAvailable: availableRepos});
   }
 
   componentDidUpdate(prevProps, prevState) {
