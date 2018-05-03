@@ -1,5 +1,6 @@
 /* eslint-env browser */
 /* eslint react/jsx-no-bind: 0 */
+/* eslint react/prop-types: 0 */
 import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
 import ActionDelete from 'material-ui/svg-icons/action/delete';
@@ -32,7 +33,6 @@ const removeStyle = {
   top: 0,
   cursor: 'pointer',
 };
-
 const removeIconSize = {
   width: 20,
   height: 20,
@@ -53,18 +53,15 @@ const style = {
   textAlign: 'left',
   display: 'inline-block',
 };
+const menuBarStyle = {
+  backgroundColor: 'rgb(0, 188, 212)',
+};
 
 const RemoveIcon = props => (
   <IconButton iconStyle={removeIconSize}>
     <ActionDelete {...props} />
   </IconButton>
 );
-
-
-const menuBarStyle = {
-  backgroundColor: 'rgb(0, 188, 212)',
-};
-// just for testing react-grid
 
 class Grid extends Component {
   constructor(props) {
@@ -77,7 +74,6 @@ class Grid extends Component {
     this.onLayoutChange = this.onLayoutChange.bind(this);
     this.settingsButtonClicked = this.settingsButtonClicked.bind(this);
     const localValue = JSON.parse(localStorage.getItem('layout'));
-    console.log(localValue);
     const locallayout = localValue || [];
     this.state = {
       editMode: false,
@@ -103,27 +99,17 @@ class Grid extends Component {
     );
   }
 
-  componentDidMount() {
-  }
-
-
-  componentWillUnmount() {
-    // global localStorage
-  }
-
   onRemoveItem(i) {
     this.setState({ layout: _.reject(this.state.layout, { i }) });
     localStorage.setItem('layout', this.state.layout);
   }
 
   onBreakpointChange(breakpoint, cols) {
-    console('BREAKPOINT CHANGE');
     this.setState({
       breakpoint,
       cols,
     });
   }
-
 
   onLayoutChange(newLayout) {
     localStorage.setItem('layout', JSON.stringify(newLayout));
@@ -141,7 +127,6 @@ class Grid extends Component {
         this.editButtonClicked();
         break;
       case 'Change Theme': // Not Working this.props.ThemeButton; break;
-        /* eslint react/prop-types: 0 */
         this.props.ThemeButton();
         break;
       case 'Add Widgets': {
@@ -195,12 +180,11 @@ class Grid extends Component {
   }
 
   addWidget(key) {
-    // TODO: Need to fix the add widget function
     const newWidget = {
       i: key,
-      x: (this.state.layout.length * 2) % (this.state.cols || 12),
+      x: (this.state.layout.length * 3) % (this.state.cols || 12),
       y: Infinity, // puts it at the bottom
-      w: 2,
+      w: 3,
       h: 2,
     };
     localStorage.setItem('layout', [...this.state.layout, ...[newWidget]]);
