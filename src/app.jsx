@@ -16,7 +16,7 @@ class App extends Component {
     chrome.storage.sync.get(['isDarkTheme'], (result) => {
       if (!result.isDarkTheme) {
         chrome.storage.sync.set({ isDarkTheme: false }, () => {
-          document.body.style = 'background: white;';
+          document.body.style = 'background: #D3D3D3;';
           this.setState({ theme: getMuiTheme(lightBaseTheme) });
         });
       } else {
@@ -33,7 +33,7 @@ class App extends Component {
     chrome.storage.sync.get(['isDarkTheme'], (result) => {
       if (result.isDarkTheme) {
         chrome.storage.sync.set({ isDarkTheme: false }, () => {
-          document.body.style = 'background: white;';
+          document.body.style = 'background: #D3D3D3;';
           this.setState({ theme: getMuiTheme(lightBaseTheme) });
         });
       } else {

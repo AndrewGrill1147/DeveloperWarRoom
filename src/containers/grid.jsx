@@ -3,6 +3,9 @@
 import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
 import ActionDelete from 'material-ui/svg-icons/action/delete';
+import ActionLockClosed from 'material-ui/svg-icons/action/lock';
+import ActionLockOpen from 'material-ui/svg-icons/action/lock-open';
+import EditorEdit from 'material-ui/svg-icons/editor/mode-edit';
 import _ from 'lodash';
 import SettingIcon from 'material-ui/svg-icons/action/settings';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
@@ -69,19 +72,20 @@ class Grid extends Component {
     super(props);
     this.editButtonClicked = this.editButtonClicked.bind(this);
     this.onLayoutChange = this.onLayoutChange.bind(this);
-    this.onAddItem = this.onAddItem.bind(this);
     this.onBreakpointChange = this.onBreakpointChange.bind(this);
     this.menuOptions = this.menuOptions.bind(this);
-    this.createMenuElement = this.createMenuElement.bind(this);
     this.elementinArray = this.elementinArray.bind(this);
     this.onLayoutChange = this.onLayoutChange.bind(this);
     this.settingsButtonClicked = this.settingsButtonClicked.bind(this);
-    let locallayout = [];
-    if (localStorage.getItem('layouts') !== null) {
-      locallayout = JSON.parse(localStorage.getItem('layouts'));
-    }
-    // I think I need this inline so I can work with the
-    // current object along with modularity for render function
+    const localValue = JSON.parse(localStorage.getItem('layout'));
+    console.log(localValue);
+    const locallayout = localValue ? localValue : [];
+    this.state = {
+      editMode: false,
+      sideBarMenu: false,
+      sideBarOpen: false,
+      layout: locallayout,
+    };
     this.SettingsMenu = () => (
       <IconMenu
         {...props}
@@ -98,18 +102,6 @@ class Grid extends Component {
         <MenuItem primaryText="Add Widgets" />
       </IconMenu>
     );
-
-    this.state = {
-      editMode: false,
-      sideBarMenu: false,
-      sideBarOpen: false,
-      // Every possible widget
-      layouts: locallayout,
-
-      // Default view when user first opens chrome extension
-
-
-    };
   }
 
   componentDidMount() {
@@ -124,31 +116,9 @@ class Grid extends Component {
 
   onRemoveItem(i) {
     console.log('removing', i);
-    this.setState({ layouts: _.reject(this.state.layouts, { i }) });
-    localStorage.setItem('layouts', this.state.layouts);
+    this.setState({ layout: _.reject(this.state.layout, { i }) });
+    localStorage.setItem('layout', this.state.layout);
   }
-
-  onAddItem(key) {
-    /* eslint no-console: 0 */
-    // return 0;
-    if (this.elementinArray(key) === false) {
-      console.log('Key not in layout, adding to list');
-      this.setState({
-      // Add a new item. It must have a unique key!
-        layouts: this.state.layouts.concat({
-          i: key,
-          x: (this.state.layouts.length * 2) % (this.state.cols || 12),
-          y: Infinity, // puts it at the bottom
-          w: 2,
-          h: 2,
-        }),
-      });
-      localStorage.setItem('layouts', this.state.layouts);
-    } else {
-      console.log('Key in layout. NOT ADDING TO LIST');
-    }
-  }
-
 
   onBreakpointChange(breakpoint, cols) {
     console.log('In onBreakpointChange');
@@ -159,26 +129,15 @@ class Grid extends Component {
   }
 
 
-  onLayoutChange(layout) {
-    localStorage.setItem('layouts', JSON.stringify(layout));
-    this.setState({ layouts: layout });
+  onLayoutChange(newLayout) {
+    localStorage.setItem('layout', JSON.stringify(newLayout));
+    this.setState({ layout: newLayout });
   }
 
   settingsButtonClicked() {
     const opened = !this.state.sideBarOpen;
     this.setState({ sideBarOpen: opened });
   }
-
-  createMenuElement(element) {
-    return (
-      <div key={element.i} data-grid={element}>
-        <List >
-          <ListItem primaryText={element.i} onClick={() => this.onAddItem(element.i)} />
-        </List>
-      </div>
-    );
-  }
-
 
   menuOptions(e, key) {
     console.log('In menuOptions');
@@ -201,8 +160,8 @@ class Grid extends Component {
   }
 
   elementinArray(key) {
-    for (let i = 0; i < this.state.layouts.length; i += 1) {
-      if (this.state.layouts[i].i === key) {
+    for (let i = 0; i < this.state.layout.length; i += 1) {
+      if (this.state.layout[i].i === key) {
         return true;
       }
     }
@@ -234,9 +193,10 @@ class Grid extends Component {
   }
 
   widgetsMenu() {
+    const context = this;
     const app = Object.keys(Widgets).map((key) => {
       console.log('widgets menu key ', key);
-      return <ListItem key={key} primaryText={key} onClick={() => { alert(key); }} />;
+      return <ListItem key={key} primaryText={key} onClick={() => { this.addWidget(key); }} />;
     });
 
     return app;
@@ -251,6 +211,8 @@ class Grid extends Component {
       w: 2,
       h: 2,
     };
+    localStorage.setItem('layout', [...this.state.layout, ...[newWidget]]);
+    console.log(`new layout: ${this.state.layout}`);
     this.setState({
       // Add a new item. It must have a unique key!
       layout: [...this.state.layout, ...[newWidget]],
@@ -278,7 +240,7 @@ class Grid extends Component {
           </Paper>
         </div>
         <GridLayout
-          layout={this.state.layouts}
+          layout={this.state.layout}
           onLayoutChange={this.onLayoutChange}
           autoSize
           width={1400}
@@ -286,7 +248,7 @@ class Grid extends Component {
           isResizable={this.state.editMode}
           {...this.props}
         >
-          {this.state.layouts.map(element => this.createElement(element))}
+          {this.state.layout.map(element => this.createElement(element))}
         </GridLayout>
 
         <Drawer open={this.state.sideBarOpen} width={200}>
@@ -300,7 +262,7 @@ class Grid extends Component {
               nestedItems={this.widgetsMenu()}
             />
             <Divider />
-            <ListItem primaryText="Toggle Edit" onClick={this.editButtonClicked} />
+            <ListItem primaryText="Toggle Edit" onClick={this.editButtonClicked} rightIcon={this.state.editMode ? <EditorEdit /> : <ActionLockClosed />} />
             <Divider />
             <ListItem primaryText="Switch Theme" onClick={this.props.ThemeButton} />
             <Divider />
