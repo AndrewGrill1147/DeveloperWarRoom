@@ -165,9 +165,14 @@ class Grid extends Component {
 
   widgetsMenu() {
     const widgetList = Object.keys(Widgets).map((key) => {
+      let bools = true;
+      if (!this.elementinArray(key)) {
+        bools = false;
+      }
       const returnVal = (<ListItem
         key={key}
         primaryText={key}
+        disabled={bools}
         onClick={() => { this.addWidget(key); }}
       />);
       return returnVal;
@@ -251,3 +256,4 @@ class Grid extends Component {
 
 
 export default Grid;
+
