@@ -106,11 +106,11 @@ class GithubWidget extends Component {
   }
 
   checkPullRequests() {
-    console.log('test');
+   //  console.log('test');
     // invoked every x minutes
     // for each REPO get all the pull requests
     this.state.reposWatching.forEach((repo) => {
-      console.log(repo);
+      // console.log(repo);
 
       this.state.githubAPI.getPullRequestsByRepo(this.mapPullRequestsToState.bind(this, repo.name), repo.name, repo.owner.login);
     });
@@ -118,16 +118,14 @@ class GithubWidget extends Component {
   }
 
   mapPullRequestsToState(reponame, resp) {
-      console.log(reponame, resp);
-      //map the resp pull requests to state pull requests var
+     // console.log(reponame, resp);
+      // map the resp pull requests to state pull requests var
       if (!resp.success) {
         return;
       }
-  
       //TODO: Compress data saved? This repo object is LARGE
       this.setState({pullRequests: resp.data});
-      console.log(this.state.pullRequests);
-
+      // console.log(this.state.pullRequests);
   }
 
   componentWillUnmount() {
@@ -136,15 +134,11 @@ class GithubWidget extends Component {
 
   /* handles the response from the githubAPI.getRepos() */
   updateReposAvailable(resp) {
-    console.log('In update repos = ', resp);
+    // console.log('In update repos = ', resp);
     if (!resp.success) {
       return;
     }
-
     // TODO: Compress data saved? This repo object is LARGE
-    const availableRepos = resp.data.map(repo => repo);
-    this.setState({ reposAvailable: availableRepos });
-    //TODO: Compress data saved? This repo object is LARGE
     let availableRepos = resp.data.map(repo => {
       return repo;
     });
