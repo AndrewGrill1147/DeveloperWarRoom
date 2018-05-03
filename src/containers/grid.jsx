@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
 import ActionDelete from 'material-ui/svg-icons/action/delete';
 import ActionLockClosed from 'material-ui/svg-icons/action/lock';
-import ActionLockOpen from 'material-ui/svg-icons/action/lock-open';
 import EditorEdit from 'material-ui/svg-icons/editor/mode-edit';
 import _ from 'lodash';
 import SettingIcon from 'material-ui/svg-icons/action/settings';
@@ -78,7 +77,6 @@ class Grid extends Component {
     this.onLayoutChange = this.onLayoutChange.bind(this);
     this.settingsButtonClicked = this.settingsButtonClicked.bind(this);
     const localValue = JSON.parse(localStorage.getItem('layout'));
-    console.log(localValue);
     const locallayout = localValue ? localValue : [];
     this.state = {
       editMode: false,
@@ -105,23 +103,20 @@ class Grid extends Component {
   }
 
   componentDidMount() {
-    console.log('In componentDidMount');
   }
 
 
   componentWillUnmount() {
     // global localStorage
-    console.log('In componentWillUnMount');
   }
 
   onRemoveItem(i) {
-    console.log('removing', i);
     this.setState({ layout: _.reject(this.state.layout, { i }) });
     localStorage.setItem('layout', this.state.layout);
   }
 
   onBreakpointChange(breakpoint, cols) {
-    console.log('In onBreakpointChange');
+    console('BREAKPOINT CHANGE');
     this.setState({
       breakpoint,
       cols,
@@ -140,7 +135,6 @@ class Grid extends Component {
   }
 
   menuOptions(e, key) {
-    console.log('In menuOptions');
     switch (key.props.primaryText) {
       case 'Edit Widgets':
         this.editButtonClicked();
@@ -169,8 +163,6 @@ class Grid extends Component {
   }
 
   createElement(element) {
-    console.log('In createElement');
-    console.log(element);
     const removeButton = this.state.editMode ?
       (
         <span
@@ -194,9 +186,7 @@ class Grid extends Component {
   }
 
   widgetsMenu() {
-    const context = this;
     const app = Object.keys(Widgets).map((key) => {
-      console.log('widgets menu key ', key);
       return <ListItem key={key} primaryText={key} onClick={() => { this.addWidget(key); }} />;
     });
 
@@ -213,7 +203,6 @@ class Grid extends Component {
       h: 2,
     };
     localStorage.setItem('layout', [...this.state.layout, ...[newWidget]]);
-    console.log(`new layout: ${this.state.layout}`);
     this.setState({
       // Add a new item. It must have a unique key!
       layout: [...this.state.layout, ...[newWidget]],
@@ -221,7 +210,6 @@ class Grid extends Component {
   }
 
   editButtonClicked() {
-    console.log('In editButtonClicked');
     const flipped = !this.state.editMode;
     this.setState({ editMode: flipped });
     if (flipped === false && this.state.sideBarMenu === true) {
@@ -230,9 +218,6 @@ class Grid extends Component {
   }
 
   render() {
-    console.log('In render function');
-    console.log(this);
-
     return (
       <div>
         <div style={horizontalHeaderBarStyle}>
