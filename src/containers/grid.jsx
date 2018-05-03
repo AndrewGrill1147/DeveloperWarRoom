@@ -170,6 +170,7 @@ class Grid extends Component {
 
   createElement(element) {
     console.log('In createElement');
+    console.log(element);
     const removeButton = this.state.editMode ?
       (
         <span
@@ -185,7 +186,7 @@ class Grid extends Component {
       <div key={element.i} data-grid={element}>
         <Paper style={style} zDepth={3}>
 
-          <span className="text">{element.i}</span>
+          {Widgets[element.i]}
           {removeButton}
         </Paper>
       </div>
