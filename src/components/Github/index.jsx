@@ -152,17 +152,20 @@ class GithubWidget extends Component {
   }
 
   onRefreshRateChange(event, index, value) {
+    if (this.timerObject !== null) {
+      //  console.log("check pull requests Never ");
+      clearInterval(this.timerObject);
+    }
+
     //  console.log('In onRefreshRateChange');
-    if (value === 0) {
-      if (this.timerObject !== null) {
-        //  console.log("check pull requests Never ");
-        clearInterval(this.timerObject);
-      }
-    } else {
+    if ( value !== 0) {
       // console.log("check pull requests every " + value + " minutes");
+      // 1 minutes = 60 sec * 1000 ms / s 
       this.timerObject = setInterval(this.checkPullRequests, value * 60000);
       this.setState({ timer: this.timerObject });
     }
+
+    this.setState({settings: {...this.state.settings, ...{refreshRate: value}}});
   }
 
   onRepoChange(itemsSelected) {
@@ -197,8 +200,7 @@ class GithubWidget extends Component {
           floatingLabelFixed
           floatingLabelText="Refresh rate"
           hintText="How often should we check Github for you?"
-          // value={this.state.settings.refreshRate}
-          value={this.state.refreshRate}
+          value={this.state.settings.refreshRate}
           onChange={this.onRefreshRateChange}
         >
           {refreshRateMenuItems}
@@ -249,6 +251,7 @@ class GithubWidget extends Component {
   }
 
   render() {
+    console.log(this.state);
     // this might be best moved into state? so we don't do this everyime *anything* changes
     const state = { ...this.state };
     const openPullRequestsList = state.reposWatching.map(repo => (
