@@ -1,8 +1,7 @@
-/* eslint-env browser */
-/* eslint react/jsx-no-bind: 0 */
 import React, { Component } from 'react';
 import { List, Subheader, Tabs, Tab, Paper, TextField, Divider } from 'material-ui';
 import TodoItem from './todoItem';
+import LocalStorageAPI from './../../helpers/localstorageAPI';
 
 const styles = {
   tabHeadline: {
@@ -49,21 +48,16 @@ class Todo extends Component {
     };
 
     // .bind(this) can be placed here
-    this.componentWillUnmount = this.componentWillUnmount.bind(this);
-  }
+    this.componentDidUpdate = this.componentDidUpdate.bind(this);
 
-  // Life cycle methods
-  componentDidMount() {
-    const savedState = localStorage.getItem(this.state.storageKey);
+    const savedState = LocalStorageAPI.get(this.state.storageKey);
     if (savedState !== null) {
-      this.setState(JSON.parse(savedState));
+      this.state = savedState;
     }
-    window.addEventListener('beforeunload', this.componentWillUnmount);
   }
 
-  componentWillUnmount() {
-    localStorage.setItem(this.state.storageKey, JSON.stringify(this.state));
-    window.removeEventListener('beforeunload', this.componentDidUpdate);
+  componentDidUpdate() {
+    LocalStorageAPI.put(this.state.storageKey, this.state);
   }
 
   onDelete(deletedTodo) {
@@ -124,15 +118,6 @@ class Todo extends Component {
       completed: false,
     };
     this.setState({ todos: [...this.state.todos, todo] });
-  }
-
-  loadState() {
-    localStorage.getItem();
-    this.alert('loading state');
-  }
-
-  saveState() {
-    this.alert('Saving state!');
   }
 
   render() {
