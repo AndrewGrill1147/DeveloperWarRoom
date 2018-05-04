@@ -23,26 +23,11 @@ const styles = {
     width: '100%',
     height: '100%',
   },
-  textField: {
-    width: '100%',
-  },
   expand: {
     width: '100%',
     height: '100%',
     maxHeight: '100%',
     overflow: 'auto',
-  },
-  dragHandle: {
-    width: '100%',
-    height: '15px',
-  },
-  headerStyle: {
-    padding: 10,
-    margin: 10,
-    display: 'inline',
-    fontFamily: 'Reenie Beanie, cursive',
-    textAlign: 'center',
-    fontSize: 20,
   },
 };
 

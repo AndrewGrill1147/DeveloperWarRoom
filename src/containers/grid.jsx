@@ -94,7 +94,7 @@ class Grid extends Component {
     const opened = !this.state.sideBarOpen;
     this.setState({ sideBarOpen: opened });
   }
-  
+
   elementinArray(key) {
     for (let i = 0; i < this.state.layout.length; i += 1) {
       if (this.state.layout[i].i === key) {
@@ -105,17 +105,18 @@ class Grid extends Component {
   }
 
   createElement(element) {
-    const removeButton = this.state.editMode ?
-      (
+    let removeButton = null;
+    if (this.state.editMode) {
+      removeButton = (
         <span
           className="remove"
           style={removeStyle}
         >
           <RemoveIcon color="grey" onClick={this.onRemoveItem.bind(this, element.i)} onKeyDown={this.handleKeyPress} />
         </span>
+      );
+    }
 
-      )
-      : null;
     return (
       <div key={element.i} data-grid={element}>
         <Paper style={style} zDepth={3}>

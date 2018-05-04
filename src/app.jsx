@@ -47,7 +47,6 @@ class App extends Component {
   render() {
     return (
       <MuiThemeProvider muiTheme={this.state.theme}>
-        {/* <SidebarMenu ThemeButton={this.themeButtonClicked} /> */}
         <Home ThemeButton={this.themeButtonClicked} />
       </MuiThemeProvider>
     );
