@@ -72,12 +72,12 @@ class Grid extends Component {
     this.onLayoutChange = this.onLayoutChange.bind(this);
     this.settingsButtonClicked = this.settingsButtonClicked.bind(this);
     const localValue = JSON.parse(localStorage.getItem('layout'));
-    const locallayout = localValue || [];
+    const localLayout = localValue || [];
     this.state = {
       editMode: false,
       sideBarMenu: false,
       sideBarOpen: false,
-      layout: locallayout,
+      layout: localLayout,
     };
   }
 
@@ -130,14 +130,11 @@ class Grid extends Component {
 
   widgetsMenu() {
     const widgetList = Object.keys(Widgets).map((key) => {
-      let bools = true;
-      if (!this.elementinArray(key)) {
-        bools = false;
-      }
+      
       const returnVal = (<ListItem
         key={key}
         primaryText={key}
-        disabled={bools}
+        disabled={this.elementinArray(key)}
         onClick={() => { this.addWidget(key); }}
       />);
       return returnVal;
@@ -220,4 +217,5 @@ class Grid extends Component {
 
 
 export default Grid;
+
 
