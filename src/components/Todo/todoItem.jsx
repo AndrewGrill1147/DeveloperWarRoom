@@ -2,6 +2,11 @@
 import React, { Component } from 'react';
 import { ListItem, Checkbox, TextField, IconButton, IconMenu, MenuItem } from 'material-ui';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import { grey400, darkBlack, lightBlack } from 'material-ui/styles/colors';
+
+/* This was all a presentational component. If we can pull out the editing to the Main Todo app
+   we can return to the presentational style
+*/
 
 const iconButtonElement = (
   <IconButton
@@ -9,7 +14,7 @@ const iconButtonElement = (
     tooltip="more"
     tooltipPosition="bottom-left"
   >
-    <MoreVertIcon color="gray" />
+    <MoreVertIcon color={grey400} />
   </IconButton>
 );
 

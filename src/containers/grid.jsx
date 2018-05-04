@@ -68,7 +68,6 @@ class Grid extends Component {
     super(props);
     this.editButtonClicked = this.editButtonClicked.bind(this);
     this.onLayoutChange = this.onLayoutChange.bind(this);
-    this.menuOptions = this.menuOptions.bind(this);
     this.elementinArray = this.elementinArray.bind(this);
     this.onLayoutChange = this.onLayoutChange.bind(this);
     this.settingsButtonClicked = this.settingsButtonClicked.bind(this);
@@ -80,27 +79,10 @@ class Grid extends Component {
       sideBarOpen: false,
       layout: locallayout,
     };
-    this.SettingsMenu = () => (
-      <IconMenu
-        {...props}
-        iconButtonElement={
-          <IconButton ><MoreVertIcon color="gray" /></IconButton>
-        }
-        targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-        onItemClick={this.menuOptions}
-        style={iconAlignment}
-      >
-        <MenuItem primaryText="Edit Widgets" />
-        <MenuItem primaryText="Change Theme" />
-        <MenuItem primaryText="Add Widgets" />
-      </IconMenu>
-    );
   }
 
   onRemoveItem(i) {
     this.setState({ layout: _.reject(this.state.layout, { i }) });
-    localStorage.setItem('layout', this.state.layout);
   }
 
   onLayoutChange(newLayout) {
@@ -112,25 +94,7 @@ class Grid extends Component {
     const opened = !this.state.sideBarOpen;
     this.setState({ sideBarOpen: opened });
   }
-
-  menuOptions(e, key) {
-    switch (key.props.primaryText) {
-      case 'Edit Widgets':
-        this.editButtonClicked();
-        break;
-      case 'Change Theme': // Not Working this.props.ThemeButton; break;
-        this.props.ThemeButton();
-        break;
-      case 'Add Widgets': {
-        this.editButtonClicked();
-        const flipped = !this.state.sideBarMenul;
-        this.setState({ sideBarMenu: flipped });
-        break;
-      }
-      default:
-    }
-  }
-
+  
   elementinArray(key) {
     for (let i = 0; i < this.state.layout.length; i += 1) {
       if (this.state.layout[i].i === key) {
@@ -192,7 +156,6 @@ class Grid extends Component {
       w: 3,
       h: 2,
     };
-    localStorage.setItem('layout', [...this.state.layout, ...[newWidget]]);
     this.setState({
       // Add a new item. It must have a unique key!
       layout: [...this.state.layout, ...[newWidget]],
@@ -228,7 +191,7 @@ class Grid extends Component {
         </GridLayout>
 
         <Drawer open={this.state.sideBarOpen} width={200}>
-          <AppBar style={menuBarStyle} title="Widgets" showMenuIconButton={false} />
+          <AppBar style={menuBarStyle} title="Settings" showMenuIconButton={false} />
 
           <List>
             <ListItem
