@@ -21,47 +21,58 @@ import { List, ListItem } from 'material-ui/List';
 import Bookmarker from './../components/bookmarker';
 import Widgets from './widgets';
 
-const fixedToBottom = {
+
+const styles = {
+fixedToBottom: {
   position: 'fixed',
   bottom: '0',
   right: '0',
   margin: '10px',
-};
-const removeStyle = {
+},
+
+removeStyle: {
   position: 'absolute',
   right: '2px',
   top: 0,
   cursor: 'pointer',
-};
-const removeIconSize = {
+},
+
+removeIconSize: {
   width: 20,
   height: 20,
-};
-const horizontalHeaderBarStyle = {
+},
+
+horizontalHeaderBarStyle: {
   display: 'inline',
   whiteSpace: 'nowrap',
-};
-const iconAlignment = {
+},
+
+iconAlignment: {
   position: 'fixed',
   top: '0',
   right: '0',
   marginTop: '8px',
-};
-const style = {
+},
+  style: {
   height: '100%',
   width: '100%',
   textAlign: 'left',
   display: 'inline-block',
-};
-const menuBarStyle = {
+},
+
+ menuBarStyle: {
   backgroundColor: 'rgb(0, 188, 212)',
+},
+
 };
 
 const RemoveIcon = props => (
-  <IconButton iconStyle={removeIconSize}>
+  <IconButton iconStyle={styles.removeIconSize}>
     <ActionDelete {...props} />
   </IconButton>
 );
+
+
 
 class Grid extends Component {
   constructor(props) {
@@ -110,7 +121,7 @@ class Grid extends Component {
       removeButton = (
         <span
           className="remove"
-          style={removeStyle}
+          style={styles.removeStyle}
         >
           <RemoveIcon color="grey" onClick={this.onRemoveItem.bind(this, element.i)} onKeyDown={this.handleKeyPress} />
         </span>
@@ -119,7 +130,7 @@ class Grid extends Component {
 
     return (
       <div key={element.i} data-grid={element}>
-        <Paper style={style} zDepth={3}>
+        <Paper style={styles.style} zDepth={3}>
 
           {Widgets[element.i]}
           {removeButton}
@@ -171,7 +182,7 @@ class Grid extends Component {
   render() {
     return (
       <div>
-        <div style={horizontalHeaderBarStyle}>
+        <div style={styles.horizontalHeaderBarStyle}>
           <Paper zDepth={2}>
             <Bookmarker />
           </Paper>
@@ -189,7 +200,7 @@ class Grid extends Component {
         </GridLayout>
 
         <Drawer open={this.state.sideBarOpen} width={200}>
-          <AppBar style={menuBarStyle} title="Settings" showMenuIconButton={false} />
+          <AppBar style={styles.menuBarStyle} title="Settings" showMenuIconButton={false} />
 
           <List>
             <ListItem
@@ -207,7 +218,7 @@ class Grid extends Component {
 
         </Drawer>
 
-        <FloatingActionButton style={fixedToBottom} onClick={this.settingsButtonClicked}>
+        <FloatingActionButton style={styles.fixedToBottom} onClick={this.settingsButtonClicked}>
           <SettingIcon />
         </FloatingActionButton>
       </div>
@@ -217,5 +228,6 @@ class Grid extends Component {
 
 
 export default Grid;
+
 
 
