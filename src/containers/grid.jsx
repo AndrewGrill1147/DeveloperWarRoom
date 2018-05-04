@@ -19,8 +19,7 @@ import Drawer from 'material-ui/Drawer';
 import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
 import Bookmarker from './../components/bookmarker';
-import Widgets from './widgets';
-
+import Widgets from './widgetRegistration';
 
 const styles = {
 fixedToBottom: {
