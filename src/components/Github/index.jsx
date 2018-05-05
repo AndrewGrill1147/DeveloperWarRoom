@@ -10,6 +10,8 @@ import GithubAPI from '../../helpers/githubAPI';
 
 // TODO: Save state.reposWatching to local storage
 // TODO: Factor out clear and setInterval calls to component functions
+// TODO: Filter PR data
+// TODO: Filter Repo data
 
 // minutes to milliseconds factor
 const CONVERSION_FACTOR = 60000;
