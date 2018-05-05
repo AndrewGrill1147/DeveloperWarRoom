@@ -1,4 +1,3 @@
-/* eslint-env browser */
 import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
@@ -8,6 +7,7 @@ import MenuItem from 'material-ui/MenuItem';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { FlatButton } from 'material-ui';
+import LocalStorageAPI from './../helpers/localstorageAPI';
 
 const iconButtonElement = (
   <IconButton
@@ -61,14 +61,17 @@ const styles = {
 class Bookmarkers extends Component {
   constructor(props) {
     super(props);
-    const localBookmarks = localStorage.getItem('bookmarks');
-    const defaultBookmarks = localBookmarks ? JSON.parse(localBookmarks) : [];
     this.state = {
-      bookmarks: defaultBookmarks,
+      bookmarks: [],
       nameInput: null,
       urlInput: null,
       dialogOpen: false,
+      storageKey: this.constructor.name,
     };
+
+    const localBookmarks = LocalStorageAPI.get(this.state.storageKey);
+    this.state.bookmarks = localBookmarks || [];
+
     this.saveClicked = this.saveClicked.bind(this);
     this.listMapping = this.listMapping.bind(this);
     this.dialogEvent = this.dialogEvent.bind(this);
@@ -77,6 +80,7 @@ class Bookmarkers extends Component {
     this.cancelDialogEvent = this.cancelDialogEvent.bind(this);
     this.saveDialogEvent = this.saveDialogEvent.bind(this);
   }
+
   dialogEvent(evt, listValue) {
     const objIndex = this.state.bookmarks.findIndex((obj => obj.id === listValue.id));
     const newBookmarks = this.state.bookmarks;
@@ -177,7 +181,7 @@ class Bookmarkers extends Component {
   }
   deleteItem(evt, listValue) {
     const newBookmarks = this.state.bookmarks.filter(bookmark => bookmark.id !== listValue.id);
-    localStorage.setItem('bookmarks', JSON.stringify(newBookmarks));
+    LocalStorageAPI.put(this.state.storageKey, newBookmarks);
     this.setState({ bookmarks: newBookmarks });
   }
   saveClicked() {
@@ -222,7 +226,7 @@ class Bookmarkers extends Component {
       nameInput: null,
       urlInput: null,
     });
-    localStorage.setItem('bookmarks', JSON.stringify(this.state.bookmarks));
+    LocalStorageAPI.put(this.state.storageKey, this.state.bookmarks);
   }
   render() {
     const actions = [

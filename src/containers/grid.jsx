@@ -1,5 +1,4 @@
 /* eslint-env browser */
-/* eslint react/jsx-no-bind: 0 */
 /* eslint react/prop-types: 0 */
 import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
@@ -12,9 +11,6 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import GridLayout from 'react-grid-layout';
 import IconButton from 'material-ui/IconButton/IconButton';
 import Paper from 'material-ui/Paper';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import MenuItem from 'material-ui/MenuItem';
-import IconMenu from 'material-ui/IconMenu/IconMenu';
 import Drawer from 'material-ui/Drawer';
 import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
