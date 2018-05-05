@@ -20,49 +20,44 @@ import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
 import Bookmarker from './../components/bookmarker';
 import Widgets from './widgetRegistration';
+import LocalStorageAPI from './../helpers/localstorageAPI';
 
 const styles = {
-fixedToBottom: {
-  position: 'fixed',
-  bottom: '0',
-  right: '0',
-  margin: '10px',
-},
-
-removeStyle: {
-  position: 'absolute',
-  right: '2px',
-  top: 0,
-  cursor: 'pointer',
-},
-
-removeIconSize: {
-  width: 20,
-  height: 20,
-},
-
-horizontalHeaderBarStyle: {
-  display: 'inline',
-  whiteSpace: 'nowrap',
-},
-
-iconAlignment: {
-  position: 'fixed',
-  top: '0',
-  right: '0',
-  marginTop: '8px',
-},
+  fixedToBottom: {
+    position: 'fixed',
+    bottom: '0',
+    right: '0',
+    margin: '10px',
+  },
+  removeStyle: {
+    position: 'absolute',
+    right: '2px',
+    top: 0,
+    cursor: 'pointer',
+  },
+  removeIconSize: {
+    width: 20,
+    height: 20,
+  },
+  horizontalHeaderBarStyle: {
+    display: 'inline',
+    whiteSpace: 'nowrap',
+  },
+  iconAlignment: {
+    position: 'fixed',
+    top: '0',
+    right: '0',
+    marginTop: '8px',
+  },
   style: {
-  height: '100%',
-  width: '100%',
-  textAlign: 'left',
-  display: 'inline-block',
-},
-
- menuBarStyle: {
-  backgroundColor: 'rgb(0, 188, 212)',
-},
-
+    height: '100%',
+    width: '100%',
+    textAlign: 'left',
+    display: 'inline-block',
+  },
+  menuBarStyle: {
+    backgroundColor: 'rgb(0, 188, 212)',
+  },
 };
 
 const RemoveIcon = props => (
@@ -72,23 +67,25 @@ const RemoveIcon = props => (
 );
 
 
-
 class Grid extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      editMode: false,
+      sideBarMenu: false,
+      sideBarOpen: false,
+      layout: [],
+      storageKey: this.constructor.name,
+    };
+
     this.editButtonClicked = this.editButtonClicked.bind(this);
     this.onLayoutChange = this.onLayoutChange.bind(this);
     this.elementinArray = this.elementinArray.bind(this);
     this.onLayoutChange = this.onLayoutChange.bind(this);
     this.settingsButtonClicked = this.settingsButtonClicked.bind(this);
-    const localValue = JSON.parse(localStorage.getItem('layout'));
-    const localLayout = localValue || [];
-    this.state = {
-      editMode: false,
-      sideBarMenu: false,
-      sideBarOpen: false,
-      layout: localLayout,
-    };
+
+    const localValue = LocalStorageAPI.get(this.state.storageKey);
+    this.state.layout = localValue || [];
   }
 
   onRemoveItem(i) {
@@ -96,7 +93,7 @@ class Grid extends Component {
   }
 
   onLayoutChange(newLayout) {
-    localStorage.setItem('layout', JSON.stringify(newLayout));
+    LocalStorageAPI.put(this.state.storageKey, newLayout);
     this.setState({ layout: newLayout });
   }
 
@@ -140,7 +137,6 @@ class Grid extends Component {
 
   widgetsMenu() {
     const widgetList = Object.keys(Widgets).map((key) => {
-      
       const returnVal = (<ListItem
         key={key}
         primaryText={key}
@@ -225,8 +221,4 @@ class Grid extends Component {
   }
 }
 
-
 export default Grid;
-
-
-
