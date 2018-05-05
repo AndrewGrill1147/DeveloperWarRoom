@@ -10,7 +10,7 @@ import GithubAPI from '../../helpers/githubAPI';
 
 const refreshRateMenuItems = [
   <MenuItem key={1} value={0} primaryText="Never" />,
-  <MenuItem key={2} value={1} primaryText="Every 1 minutes" />,
+  <MenuItem key={2} value={0.2} primaryText="Every 1 minutes" />,
   <MenuItem key={3} value={5} primaryText="Every 5 minutes" />,
   <MenuItem key={4} value={15} primaryText="Every 15 minutes" />,
   <MenuItem key={5} value={30} primaryText="Every 30 minutes" />,
@@ -33,12 +33,9 @@ class GithubWidget extends Component {
       },
 
       timer: null,
-
       storageKey: this.constructor.name,
-
       reposAvailable: [],
       reposWatching: [],
-
       pullRequests: {
         DeveloperWarRoom: [
           {
@@ -80,7 +77,6 @@ class GithubWidget extends Component {
         ],
         // ...
       },
-
     };
     this.onRepoChange = this.onRepoChange.bind(this);
     this.onRefreshRateChange = this.onRefreshRateChange.bind(this);
@@ -103,10 +99,12 @@ class GithubWidget extends Component {
   componentDidMount() {
     // console.log('In componentDidMount');
     // setTimeout(callback, time);
+
+    //TODO: setTimeout to current state settings (retrieved from storage)
   }
 
   checkPullRequests() {
-    // console.log('test');
+      console.log('inCheckPullRequest');
     // invoked every x minutes
     // for each REPO get all the pull requests
       this.state.reposWatching.forEach((repo) => {
@@ -116,14 +114,18 @@ class GithubWidget extends Component {
   }
 
   mapPullRequestsToState(reponame, resp) {
-     // console.log(reponame, resp);
+      console.log('reponame ', reponame, 'data ', resp);
       // map the resp pull requests to state pull requests var
       if (!resp.success) {
         return;
       }
-      //TODO: Compress data saved? This repo object is LARGE
-      this.setState({ pullRequests: resp.data });
-      // console.log(this.state.pullRequests);
+      
+      //TODO: Filter data saved? This repo object is LARGE
+      let updatedRepoPRs = {};
+      updatedRepoPRs[reponame] = resp.data;
+
+      //console.log('updating Pull requests to, ', {...this.state.pullRequests, ...updatedRepoPRs })
+      this.setState({ pullRequests: {...this.state.pullRequests, ...updatedRepoPRs}});
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -162,7 +164,7 @@ class GithubWidget extends Component {
       // console.log("check pull requests every " + value + " minutes");
       // 1 minutes = 60 sec * 1000 ms / s 
       this.timerObject = setInterval(this.checkPullRequests, value * 60000);
-      this.setState({ timer: this.timerObject });
+      //this.setState({ timer: this.timerObject });
     }
 
     this.setState({settings: {...this.state.settings, ...{refreshRate: value}}});
@@ -251,7 +253,7 @@ class GithubWidget extends Component {
   }
 
   render() {
-    console.log(this.state);
+    console.log('state', this.state);
     // this might be best moved into state? so we don't do this everyime *anything* changes
     const state = { ...this.state };
     const openPullRequestsList = state.reposWatching.map(repo => (
@@ -261,12 +263,15 @@ class GithubWidget extends Component {
         pullRequests={state.pullRequests[repo.name] || []}
       />
     ));
+
+    // RepoPullRequestList
+    //   -> list of PullRequest Cards []
     return (
       <div>
         <Paper>
           <Tabs>
             <Tab icon={<PullRequestIcon />}>
-              {/* openPullRequestsList */}
+              {openPullRequestsList}
             </Tab>
             <Tab icon={<SettingsIcon />}>
               {this.renderSettingsTab()}
