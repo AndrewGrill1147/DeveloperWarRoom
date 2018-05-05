@@ -20,19 +20,30 @@ const PR_FILTER = {
     created_at: ""
 }
 
-function FilterPullRequestData(pullRequest) {
-    /* returns a filtered pullRequest object in O(|keys|) time */
-    // TODO: filter sub-objects recursively
-    let filteredRequest = {};
+const REPO_FILTER = {};
 
-    Object.keys(PR_FILTER).forEach(key => {
-        if (key in pullRequest) {
-            filteredRequest[key] = pullRequest[key];
+
+function applyFilter(data, filter) {
+    let filteredData = {};
+    
+    Object.keys(filter).forEach(key => {
+        if (key in data) {
+            filteredData[key] = data[key];
         }
     });
-    return filteredRequest;
+    return filteredData;
 }
 
 
+function FilterPullRequestData(pullRequestData) {
+    /* returns a filtered pullRequest object in O(|keys|) time */
+    // TODO: filter sub-objects recursively
+    return applyFilter(pullRequestData, PR_FILTER);
+}
 
-export { FilterPullRequestData };
+function FilterRepoData(repoData) {
+    return {};
+}
+
+
+export { FilterPullRequestData, FilterRepoData };
