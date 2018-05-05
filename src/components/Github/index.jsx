@@ -7,6 +7,7 @@ import { PullRequestIcon, SettingsIcon } from './icons';
 import TextBox from './textBox';
 import LocalStorageAPI from '../../helpers/localstorageAPI';
 import GithubAPI from '../../helpers/githubAPI';
+import { FilterPullRequestData } from './dataFiltering';
 
 // TODO: Save state.reposWatching to local storage
 // TODO: Factor out clear and setInterval calls to component functions
@@ -44,48 +45,9 @@ class GithubWidget extends Component {
       storageKey: this.constructor.name,
       reposAvailable: [],
       reposWatching: [],
-      pullRequests: {
-        DeveloperWarRoom: [
-          {
-            branch: 'bug/110/update-bindings',
-            title: 'Remove bindings in the render() functions ets.',
-            body: 'Lorem ipsum dolor sit amet, ut blandit constituto deterruisset vim. Elitr ponderum instructior id has, ut unum nostrud offendit has, graecis vulputate scriptorem est id. Has vidisse repudiandae ei, mei fierent suscipiantur ad, an eam aeterno praesent. Ea reprimique omittantur mei, diam graeco menandri mel te. Mei laudem everti vivendo ei, sit ea eleifend constituto.',
-            author: {
-              name: '@rogger-rabbit',
-              avatar: 'https://vignette.wikia.nocookie.net/spongebobandfriendsadventures/images/c/c0/Cliprogerrabbit.gif/revision/latest?cb=20110625150437',
-            },
-            reviews: [],
-            comments: [],
-          },
-          {
-            branch: 'feature/99/create-ui-prototype',
-            title: 'Make the UI for the github thingy',
-            body: 'Lorem ipsum dolor sit amet, ut blandit constituto deterruisset vim. Elitr ponderum instructior id has, ut unum nostrud offendit has, graecis vulputate scriptorem est id. Has vidisse repudiandae ei, mei fierent suscipiantur ad, an eam aeterno praesent. Ea reprimique omittantur mei, diam graeco menandri mel te. Mei laudem everti vivendo ei, sit ea eleifend constituto.',
-            author: {
-              name: '@andy-keene',
-              avatar: 'https://avatars1.githubusercontent.com/u/20017363?s=400&u=ead1539b261e59b39c7ae4dbabad4ad9e27525f1&v=4',
-            },
-            reviews: [],
-            comments: [],
-          },
-          // ...
-        ],
-        MachineLearningProjects: [
-          {
-            branch: 'project/n-puzzle',
-            title: 'Prove invariant of test cases',
-            body: 'Lorem ipsum dolor sit amet, ut blandit constituto deterruisset vim. Elitr ponderum instructior id has, ut unum nostrud offendit has, graecis vulputate scriptorem est id. Has vidisse repudiandae ei, mei fierent suscipiantur ad, an eam aeterno praesent. Ea reprimique omittantur mei, diam graeco menandri mel te. Mei laudem everti vivendo ei, sit ea eleifend constituto.',
-            author: {
-              name: 'andy keene',
-              avatar: 'https://avatars1.githubusercontent.com/u/20017363?s=400&u=ead1539b261e59b39c7ae4dbabad4ad9e27525f1&v=4',
-            },
-            reviews: [],
-            comments: [],
-          },
-        ],
-        // ...
-      },
-    };
+      pullRequests: { },
+    }
+    
 
     this.onRepoChange = this.onRepoChange.bind(this);
     this.onRefreshRateChange = this.onRefreshRateChange.bind(this);
@@ -135,12 +97,10 @@ class GithubWidget extends Component {
     if (!resp.success) {
       return;
     }
-
-    // TODO: Filter data saved? This repo object is LARGE
     const updatedRepoPRs = {};
-    updatedRepoPRs[reponame] = resp.data;
+    updatedRepoPRs[reponame] = resp.data.map(FilterPullRequestData);
 
-    // console.log('updating Pull requests to, ', {...this.state.pullRequests, ...updatedRepoPRs })
+    console.log(updatedRepoPRs);
     this.setState({ pullRequests: { ...this.state.pullRequests, ...updatedRepoPRs } });
   }
 
@@ -281,7 +241,7 @@ class GithubWidget extends Component {
         <Paper>
           <Tabs>
             <Tab icon={<PullRequestIcon />}>
-              {openPullRequestsList}
+              {/* {openPullRequestsList} */}
             </Tab>
             <Tab icon={<SettingsIcon />}>
               {this.renderSettingsTab()}
