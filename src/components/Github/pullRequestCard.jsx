@@ -12,18 +12,17 @@ const PullRequestCard = props => (
     // props.pullRequest.statuses
       avatar={props.pullRequest.user.avatar_url}
       title={props.pullRequest.title}
-      subtitle={`${props.pullRequest.created_at}\n${props.pullRequest.user.login}`}
+      subtitle={`@${props.pullRequest.user.login}\n${new Date(props.pullRequest.created_at).toDateString()}\n`}
       subtitleStyle={multiLineStyle}
       actAsExpander
       showExpandableButton
     />
     <CardActions />
     <CardText expandable>
-      <h4> Status </h4> Good
-      <h4> Reviews </h4>
-      <h4> Assigned </h4>
-      <h4> Reviews </h4>
-      {'Need to add reviews'} <br />
+      <h4> Status </h4>
+      {props.pullRequest.state}
+      <h4> Assignee </h4>
+      {props.pullRequest.assignee ? props.pullRequest.assignee.login : 'No assignee'}
       <h4> Descriptions </h4>
       {props.pullRequest.body}
       <br />

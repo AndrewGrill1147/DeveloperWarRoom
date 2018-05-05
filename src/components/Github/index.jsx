@@ -42,12 +42,11 @@ class GithubWidget extends Component {
         username: null,
         oauthToken: null,
       },
-
       timer: null,
       storageKey: this.constructor.name,
       reposAvailable: [],
       reposWatching: [],
-      pullRequests: { },
+      pullRequests: {},
     }
     
 
@@ -102,6 +101,7 @@ class GithubWidget extends Component {
     const updatedRepoPRs = {};
     updatedRepoPRs[reponame] = resp.data.map(FilterPullRequestData);
 
+    // use each PRs review_url to fetch the reviews and then map the data back into the PR
     console.log(updatedRepoPRs);
     this.setState({ pullRequests: { ...this.state.pullRequests, ...updatedRepoPRs } });
   }
