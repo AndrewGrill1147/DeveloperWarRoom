@@ -9,12 +9,16 @@ import LocalStorageAPI from '../../helpers/localstorageAPI';
 import GithubAPI from '../../helpers/githubAPI';
 import { FilterPullRequestData } from './dataFiltering';
 
-// TODO: Save state.reposWatching to local storage
-// TODO: Factor out clear and setInterval calls to component functions
 // TODO: Filter PR data
 // TODO: Filter Repo data
 // TODO: Rewrite filter to filter sub objects...
 // TODO: Actually use the Github Username and Token to authenticate....
+
+// Marcella:
+// TODO: clean up comments and console logs
+// TODO: Factor out clear and setInterval calls to individual omponent functions
+// TODO: Save state.reposWatching to local storage (e.g. move to state.settings)
+
 
 // minutes to milliseconds factor
 const CONVERSION_FACTOR = 60000;
@@ -96,6 +100,7 @@ class GithubWidget extends Component {
     // console.log('reponame ', reponame, 'data ', resp);
     // map the resp pull requests to state pull requests var
     if (!resp.success) {
+      console.error(`(ERR) Github API fail: ${resp.error}`)
       return;
     }
     const updatedRepoPRs = {};
