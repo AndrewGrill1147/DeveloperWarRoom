@@ -9,15 +9,21 @@ import LocalStorageAPI from '../../helpers/localstorageAPI';
 import GithubAPI from '../../helpers/githubAPI';
 import { FilterPullRequestData } from './dataFiltering';
 
-// TODO: Filter PR data
+// Minh:
 // TODO: Filter Repo data
-// TODO: Rewrite filter to filter sub objects...
+// TODO: styling inside of pullRequestCard
+
+// Andy:
 // TODO: Actually use the Github Username and Token to authenticate....
 
 // Marcella:
 // TODO: clean up comments and console logs
 // TODO: Factor out clear and setInterval calls to individual omponent functions
 // TODO: Save state.reposWatching to local storage (e.g. move to state.settings)
+
+// Low priority:
+// TODO: Rewrite filter to filter sub objects...
+// TODO: refactor onRepoChange
 
 
 // minutes to milliseconds factor
@@ -38,7 +44,6 @@ class GithubWidget extends Component {
 
     this.timerObject = null;
     this.state = {
-      // TODO: Review, should we put this here?...
       githubAPI: new GithubAPI(),
       settings: {
         refreshRate: null, // 2
@@ -129,7 +134,6 @@ class GithubWidget extends Component {
     if (!resp.success) {
       return;
     }
-    // TODO: Compress data saved? This repo object is LARGE
     const availableRepos = resp.data.map(repo => repo);
     this.setState({ reposAvailable: availableRepos });
   }
@@ -151,7 +155,6 @@ class GithubWidget extends Component {
     /* can expand to include args, name */
     /* Is sent the current selection of repos to watch */
 
-    // TODO: Refactor
     const updatedReposWatching = [];
 
     itemsSelected.forEach((item) => {

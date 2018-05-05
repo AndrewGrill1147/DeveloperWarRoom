@@ -1,4 +1,3 @@
-
 // note: does not filter sub objects currently
 const PR_FILTER = {
     id: "",
@@ -44,6 +43,5 @@ function FilterPullRequestData(pullRequestData) {
 function FilterRepoData(repoData) {
     return {};
 }
-
 
 export { FilterPullRequestData, FilterRepoData };
