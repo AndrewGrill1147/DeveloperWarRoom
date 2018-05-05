@@ -9,9 +9,10 @@ const multiLineStyle = {
 const PullRequestCard = props => (
   <Card>
     <CardHeader
-      avatar={props.pullRequest.author.avatar}
+    // props.pullRequest.statuses
+      avatar={props.pullRequest.user.avatar_url}
       title={props.pullRequest.title}
-      subtitle={`${Date()}\n${props.pullRequest.author.name}`}
+      subtitle={`${props.pullRequest.created_at}\n${props.pullRequest.user.login}`}
       subtitleStyle={multiLineStyle}
       actAsExpander
       showExpandableButton
@@ -22,14 +23,14 @@ const PullRequestCard = props => (
       <h4> Reviews </h4>
       <h4> Assigned </h4>
       <h4> Reviews </h4>
-      {props.pullRequest.reviews.toString()} <br />
+      {'Need to add reviews'} <br />
       <h4> Descriptions </h4>
       {props.pullRequest.body}
       <br />
       <RaisedButton
         fullWidth
         secondary
-        href="github.com"
+        href={props.pullRequest.html_url}
         target="_blank"
         label="view pull request"
         labelPosition="before"

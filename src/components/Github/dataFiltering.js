@@ -1,18 +1,23 @@
+
+// note: does not filter sub objects currently
 const PR_FILTER = {
     id: "",
-    url: "",
-
+    html_url: "",
     assignee: {
         login: "",
         id: ""
         // ...
     },
-    user: {},
+    user: {
+        avatar_url: "",
+        
+    },
     body: "",
     title: "",
     number: "",
     state: "",
-    comments_url: ""
+    comments_url: "",
+    created_at: ""
 }
 
 function FilterPullRequestData(pullRequest) {

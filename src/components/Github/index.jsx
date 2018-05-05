@@ -13,6 +13,8 @@ import { FilterPullRequestData } from './dataFiltering';
 // TODO: Factor out clear and setInterval calls to component functions
 // TODO: Filter PR data
 // TODO: Filter Repo data
+// TODO: Rewrite filter to filter sub objects...
+// TODO: Actually use the Github Username and Token to authenticate....
 
 // minutes to milliseconds factor
 const CONVERSION_FACTOR = 60000;
@@ -241,7 +243,7 @@ class GithubWidget extends Component {
         <Paper>
           <Tabs>
             <Tab icon={<PullRequestIcon />}>
-              {/* {openPullRequestsList} */}
+              {openPullRequestsList}
             </Tab>
             <Tab icon={<SettingsIcon />}>
               {this.renderSettingsTab()}
