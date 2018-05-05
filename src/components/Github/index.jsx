@@ -8,9 +8,15 @@ import TextBox from './textBox';
 import LocalStorageAPI from '../../helpers/localstorageAPI';
 import GithubAPI from '../../helpers/githubAPI';
 
+// TODO: Save state.reposWatching to local storage
+// TODO: Factor out clear and setInterval calls to component functions
+
+// minutes to milliseconds factor
+const CONVERSION_FACTOR = 60000;
+
 const refreshRateMenuItems = [
   <MenuItem key={1} value={0} primaryText="Never" />,
-  <MenuItem key={2} value={0.2} primaryText="Every 1 minutes" />,
+  <MenuItem key={2} value={0.2} primaryText="Every 12 seconds" />,
   <MenuItem key={3} value={5} primaryText="Every 5 minutes" />,
   <MenuItem key={4} value={15} primaryText="Every 15 minutes" />,
   <MenuItem key={5} value={30} primaryText="Every 30 minutes" />,
@@ -78,6 +84,7 @@ class GithubWidget extends Component {
         // ...
       },
     };
+
     this.onRepoChange = this.onRepoChange.bind(this);
     this.onRefreshRateChange = this.onRefreshRateChange.bind(this);
     this.onSettingsChange = this.onSettingsChange.bind(this);
@@ -97,35 +104,42 @@ class GithubWidget extends Component {
   }
 
   componentDidMount() {
-    // console.log('In componentDidMount');
-    // setTimeout(callback, time);
+    // no refresh rate is set
+    if (!this.state.settings.refreshRate) {
+      return;
+    }
 
-    //TODO: setTimeout to current state settings (retrieved from storage)
+    this.timerObject = setInterval(
+      this.checkPullRequests,
+      this.state.settings.refreshRate * CONVERSION_FACTOR,
+    );
   }
 
   checkPullRequests() {
-      console.log('inCheckPullRequest');
-    // invoked every x minutes
-    // for each REPO get all the pull requests
-      this.state.reposWatching.forEach((repo) => {
-      this.state.githubAPI.getPullRequestsByRepo(this.mapPullRequestsToState.bind(this, repo.name), repo.name, repo.owner.login);
+    /* invoked every x minutes, polls PR info for each repo */
+    console.log('inCheckPullRequest');
+    this.state.reposWatching.forEach((repo) => {
+      this.state.githubAPI.getPullRequestsByRepo(
+        this.mapPullRequestsToState.bind(this, repo.name),
+        repo.name, repo.owner.login,
+      );
     });
     // ..then call model pull requests?
   }
 
   mapPullRequestsToState(reponame, resp) {
-      console.log('reponame ', reponame, 'data ', resp);
-      // map the resp pull requests to state pull requests var
-      if (!resp.success) {
-        return;
-      }
-      
-      //TODO: Filter data saved? This repo object is LARGE
-      let updatedRepoPRs = {};
-      updatedRepoPRs[reponame] = resp.data;
+    // console.log('reponame ', reponame, 'data ', resp);
+    // map the resp pull requests to state pull requests var
+    if (!resp.success) {
+      return;
+    }
 
-      //console.log('updating Pull requests to, ', {...this.state.pullRequests, ...updatedRepoPRs })
-      this.setState({ pullRequests: {...this.state.pullRequests, ...updatedRepoPRs}});
+    // TODO: Filter data saved? This repo object is LARGE
+    const updatedRepoPRs = {};
+    updatedRepoPRs[reponame] = resp.data;
+
+    // console.log('updating Pull requests to, ', {...this.state.pullRequests, ...updatedRepoPRs })
+    this.setState({ pullRequests: { ...this.state.pullRequests, ...updatedRepoPRs } });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -147,27 +161,21 @@ class GithubWidget extends Component {
       return;
     }
     // TODO: Compress data saved? This repo object is LARGE
-    const availableRepos = resp.data.map(repo => {
-      return repo;
-    });
+    const availableRepos = resp.data.map(repo => repo);
     this.setState({ reposAvailable: availableRepos });
   }
 
   onRefreshRateChange(event, index, value) {
     if (this.timerObject !== null) {
-      //  console.log("check pull requests Never ");
       clearInterval(this.timerObject);
     }
 
-    //  console.log('In onRefreshRateChange');
-    if ( value !== 0) {
-      // console.log("check pull requests every " + value + " minutes");
-      // 1 minutes = 60 sec * 1000 ms / s 
-      this.timerObject = setInterval(this.checkPullRequests, value * 60000);
-      //this.setState({ timer: this.timerObject });
+    if (value !== 0) {
+      // 1 minutes = 60 sec * 1000 ms / s
+      this.timerObject = setInterval(this.checkPullRequests, value * CONVERSION_FACTOR);
     }
 
-    this.setState({settings: {...this.state.settings, ...{refreshRate: value}}});
+    this.setState({ settings: { ...this.state.settings, ...{ refreshRate: value } } });
   }
 
   onRepoChange(itemsSelected) {
