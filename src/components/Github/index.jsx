@@ -56,8 +56,8 @@ class GithubWidget extends Component {
       reposAvailable: [],
       reposWatching: [],
       pullRequests: {},
-    }
-    
+    };
+
 
     this.onRepoChange = this.onRepoChange.bind(this);
     this.onRefreshRateChange = this.onRefreshRateChange.bind(this);
@@ -105,7 +105,7 @@ class GithubWidget extends Component {
     // console.log('reponame ', reponame, 'data ', resp);
     // map the resp pull requests to state pull requests var
     if (!resp.success) {
-      console.error(`(ERR) Github API fail: ${resp.error}`)
+      console.error(`(ERR) Github API fail: ${resp.error}`);
       return;
     }
     const updatedRepoPRs = {};
