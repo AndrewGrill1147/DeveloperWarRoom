@@ -7,7 +7,7 @@ import MenuItem from 'material-ui/MenuItem';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { FlatButton } from 'material-ui';
-import LocalStorageAPI from './../helpers/localstorageAPI';
+import LocalStorageAPI from './../../helpers/localstorageAPI';
 
 const iconButtonElement = (
   <IconButton

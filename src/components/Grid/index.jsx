@@ -1,5 +1,4 @@
 /* eslint-env browser */
-/* eslint react/prop-types: 0 */
 import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
 import ActionDelete from 'material-ui/svg-icons/action/delete';
@@ -14,9 +13,9 @@ import Paper from 'material-ui/Paper';
 import Drawer from 'material-ui/Drawer';
 import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
-import Bookmarker from './../components/bookmarker';
-import Widgets from './widgetRegistration';
-import LocalStorageAPI from './../helpers/localstorageAPI';
+import Bookmarker from './../../components/Bookmarker';
+import Widgets from './../../helpers/widgetRegistration';
+import LocalStorageAPI from './../../helpers/localstorageAPI';
 
 const styles = {
   fixedToBottom: {

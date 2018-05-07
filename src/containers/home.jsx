@@ -1,6 +1,5 @@
-/* eslint react/prop-types: 0 */
 import React, { Component } from 'react';
-import Grid from './../containers/grid';
+import Grid from './../components/Grid';
 
 class Home extends Component {
   constructor(props) {
