@@ -1,4 +1,3 @@
-/* eslint react/prop-types: 0 */
 import React, { Component } from 'react';
 import { ListItem, Checkbox, TextField, IconButton, IconMenu, MenuItem } from 'material-ui';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';

@@ -112,8 +112,8 @@ class Bookmarkers extends Component {
   rightIconMenu(listValue) {
     return (
       <IconMenu iconButtonElement={iconButtonElement} style={styles.buttonAlignment}>
-        <MenuItem key='edit' onClick={evt => this.dialogEvent(evt, listValue)}>Edit</MenuItem>
-        <MenuItem key='delete' onClick={evt => this.deleteItem(evt, listValue)}>Delete</MenuItem>
+        <MenuItem key="edit" onClick={evt => this.dialogEvent(evt, listValue)}>Edit</MenuItem>
+        <MenuItem key="delete" onClick={evt => this.deleteItem(evt, listValue)}>Delete</MenuItem>
       </IconMenu>
     );
   }
@@ -138,7 +138,7 @@ class Bookmarkers extends Component {
         onClick={evt => this.cancelDialogEvent(evt, listValue)}
       />,
       <FlatButton
-        key="save-button"      
+        key="save-button"
         label="Save"
         primary
         keyboardFocused
