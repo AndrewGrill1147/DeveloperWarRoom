@@ -7,7 +7,7 @@ import React from 'react';
 function Popup() {
   return (
     <div>
-      Hello World!
+      This is the popup.html page!
       <div id="links">
         <a href="app.html" target="_blank">Application</a>
       </div>
