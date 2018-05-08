@@ -32,9 +32,9 @@ const styles = {
     color: 'white',
     marginBottom: '15px',
     textAlign: 'center',
-    margin: '5px'
-  }
-}
+    margin: '5px',
+  },
+};
 
 
 // minutes to milliseconds factor
@@ -76,28 +76,6 @@ class GithubWidget extends Component {
     this.checkPullRequests = this.checkPullRequests.bind(this);
   }
 
-  setPolling(rate = null) {
-    /* starts polling github / prioritizes rate parameter over state.settings */
-    if (!rate && !this.state.settings.refreshRate) {
-      return;
-    }
-    this.clearPolling();
-    let refreshRate = rate || this.state.settings.refreshRate;
-    let newTimerObject = setInterval(
-      this.checkPullRequests,
-      refreshRate * CONVERSION_FACTOR
-    )
-    this.setState({timer: newTimerObject});
-  }
-
-  clearPolling() {
-    if (!this.state.timer) {
-      return;
-    }
-    clearInterval(this.state.timer);
-    this.setState({timer: null});
-  }
-
   componentWillMount() {
     /* retrieves settings from storage */
     const savedSettings = LocalStorageAPI.get(this.state.storageKey);
@@ -113,43 +91,20 @@ class GithubWidget extends Component {
     this.setPolling();
   }
 
-  checkPullRequests() {
-    /* invoked every x minutes, polls PR info for each repo */
-    console.info('polling github...');
-    this.state.reposWatching.forEach((repo) => {
-      //TODO: check auth status?
-      this.state.githubAPI.getPullRequestsByRepo(
-        this.mapPullRequestsToState.bind(this, repo.name),
-        repo.name, repo.owner.login,
-      );
-    });
-  }
-
-  mapPullRequestsToState(reponame, resp) {
-    /* map the github PR response to state.pullRequests*/
-    if (!resp.success) {
-      //trigger reRender to show error message
-      this.setState({githubFailed: true});
-      console.error(`(ERR) Github API fail: ${resp.error}`);
-      return;
-    }
-    const updatedRepoPRs = {};
-    updatedRepoPRs[reponame] = resp.data.map(FilterPullRequestData);
-
-    // use each PRs review_url to fetch the reviews and then map the data back into the PR
-    this.setState({ pullRequests: { ...this.state.pullRequests, ...updatedRepoPRs } });
-  }
-
   componentDidUpdate(prevProps, prevState) {
     /* saves state to local storage iff settings updated */
     if (_.isEqual(prevState.settings, { ...this.state.settings })) {
       return;
     }
-    
+
     // update github creds (object refference allows polling to continue)
-    if (this.state.settings.username !== prevState.settings.username || this.state.settings.oauthToken !== prevState.settings.oauthToken) {
-//      console.log(`updating github API creds! w/ ${currOathToken} ${currUsername}` );
-      this.state.githubAPI.setCredentials(this.state.settings.username, this.state.settings.oauthToken);
+    if (this.state.settings.username !== prevState.settings.username
+        || this.state.settings.oauthToken !== prevState.settings.oauthToken) {
+      //      console.log(`updating github API creds! w/ ${currOathToken} ${currUsername}` );
+      this.state.githubAPI.setCredentials(
+        this.state.settings.username,
+        this.state.settings.oauthToken,
+      );
       this.state.githubAPI.getRepos(this.updateReposAvailable);
     }
     LocalStorageAPI.put(this.state.storageKey, this.state.settings);
@@ -157,15 +112,6 @@ class GithubWidget extends Component {
 
   componentWillUnmount() {
     this.setPolling();
-  }
-
-  updateReposAvailable(resp) {
-    /* handles the response from the githubAPI.getRepos() */
-    if (!resp.success) {
-      return;
-    }
-    const availableRepos = resp.data.map(repo => repo);
-    this.setState({ reposAvailable: availableRepos });
   }
 
   onRefreshRateChange(event, index, value) {
@@ -198,6 +144,64 @@ class GithubWidget extends Component {
     const settingsSubset = {};
     settingsSubset[key] = newValue;
     this.setState({ settings: { ...this.state.settings, ...settingsSubset } });
+  }
+
+  setPolling(rate = null) {
+    /* starts polling github / prioritizes rate parameter over state.settings */
+    if (!rate && !this.state.settings.refreshRate) {
+      return;
+    }
+    this.clearPolling();
+    const refreshRate = rate || this.state.settings.refreshRate;
+    const newTimerObject = setInterval(
+      this.checkPullRequests,
+      refreshRate * CONVERSION_FACTOR,
+    );
+    this.setState({ timer: newTimerObject });
+  }
+
+  clearPolling() {
+    if (!this.state.timer) {
+      return;
+    }
+    clearInterval(this.state.timer);
+    this.setState({ timer: null });
+  }
+
+  checkPullRequests() {
+    /* invoked every x minutes, polls PR info for each repo */
+    console.info('polling github...');
+    this.state.reposWatching.forEach((repo) => {
+      // TODO: check auth status?
+      this.state.githubAPI.getPullRequestsByRepo(
+        this.mapPullRequestsToState.bind(this, repo.name),
+        repo.name, repo.owner.login,
+      );
+    });
+  }
+
+  mapPullRequestsToState(reponame, resp) {
+    /* map the github PR response to state.pullRequests */
+    if (!resp.success) {
+      // trigger reRender to show error message
+      this.setState({ githubFailed: true });
+      console.error(`(ERR) Github API fail: ${resp.error}`);
+      return;
+    }
+    const updatedRepoPRs = {};
+    updatedRepoPRs[reponame] = resp.data.map(FilterPullRequestData);
+
+    // use each PRs review_url to fetch the reviews and then map the data back into the PR
+    this.setState({ pullRequests: { ...this.state.pullRequests, ...updatedRepoPRs } });
+  }
+
+  updateReposAvailable(resp) {
+    /* handles the response from the githubAPI.getRepos() */
+    if (!resp.success) {
+      return;
+    }
+    const availableRepos = resp.data.map(repo => repo);
+    this.setState({ reposAvailable: availableRepos });
   }
 
   renderSettingsTab() {
@@ -272,7 +276,11 @@ class GithubWidget extends Component {
     let errorMessage = null;
 
     if (!state.githubAPI.isAuthenticated) {
-      errorMessage = (<div style={styles.errorMessage}> Uh oh! We can't seem to reach Github right now </div>);
+      errorMessage = (
+        <div style={styles.errorMessage}>
+          Uh oh. We can&apos;t seem to reach Github right now
+        </div>
+      );
     }
 
     return (

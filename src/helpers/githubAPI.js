@@ -1,10 +1,10 @@
-
+/* global fetch */
 import buffer from 'buffer';
 
 class GithubAPI {
   constructor(username, oathToken) {
-    this.isAuthenticated = false;    
-    this.setCredentials(username || '', oathToken || '')
+    this.isAuthenticated = false;
+    this.setCredentials(username || '', oathToken || '');
   }
 
   setCredentials(username, oathToken) {
@@ -14,7 +14,7 @@ class GithubAPI {
       Authorization: `Basic ${this.creds}`,
     };
     // check the auth piece
-    this.get('https://api.github.com/user', this.setAuth.bind(this));    
+    this.get('https://api.github.com/user', this.setAuth.bind(this));
   }
 
   setAuth(resp) {
@@ -31,14 +31,6 @@ class GithubAPI {
     this.get(url, callback);
   }
 
-  getPushEvents() {
-    const url = `https://api.github.com/users/${this.username}/received_events`;
-  }
-
-  getPullRequestById(id) {
-    const url = `https://api.github.com/users/${this.username}/received_events`;
-  }
-
   /* Get url and return Error or Data to call back */
   get(url, callback) {
     fetch(url, {
@@ -47,14 +39,11 @@ class GithubAPI {
       if (response.status >= 200 && response.status < 300) {
         return response;
       }
-      throw {
-        badCredentials: response.status === 401,
-        unknownError: response.status !== 401,
-      };
+      throw response;
     }).then(response => response.json())
       .then((response) => {
       // return to caller, success!
-        this.isAuthenticated = true,      
+        this.isAuthenticated = true;
         callback({
           success: true,
           data: response,
@@ -62,7 +51,7 @@ class GithubAPI {
         });
       })
       .catch((error) => {
-        this.isAuthenticated = false,
+        this.isAuthenticated = false;
         callback({
           success: false,
           data: {},
