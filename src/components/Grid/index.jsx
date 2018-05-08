@@ -78,6 +78,7 @@ class Grid extends Component {
     this.elementinArray = this.elementinArray.bind(this);
     this.onLayoutChange = this.onLayoutChange.bind(this);
     this.settingsButtonClicked = this.settingsButtonClicked.bind(this);
+    this.setStrikethrough = this.setStrikethrough.bind(this);
 
     const localValue = LocalStorageAPI.get(this.state.storageKey);
     this.state.layout = localValue || [];
@@ -95,6 +96,13 @@ class Grid extends Component {
   settingsButtonClicked() {
     const opened = !this.state.sideBarOpen;
     this.setState({ sideBarOpen: opened });
+  }
+
+  setStrikethrough(key) {
+    if (this.elementinArray(key)) {
+      return { textDecorationLine: 'line-through' };
+    }
+    return {};
   }
 
   elementinArray(key) {
@@ -137,6 +145,7 @@ class Grid extends Component {
         primaryText={key}
         disabled={this.elementinArray(key)}
         onClick={() => { this.addWidget(key); }}
+        style={this.setStrikethrough(key)}
       />);
       return returnVal;
     });
