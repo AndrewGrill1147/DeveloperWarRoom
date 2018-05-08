@@ -3,14 +3,6 @@ import buffer from 'buffer';
 
 class GithubAPI {
   constructor(username, oathToken) {
-    /*
-    this.username = 'andy-keene';
-    this.password = '84d0b85f5fb66e37b2a15061f35485c5701a2a8f';
-    this.creds = new buffer.Buffer(`${this.username}:${this.password}`).toString('base64');
-    this.headers = {
-      Authorization: `Basic ${this.creds}`,
-    };
-    */
     this.isAuthenticated = false;    
     this.setCredentials(username || '', oathToken || '')
   }

@@ -445,7 +445,4 @@ function FilterRepoData(repoData) {
   return {};
 }
 
-
-//console.log(recApplyFilter(ApiData, PR_FILTER));
-
 export { FilterPullRequestData, FilterRepoData };

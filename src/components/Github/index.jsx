@@ -14,16 +14,27 @@ import { FilterPullRequestData } from './dataFiltering';
 // TODO: styling inside of pullRequestCard
 
 // Andy:
-// TODO: Actually use the Github Username and Token to authenticate....
+// DONE: Actually use the Github Username and Token to authenticate....
 
 // Marcella:
 // TODO: clean up comments and console logs
-// TODO: Factor out clear and setInterval calls to individual omponent functions
+// DONE: Factor out clear and setInterval calls to individual omponent functions
 // TODO: Save state.reposWatching to local storage (e.g. move to state.settings)
 
 // Low priority:
 // TODO: Rewrite filter to filter sub objects...
 // TODO: refactor onRepoChange
+
+const styles = {
+  errorMessage: {
+    padding: '20px',
+    backgroundColor: '#f44336',
+    color: 'white',
+    marginBottom: '15px',
+    textAlign: 'center',
+    margin: '5px'
+  }
+}
 
 
 // minutes to milliseconds factor
@@ -42,11 +53,10 @@ class GithubWidget extends Component {
   constructor(props) {
     super(props);
 
-    this.timerObject = null;
     this.state = {
       githubAPI: new GithubAPI(),
       settings: {
-        refreshRate: null, // 2
+        refreshRate: null,
         refreshRateOptions: [null, 1, 5, 15, 30, 60],
         username: null,
         oauthToken: null,
@@ -66,15 +76,16 @@ class GithubWidget extends Component {
     this.checkPullRequests = this.checkPullRequests.bind(this);
   }
 
-  setPolling() {
-    console.log('set polling');
-    if (!this.state.settings.refreshRate) {
+  setPolling(rate = null) {
+    /* starts polling github / prioritizes rate parameter over state.settings */
+    if (!rate && !this.state.settings.refreshRate) {
       return;
     }
     this.clearPolling();
+    let refreshRate = rate || this.state.settings.refreshRate;
     let newTimerObject = setInterval(
       this.checkPullRequests,
-      this.state.settings.refreshRate * CONVERSION_FACTOR
+      refreshRate * CONVERSION_FACTOR
     )
     this.setState({timer: newTimerObject});
   }
@@ -99,20 +110,12 @@ class GithubWidget extends Component {
   }
 
   componentDidMount() {
-    // no refresh rate is set
-    if (!this.state.settings.refreshRate) {
-      return;
-    }
-
-    this.timerObject = setInterval(
-      this.checkPullRequests,
-      this.state.settings.refreshRate * CONVERSION_FACTOR,
-    );
+    this.setPolling();
   }
 
   checkPullRequests() {
     /* invoked every x minutes, polls PR info for each repo */
-    console.log('inCheckPullRequest');
+    console.info('polling github...');
     this.state.reposWatching.forEach((repo) => {
       //TODO: check auth status?
       this.state.githubAPI.getPullRequestsByRepo(
@@ -123,9 +126,10 @@ class GithubWidget extends Component {
   }
 
   mapPullRequestsToState(reponame, resp) {
-    // console.log('reponame ', reponame, 'data ', resp);
-    // map the resp pull requests to state pull requests var
+    /* map the github PR response to state.pullRequests*/
     if (!resp.success) {
+      //trigger reRender to show error message
+      this.setState({githubFailed: true});
       console.error(`(ERR) Github API fail: ${resp.error}`);
       return;
     }
@@ -133,7 +137,6 @@ class GithubWidget extends Component {
     updatedRepoPRs[reponame] = resp.data.map(FilterPullRequestData);
 
     // use each PRs review_url to fetch the reviews and then map the data back into the PR
-    console.log(updatedRepoPRs);
     this.setState({ pullRequests: { ...this.state.pullRequests, ...updatedRepoPRs } });
   }
 
@@ -142,24 +145,18 @@ class GithubWidget extends Component {
     if (_.isEqual(prevState.settings, { ...this.state.settings })) {
       return;
     }
-
-    //check whether username or 
-    const oldUsername = prevState.settings.username;
-    const currUsername = this.state.settings.username;
-    const oldOathToken = prevState.settings.oauthToken;
-    const currOathToken = this.state.settings.oauthToken;
     
-    if (oldUsername !== currUsername || oldOathToken !== currOathToken) {
-      //update github api calls
-      console.log(`updating github API credS! w/ ${currOathToken} ${currUsername}` );
-      this.state.githubAPI.setCredentials(currUsername, currOathToken);
+    // update github creds (object refference allows polling to continue)
+    if (this.state.settings.username !== prevState.settings.username || this.state.settings.oauthToken !== prevState.settings.oauthToken) {
+//      console.log(`updating github API creds! w/ ${currOathToken} ${currUsername}` );
+      this.state.githubAPI.setCredentials(this.state.settings.username, this.state.settings.oauthToken);
       this.state.githubAPI.getRepos(this.updateReposAvailable);
     }
     LocalStorageAPI.put(this.state.storageKey, this.state.settings);
   }
 
   componentWillUnmount() {
-    clearInterval(this.timerObject);
+    this.setPolling();
   }
 
   updateReposAvailable(resp) {
@@ -172,11 +169,10 @@ class GithubWidget extends Component {
   }
 
   onRefreshRateChange(event, index, value) {
-    if (value !== 0) {
-      // 1 minutes = 60 sec * 1000 ms / s
-      //this.timerObject = setInterval(this.checkPullRequests, value * CONVERSION_FACTOR);
-      console.log('calling set polling...');
-      this.setPolling();
+    if (value === 0) {
+      this.clearPolling();
+    } else {
+      this.setPolling(value);
     }
     this.setState({ settings: { ...this.state.settings, ...{ refreshRate: value } } });
   }
@@ -202,8 +198,6 @@ class GithubWidget extends Component {
     const settingsSubset = {};
     settingsSubset[key] = newValue;
     this.setState({ settings: { ...this.state.settings, ...settingsSubset } });
-
-    //TODO: this should go somewhere better, but not in didUpdate
   }
 
   renderSettingsTab() {
@@ -275,15 +269,18 @@ class GithubWidget extends Component {
         pullRequests={state.pullRequests[repo.name] || []}
       />
     ));
+    let errorMessage = null;
 
-    // RepoPullRequestList
-    //   -> list of PullRequest Cards []
+    if (!state.githubAPI.isAuthenticated) {
+      errorMessage = (<div style={styles.errorMessage}> Uh oh! We can't seem to reach Github right now </div>);
+    }
+
     return (
       <div>
         <Paper>
           <Tabs>
             <Tab icon={<PullRequestIcon />}>
-              {this.state.githubAPI.isAuthenticated ? null : 'FAILING TO GET github'}
+              {errorMessage}
               {openPullRequestsList}
             </Tab>
             <Tab icon={<SettingsIcon />}>
