@@ -66,13 +66,34 @@ class GithubWidget extends Component {
     this.checkPullRequests = this.checkPullRequests.bind(this);
   }
 
+  setPolling() {
+    console.log('set polling');
+    if (!this.state.settings.refreshRate) {
+      return;
+    }
+    this.clearPolling();
+    let newTimerObject = setInterval(
+      this.checkPullRequests,
+      this.state.settings.refreshRate * CONVERSION_FACTOR
+    )
+    this.setState({timer: newTimerObject});
+  }
+
+  clearPolling() {
+    if (!this.state.timer) {
+      return;
+    }
+    clearInterval(this.state.timer);
+    this.setState({timer: null});
+  }
+
   componentWillMount() {
     /* retrieves settings from storage */
     const savedSettings = LocalStorageAPI.get(this.state.storageKey);
     if (savedSettings) {
       this.setState({ settings: savedSettings });
+      this.state.githubAPI.setCredentials(savedSettings.username, savedSettings.oauthToken);
     }
-    // console.log('In componentWillMount');
     // get repos
     this.state.githubAPI.getRepos(this.updateReposAvailable);
   }
@@ -93,12 +114,12 @@ class GithubWidget extends Component {
     /* invoked every x minutes, polls PR info for each repo */
     console.log('inCheckPullRequest');
     this.state.reposWatching.forEach((repo) => {
+      //TODO: check auth status?
       this.state.githubAPI.getPullRequestsByRepo(
         this.mapPullRequestsToState.bind(this, repo.name),
         repo.name, repo.owner.login,
       );
     });
-    // ..then call model pull requests?
   }
 
   mapPullRequestsToState(reponame, resp) {
@@ -121,6 +142,19 @@ class GithubWidget extends Component {
     if (_.isEqual(prevState.settings, { ...this.state.settings })) {
       return;
     }
+
+    //check whether username or 
+    const oldUsername = prevState.settings.username;
+    const currUsername = this.state.settings.username;
+    const oldOathToken = prevState.settings.oauthToken;
+    const currOathToken = this.state.settings.oauthToken;
+    
+    if (oldUsername !== currUsername || oldOathToken !== currOathToken) {
+      //update github api calls
+      console.log(`updating github API credS! w/ ${currOathToken} ${currUsername}` );
+      this.state.githubAPI.setCredentials(currUsername, currOathToken);
+      this.state.githubAPI.getRepos(this.updateReposAvailable);
+    }
     LocalStorageAPI.put(this.state.storageKey, this.state.settings);
   }
 
@@ -128,9 +162,8 @@ class GithubWidget extends Component {
     clearInterval(this.timerObject);
   }
 
-  /* handles the response from the githubAPI.getRepos() */
   updateReposAvailable(resp) {
-    // console.log('In update repos = ', resp);
+    /* handles the response from the githubAPI.getRepos() */
     if (!resp.success) {
       return;
     }
@@ -139,15 +172,12 @@ class GithubWidget extends Component {
   }
 
   onRefreshRateChange(event, index, value) {
-    if (this.timerObject !== null) {
-      clearInterval(this.timerObject);
-    }
-
     if (value !== 0) {
       // 1 minutes = 60 sec * 1000 ms / s
-      this.timerObject = setInterval(this.checkPullRequests, value * CONVERSION_FACTOR);
+      //this.timerObject = setInterval(this.checkPullRequests, value * CONVERSION_FACTOR);
+      console.log('calling set polling...');
+      this.setPolling();
     }
-
     this.setState({ settings: { ...this.state.settings, ...{ refreshRate: value } } });
   }
 
@@ -172,6 +202,8 @@ class GithubWidget extends Component {
     const settingsSubset = {};
     settingsSubset[key] = newValue;
     this.setState({ settings: { ...this.state.settings, ...settingsSubset } });
+
+    //TODO: this should go somewhere better, but not in didUpdate
   }
 
   renderSettingsTab() {
@@ -251,6 +283,7 @@ class GithubWidget extends Component {
         <Paper>
           <Tabs>
             <Tab icon={<PullRequestIcon />}>
+              {this.state.githubAPI.isAuthenticated ? null : 'FAILING TO GET github'}
               {openPullRequestsList}
             </Tab>
             <Tab icon={<SettingsIcon />}>

@@ -1,22 +1,32 @@
 
 import buffer from 'buffer';
 
-class GithubApi {
-  constructor() {
-    this.username = 'GroupCWR';
-    this.password = 'GroupCWR000';
+class GithubAPI {
+  constructor(username, oathToken) {
+    /*
+    this.username = 'andy-keene';
+    this.password = '84d0b85f5fb66e37b2a15061f35485c5701a2a8f';
     this.creds = new buffer.Buffer(`${this.username}:${this.password}`).toString('base64');
     this.headers = {
       Authorization: `Basic ${this.creds}`,
     };
-    this.isAuthenticated = false;
+    */
+    this.isAuthenticated = false;    
+    this.setCredentials(username || '', oathToken || '')
+  }
 
-    this.get('https://api.github.com/user', this.setAuth.bind(this));
+  setCredentials(username, oathToken) {
+    this.username = username;
+    this.creds = new buffer.Buffer(`${username}:${oathToken}`).toString('base64');
+    this.headers = {
+      Authorization: `Basic ${this.creds}`,
+    };
+    // check the auth piece
+    this.get('https://api.github.com/user', this.setAuth.bind(this));    
   }
 
   setAuth(resp) {
     this.isAuthenticated = resp.success;
-    // console.log('Authenticated = ', this.isAuthenticated);
   }
 
   getRepos(callback) {
@@ -52,6 +62,7 @@ class GithubApi {
     }).then(response => response.json())
       .then((response) => {
       // return to caller, success!
+        this.isAuthenticated = true,      
         callback({
           success: true,
           data: response,
@@ -59,6 +70,7 @@ class GithubApi {
         });
       })
       .catch((error) => {
+        this.isAuthenticated = false,
         callback({
           success: false,
           data: {},
@@ -68,4 +80,4 @@ class GithubApi {
   }
 }
 
-export default GithubApi;
+export default GithubAPI;
