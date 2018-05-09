@@ -5,6 +5,10 @@
   background-color: aqua;
 }
 
+.input {
+  width: 100%;
+}
+
 /*
  * react-grid-layout styles.css
  */
