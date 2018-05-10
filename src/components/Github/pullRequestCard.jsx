@@ -9,7 +9,7 @@ const multiLineStyle = {
 const PullRequestCard = props => (
   <Card>
     <CardHeader
-    // props.pullRequest.statuses
+      // props.pullRequest.statuses
       avatar={props.pullRequest.user.avatar_url}
       title={props.pullRequest.title}
       subtitle={`@${props.pullRequest.user.login}\n${new Date(props.pullRequest.created_at).toDateString()}\n`}
@@ -19,12 +19,18 @@ const PullRequestCard = props => (
     />
     <CardActions />
     <CardText expandable>
-      <h4> Status </h4>
-      {props.pullRequest.state}
-      <h4> Assignee </h4>
-      {props.pullRequest.assignee ? props.pullRequest.assignee.login : 'No assignee'}
-      <h4> Descriptions </h4>
-      {props.pullRequest.body}
+      <header>
+        <h4>Status: </h4>
+        <span>{props.pullRequest.state}</span>
+      </header>
+      <header>
+        <h4> Assignee </h4>
+        <span> {props.pullRequest.assignee ? props.pullRequest.assignee.login : 'No assignee'} </span>
+      </header>
+      <header>
+        <h4> Descriptions </h4>
+        <span>{props.pullRequest.body}</span>
+      </header>
       <br />
       <RaisedButton
         fullWidth
@@ -38,6 +44,5 @@ const PullRequestCard = props => (
     </CardText>
   </Card>
 );
-
 
 export default PullRequestCard;

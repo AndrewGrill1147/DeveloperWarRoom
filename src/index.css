@@ -5,6 +5,9 @@
   background-color: aqua;
 }
 
+header > h4 { display: inline-block; }
+header span { margin-left: 10px; }
+
 /*
  * react-grid-layout styles.css
  */
