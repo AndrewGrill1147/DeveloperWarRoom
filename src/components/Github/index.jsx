@@ -7,7 +7,7 @@ import { PullRequestIcon, SettingsIcon } from './icons';
 import TextBox from './textBox';
 import LocalStorageAPI from '../../helpers/localstorageAPI';
 import GithubAPI from '../../helpers/githubAPI';
-import { FilterPullRequestData } from './dataFiltering';
+import { FilterPullRequestData, FilterRepoData } from './dataFiltering';
 
 // Minh:
 // TODO: Filter Repo data
@@ -78,11 +78,13 @@ class GithubWidget extends Component {
 
   componentWillMount() {
     /* retrieves settings from storage */
-    const savedSettings = LocalStorageAPI.get(this.state.storageKey);
-    if (savedSettings) {
+   const savedSettings = LocalStorageAPI.get(this.state.storageKey);
+  
+   if (savedSettings) {
       this.setState({ settings: savedSettings });
       this.state.githubAPI.setCredentials(savedSettings.username, savedSettings.oauthToken);
     }
+    // this.state.githubAPI.setCredentials("GroupCWR", "GroupCWR000");
     // get repos
     this.state.githubAPI.getRepos(this.updateReposAvailable);
   }
@@ -143,6 +145,8 @@ class GithubWidget extends Component {
     /* updates settings with ...{key: newvalue} */
     const settingsSubset = {};
     settingsSubset[key] = newValue;
+    console.log(settingsSubset[key]);
+
     this.setState({ settings: { ...this.state.settings, ...settingsSubset } });
   }
 
@@ -200,8 +204,9 @@ class GithubWidget extends Component {
     if (!resp.success) {
       return;
     }
-    const availableRepos = resp.data.map(repo => repo);
-    this.setState({ reposAvailable: availableRepos });
+    const filteredRepos = resp.data.map(FilterRepoData);
+    console.log(filteredRepos);
+    this.setState({ reposAvailable: filteredRepos });
   }
 
   renderSettingsTab() {
