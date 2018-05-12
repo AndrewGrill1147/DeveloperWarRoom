@@ -9,22 +9,6 @@ import LocalStorageAPI from '../../helpers/localstorageAPI';
 import GithubAPI from '../../helpers/githubAPI';
 import { FilterPullRequestData, FilterRepoData } from './dataFiltering';
 
-// Minh:
-// TODO: Filter Repo data
-// TODO: styling inside of pullRequestCard
-
-// Andy:
-// DONE: Actually use the Github Username and Token to authenticate....
-
-// Marcella:
-// TODO: clean up comments and console logs
-// DONE: Factor out clear and setInterval calls to individual omponent functions
-// TODO: Save state.reposWatching to local storage (e.g. move to state.settings)
-
-// Low priority:
-// TODO: Rewrite filter to filter sub objects...
-// TODO: refactor onRepoChange
-
 const styles = {
   errorMessage: {
     padding: '20px',
@@ -128,6 +112,8 @@ class GithubWidget extends Component {
 
     const updatedReposWatching = [];
 
+    console.log('items selected', itemsSelected)
+
     itemsSelected.forEach((item) => {
       const matchingRepos = this.state.reposAvailable.filter(repo => repo.id === item.value);
 
@@ -220,6 +206,7 @@ class GithubWidget extends Component {
         <TextBox
           fullWidth
           floatingLabelFixed
+          savedvalue={this.state.settings.oauthToken}
           floatingLabelText="Github Token"
           settingskey="oauthToken"
           value={this.state.settings.oauthToken || ''}
@@ -230,6 +217,7 @@ class GithubWidget extends Component {
         <TextBox
           fullWidth
           floatingLabelFixed
+          savedvalue={this.state.settings.username}
           floatingLabelText="Username"
           settingskey="username"
           value={this.state.settings.username || ''}
@@ -290,6 +278,7 @@ class GithubWidget extends Component {
               {openPullRequestsList}
             </Tab>
             <Tab icon={<SettingsIcon />}>
+              {errorMessage}
               {this.renderSettingsTab()}
             </Tab>
           </Tabs>

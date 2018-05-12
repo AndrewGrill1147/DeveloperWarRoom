@@ -30,22 +30,23 @@ class TextBox extends Component {
     const key = this.props.settingskey;
     if (key && val) {
       this.props.onSubmit(key, val);
-      // this.setState({ value: '' });
     }
   }
 
   render() {
-    // note: settingskey prop gets passed all the way down to DOM element
+    // note: settingskey, savedvalued prop gets passed all the way down to DOM element :/
     return (
       <TextField
         {...this.props}
         value={this.state.value}
         onChange={this.onChange}
         onKeyDown={this.onKeyDown}
+        errorText={this.state.value !== this.props.savedvalue ?  'This value is not saved' : null}
       />
     );
   }
 }
+
 
 
 export default TextBox;
