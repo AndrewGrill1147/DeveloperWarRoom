@@ -1,4 +1,47 @@
-// note: does not filter sub objects currently
+
+/*
+  How to construct a filter,
+  const NAME_FILTER = {    
+  }
+
+  if a key maps to a sub object, {}, then the subobject will
+  be filtered according to the keys it holds. If you would rather not
+  filter recursively, or for any key with a non-{} value, the entire value
+  will be assigned in the filter object.
+
+  e.g
+
+  given, 
+  data = {
+    key: {
+      one: 1,
+      two: 2,
+      three: 3
+    }
+  }
+
+  a filter of,
+  {
+    key: ''
+  }
+  
+  will return a clone of data
+
+  and,
+  {
+    key: {
+      one: ''
+    }
+  }
+
+  will return
+  {
+    key: {
+      one: 1
+    }
+  }
+*/
+
 const PR_FILTER = {
   id: '',
   html_url: '',
@@ -24,11 +67,13 @@ const REPO_FILTER = {
 	id: "",
 	name: "",
 	owner: {
+    name: "",
+    login: ""
 	}
 
 };
 
-function applyFilter(data, filter) {
+function basicApplyFilter(data, filter) {
   const filteredData = {};
 
   Object.keys(filter).forEach((key) => {
@@ -43,7 +88,7 @@ function isObject(object) {
   return object !== null && typeof (object) === 'object' && !Array.isArray(object);
 }
 
-function recApplyFilter(data, filter) {
+function applyFilter(data, filter) {
   const filteredData = {};
 
   for (const key in filter) {
@@ -51,7 +96,8 @@ function recApplyFilter(data, filter) {
       continue;
     }
 
-    filteredData[key] = isObject(data[key]) ? recApplyFilter(data[key], filter[key]) : data[key];
+    //if a key is a sub object {}, then continue filtering recursively
+    filteredData[key] = isObject(data[key]) ? applyFilter(data[key], filter[key]) : data[key];
   }
   return filteredData;
 }
