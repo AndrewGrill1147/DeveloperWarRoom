@@ -18,6 +18,10 @@ const styles = {
     textAlign: 'center',
     margin: '5px',
   },
+  floatRight: {
+    float: 'right',
+    margin: '5px'
+  }
 };
 
 
@@ -52,7 +56,7 @@ class GithubWidget extends Component {
       pullRequests: {},
     };
 
-    this.refreshApp = this.refreshApp.bind(this);
+    this.refresh = this.refresh.bind(this);
     this.onRepoChange = this.onRepoChange.bind(this);
     this.onRefreshRateChange = this.onRefreshRateChange.bind(this);
     this.onSettingsChange = this.onSettingsChange.bind(this);
@@ -145,10 +149,6 @@ class GithubWidget extends Component {
     this.setState({ timer: newTimerObject });
   }
 
-  refreshApp() {
-    
-  }
-
   clearPolling() {
     if (!this.state.timer) {
       return;
@@ -193,9 +193,18 @@ class GithubWidget extends Component {
     this.setState({ reposAvailable: availableRepos });
   }
 
+  refresh() {
+    /* refresh (once) repo and PR data */
+    console.log('refresh')
+    this.checkPullRequests();
+    this.updateReposAvailable();
+  }
+
   renderSettingsTab() {
     return (
       <div>
+        <RaisedButton label="Refresh" onClick={this.refresh} style={styles.floatRight}/>
+        
         <SelectField
           fullWidth
           floatingLabelFixed
@@ -228,14 +237,6 @@ class GithubWidget extends Component {
           hintText="What is your @username?"
           onSubmit={this.onSettingsChange}
         />
-
-        <RaisedButton
-          ariant="raised"
-          color="primary"
-          onClick={this.refreshApp}
-        >
-          Refresh
-          </RaisedButton>
 
         {/* https://www.npmjs.com/package/material-ui-superselectfield#usage */}
         {/* note: reset means reset to the values that SuperSelect has at mount time*/}
