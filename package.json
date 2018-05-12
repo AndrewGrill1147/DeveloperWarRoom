@@ -28,7 +28,8 @@
     "material-ui-superselectfield": "^1.9.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-grid-layout": "^0.16.5"
+    "react-grid-layout": "^0.16.5",
+    "showdown": "^1.8.6"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

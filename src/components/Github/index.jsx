@@ -60,11 +60,11 @@ class GithubWidget extends Component {
         refreshRateOptions: [null, 1, 5, 15, 30, 60],
         username: null,
         oauthToken: null,
+        reposWatching: [],
       },
       timer: null,
       storageKey: this.constructor.name,
       reposAvailable: [],
-      reposWatching: [],
       pullRequests: {},
     };
 
@@ -78,13 +78,11 @@ class GithubWidget extends Component {
 
   componentWillMount() {
     /* retrieves settings from storage */
-   const savedSettings = LocalStorageAPI.get(this.state.storageKey);
-  
-   if (savedSettings) {
-      this.setState({ settings: savedSettings });
+    const savedSettings = LocalStorageAPI.get(this.state.storageKey);
+    if (savedSettings) {
+      this.setState({ settings: { ...this.state.settings, ...savedSettings } });
       this.state.githubAPI.setCredentials(savedSettings.username, savedSettings.oauthToken);
     }
-    // this.state.githubAPI.setCredentials("GroupCWR", "GroupCWR000");
     // get repos
     this.state.githubAPI.getRepos(this.updateReposAvailable);
   }
@@ -102,8 +100,7 @@ class GithubWidget extends Component {
     // update github creds (object refference allows polling to continue)
     if (this.state.settings.username !== prevState.settings.username
         || this.state.settings.oauthToken !== prevState.settings.oauthToken) {
-      //      console.log(`updating github API creds! w/ ${currOathToken} ${currUsername}` );
-      this.state.githubAPI.setCredentials(
+        this.state.githubAPI.setCredentials(
         this.state.settings.username,
         this.state.settings.oauthToken,
       );
@@ -138,15 +135,13 @@ class GithubWidget extends Component {
         updatedReposWatching.push(matchingRepos[0]);
       }
     });
-    this.setState({ reposWatching: updatedReposWatching });
+    this.setState({ settings: { ...this.state.settings, ...{ reposWatching: updatedReposWatching } } });
   }
 
   onSettingsChange(key, newValue) {
     /* updates settings with ...{key: newvalue} */
     const settingsSubset = {};
     settingsSubset[key] = newValue;
-    console.log(settingsSubset[key]);
-
     this.setState({ settings: { ...this.state.settings, ...settingsSubset } });
   }
 
@@ -174,8 +169,8 @@ class GithubWidget extends Component {
 
   checkPullRequests() {
     /* invoked every x minutes, polls PR info for each repo */
-    console.info('polling github...');
-    this.state.reposWatching.forEach((repo) => {
+    // console.info('polling github...');
+    this.state.settings.reposWatching.forEach((repo) => {
       // TODO: check auth status?
       this.state.githubAPI.getPullRequestsByRepo(
         this.mapPullRequestsToState.bind(this, repo.name),
@@ -204,9 +199,8 @@ class GithubWidget extends Component {
     if (!resp.success) {
       return;
     }
-    const filteredRepos = resp.data.map(FilterRepoData);
-    console.log(filteredRepos);
-    this.setState({ reposAvailable: filteredRepos });
+    const availableRepos = resp.data.map(FilterRepoData);
+    this.setState({ reposAvailable: availableRepos });
   }
 
   renderSettingsTab() {
@@ -251,7 +245,7 @@ class GithubWidget extends Component {
           withResetSelectAllButtons
           multiple
           name="ReposToWatch"
-          value={this.state.reposWatching.map(repo => ({ value: repo.id, label: repo.name }))}
+          value={this.state.settings.reposWatching.map(repo => ({ value: repo.id, label: repo.name }))}
           onSelect={this.onRepoChange}
           floatingLabel="Repository List"
           dataSource={this.state.reposAvailable}
@@ -269,9 +263,8 @@ class GithubWidget extends Component {
 
   render() {
     console.log('state', this.state);
-    // this might be best moved into state? so we don't do this everyime *anything* changes
     const state = { ...this.state };
-    const openPullRequestsList = state.reposWatching.map(repo => (
+    const openPullRequestsList = this.state.settings.reposWatching.map(repo => (
       <RepoPullRequestList
         key={repo.name}
         repoName={repo.name}

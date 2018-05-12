@@ -1,6 +1,10 @@
 import React from 'react';
-import { Card, CardHeader, CardActions, CardText, RaisedButton } from 'material-ui';
+import { Card, CardHeader, CardActions, CardText, RaisedButton, Divider } from 'material-ui';
 import { GithubLogo } from './icons';
+import showdown from 'showdown';
+
+const converter = new showdown.Converter();
+
 
 const multiLineStyle = {
   whiteSpace: 'pre-line',
@@ -27,11 +31,11 @@ const PullRequestCard = props => (
         <h4> Assignee </h4>
         <span> {props.pullRequest.assignee ? props.pullRequest.assignee.login : 'No assignee'} </span>
       </header>
-      <header>
-        <h4> Descriptions </h4>
-        <span>{props.pullRequest.body}</span>
-      </header>
+      <Divider />
+      {/* text must be from Github to ensure html string validation */}
+      <div dangerouslySetInnerHTML={{__html: converter.makeHtml(props.pullRequest.body)}} />
       <br />
+      <script> console.log('hi) </script>
       <RaisedButton
         fullWidth
         secondary
