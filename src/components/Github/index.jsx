@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Paper, Tabs, Tab, SelectField, MenuItem } from 'material-ui';
+import { Paper, Tabs, Tab, SelectField, MenuItem, RaisedButton } from 'material-ui';
 import SuperSelectField from 'material-ui-superselectfield';
 import _ from 'lodash';
 import RepoPullRequestList from './repoPullRequestList';
@@ -52,7 +52,7 @@ class GithubWidget extends Component {
       pullRequests: {},
     };
 
-
+    this.refreshApp = this.refreshApp.bind(this);
     this.onRepoChange = this.onRepoChange.bind(this);
     this.onRefreshRateChange = this.onRefreshRateChange.bind(this);
     this.onSettingsChange = this.onSettingsChange.bind(this);
@@ -83,8 +83,8 @@ class GithubWidget extends Component {
 
     // update github creds (object refference allows polling to continue)
     if (this.state.settings.username !== prevState.settings.username
-        || this.state.settings.oauthToken !== prevState.settings.oauthToken) {
-        this.state.githubAPI.setCredentials(
+      || this.state.settings.oauthToken !== prevState.settings.oauthToken) {
+      this.state.githubAPI.setCredentials(
         this.state.settings.username,
         this.state.settings.oauthToken,
       );
@@ -143,6 +143,10 @@ class GithubWidget extends Component {
       refreshRate * CONVERSION_FACTOR,
     );
     this.setState({ timer: newTimerObject });
+  }
+
+  refreshApp() {
+    
   }
 
   clearPolling() {
@@ -225,6 +229,14 @@ class GithubWidget extends Component {
           onSubmit={this.onSettingsChange}
         />
 
+        <RaisedButton
+          ariant="raised"
+          color="primary"
+          onClick={this.refreshApp}
+        >
+          Refresh
+          </RaisedButton>
+
         {/* https://www.npmjs.com/package/material-ui-superselectfield#usage */}
         {/* note: reset means reset to the values that SuperSelect has at mount time*/}
         <SuperSelectField
@@ -243,8 +255,10 @@ class GithubWidget extends Component {
         >
           {this.state.reposAvailable.map(repo => (
             <div key={repo.id} id={repo.id} label={repo.name} value={repo.id}> {repo.name} </div>
-                ))}
+          ))}
         </SuperSelectField>
+
+
       </div>
 
     );

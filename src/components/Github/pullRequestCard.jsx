@@ -23,17 +23,18 @@ const PullRequestCard = props => (
     />
     <CardActions />
     <CardText expandable>
-      <header>
-        <h4>Status: </h4>
-        <span>{props.pullRequest.state}</span>
-      </header>
-      <header>
-        <h4> Assignee </h4>
-        <span> {props.pullRequest.assignee ? props.pullRequest.assignee.login : 'No assignee'} </span>
-      </header>
+
+      <p><b>Status: </b>
+        {props.pullRequest.state}</p>
+      <p><b>Assignee: </b>
+        {props.pullRequest.assignee ? props.pullRequest.assignee.login : 'No assignee'}
+      </p>
+      <p><b>Reviewers: </b>
+        {props.pullRequest.assignee ? props.pullRequest.assignee.login : 'No assignee'}
+      </p>
       <Divider />
       {/* text must be from Github to ensure html string validation */}
-      <div dangerouslySetInnerHTML={{__html: converter.makeHtml(props.pullRequest.body)}} />
+      <div dangerouslySetInnerHTML={{ __html: converter.makeHtml(props.pullRequest.body) }} />
       <br />
       <script> console.log('hi) </script>
       <RaisedButton
