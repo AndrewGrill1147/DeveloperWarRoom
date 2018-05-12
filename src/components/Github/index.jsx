@@ -226,6 +226,7 @@ class GithubWidget extends Component {
         />
 
         {/* https://www.npmjs.com/package/material-ui-superselectfield#usage */}
+        {/* note: reset means reset to the values that SuperSelect has at mount time*/}
         <SuperSelectField
           style={{ marginTop: '45px', fontSize: '16px', lineHeight: '24px' }}
           checkPosition="left"
@@ -289,3 +290,4 @@ class GithubWidget extends Component {
 }
 
 export default GithubWidget;
+
