@@ -7,4 +7,4 @@ The Developer War Room is a google chrome extension that features a quicklinks b
 
 ## Table of Contents
 
-* [Features] (https://github.com/marcellabillett/DeveloperWarRoom/wiki/Features)
+* [Features](https://github.com/marcellabillett/DeveloperWarRoom/wiki/Features)
