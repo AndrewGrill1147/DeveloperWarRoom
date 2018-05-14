@@ -85,6 +85,9 @@ class Grid extends Component {
   }
 
   onRemoveItem(i) {
+    if(this.state.layout.includes(i) === true){
+      return;
+    }
     this.setState({ layout: _.reject(this.state.layout, { i }) });
   }
 
@@ -146,9 +149,14 @@ class Grid extends Component {
   }
 
   addWidget(key) {
+    //Check if the key is not already rendered
     if (this.state.layout.filter(widgetLayout => widgetLayout.i === key).length !== 0) {
       return;
     }
+    //Check if the key is a valid widget that can be added
+    if(Object.keys(Widgets).includes(key) === false)
+      return;
+
     const newWidget = {
       i: key,
       x: (this.state.layout.length * 3) % (this.state.cols || 12),
