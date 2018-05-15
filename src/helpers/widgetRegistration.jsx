@@ -1,9 +1,9 @@
 import React from 'react';
 import Todo from '../components/Todo';
+import Github from '../components/Github';
 
 const Widgets = {
-  key: <div> KEY ONE </div>,
-  'key 2': <div> KEY TWO </div>,
+  'Github': <Github />,
   'Todo List': <Todo />,
 };
 
