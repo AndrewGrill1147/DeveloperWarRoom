@@ -74,6 +74,7 @@ class GithubWidget extends Component {
     this.onSettingsChange = this.onSettingsChange.bind(this);
     this.updateReposAvailable = this.updateReposAvailable.bind(this);
     this.checkPullRequests = this.checkPullRequests.bind(this);
+    this.updateReposWatching = this.updateReposWatching.bind(this);
   }
 
   componentWillMount() {
@@ -82,6 +83,7 @@ class GithubWidget extends Component {
     if (savedSettings) {
       this.setState({ settings: { ...this.state.settings, ...savedSettings } });
       this.state.githubAPI.setCredentials(savedSettings.username, savedSettings.oauthToken);
+      this.updateReposWatching();
     }
     // get repos
     this.state.githubAPI.getRepos(this.updateReposAvailable);
@@ -179,6 +181,14 @@ class GithubWidget extends Component {
     });
   }
 
+  updateReposWatching(){
+    /* verify the repos we are watching are still available to watch */
+    if (this.state.settings.reposWatching.length === 0 ){ return };
+    console.log('In updateReposWating');
+    const reposWatchingStill = this.state.settings.reposWatching.filter(repo => repo.id === this.state.reposAvailable.id );
+    this.setState({ settings: { ...this.state.settings, ...{ reposWatching: reposWatchingStill } } });
+  }
+
   mapPullRequestsToState(reponame, resp) {
     /* map the github PR response to state.pullRequests */
     if (!resp.success) {
@@ -201,6 +211,7 @@ class GithubWidget extends Component {
     }
     const availableRepos = resp.data.map(FilterRepoData);
     this.setState({ reposAvailable: availableRepos });
+    this.updateReposWatching();
   }
 
   renderSettingsTab() {
