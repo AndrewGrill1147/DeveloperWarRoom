@@ -62,6 +62,7 @@ class GithubWidget extends Component {
     this.onSettingsChange = this.onSettingsChange.bind(this);
     this.updateReposAvailable = this.updateReposAvailable.bind(this);
     this.checkPullRequests = this.checkPullRequests.bind(this);
+    this.updateReposWatching = this.updateReposWatching.bind(this);
   }
 
   componentWillMount() {
@@ -70,6 +71,7 @@ class GithubWidget extends Component {
     if (savedSettings) {
       this.setState({ settings: { ...this.state.settings, ...savedSettings } });
       this.state.githubAPI.setCredentials(savedSettings.username, savedSettings.oauthToken);
+      // this.updateReposWatching();
     }
     // get repos
     this.state.githubAPI.getRepos(this.updateReposAvailable);
@@ -113,11 +115,7 @@ class GithubWidget extends Component {
   onRepoChange(itemsSelected) {
     /* can expand to include args, name */
     /* Is sent the current selection of repos to watch */
-
     const updatedReposWatching = [];
-
-    console.log('items selected', itemsSelected)
-
     itemsSelected.forEach((item) => {
       const matchingRepos = this.state.reposAvailable.filter(repo => repo.id === item.value);
 
@@ -159,7 +157,6 @@ class GithubWidget extends Component {
 
   checkPullRequests() {
     /* invoked every x minutes, polls PR info for each repo */
-    // console.info('polling github...');
     this.state.settings.reposWatching.forEach((repo) => {
       // TODO: check auth status?
       this.state.githubAPI.getPullRequestsByRepo(
@@ -172,16 +169,33 @@ class GithubWidget extends Component {
   mapPullRequestsToState(reponame, resp) {
     /* map the github PR response to state.pullRequests */
     if (!resp.success) {
+      if (resp.error.status === 404) {
+        // if repo is not found it may have been deleted so trigger an update
+        this.state.githubAPI.getRepos(this.updateReposAvailable);
+      }
       // trigger reRender to show error message
       this.setState({ githubFailed: true });
-      console.error(`(ERR) Github API fail: ${resp.error}`);
       return;
     }
+
     const updatedRepoPRs = {};
     updatedRepoPRs[reponame] = resp.data.map(FilterPullRequestData);
 
     // use each PRs review_url to fetch the reviews and then map the data back into the PR
     this.setState({ pullRequests: { ...this.state.pullRequests, ...updatedRepoPRs } });
+  }
+
+
+  updateReposWatching(newReposAvailable){
+    /* verify the repos we are watching are still available to watch */
+    if (this.state.settings.reposWatching.length === 0 ){ return };
+    let repoIdsAvailable = {};
+    newReposAvailable.forEach(repo => {
+      repoIdsAvailable[repo.id] = true;
+    });
+
+    const reposWatchingStill = this.state.settings.reposWatching.filter(repo =>  repo.id in repoIdsAvailable);
+    this.setState({ settings: { ...this.state.settings, ...{ reposWatching: reposWatchingStill } } });
   }
 
   updateReposAvailable(resp) {
@@ -190,7 +204,8 @@ class GithubWidget extends Component {
       return;
     }
     const availableRepos = resp.data.map(FilterRepoData);
-    this.setState({ reposAvailable: availableRepos });
+    this.setState({ reposAvailable: availableRepos }); // asynch, so I'll run eventually....
+    this.updateReposWatching(availableRepos);
   }
 
   refresh() {
