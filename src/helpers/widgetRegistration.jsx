@@ -1,9 +1,10 @@
 import React from 'react';
 import Todo from '../components/Todo';
+import Reddit from '../components/Reddit';
 
 const Widgets = {
-  key: <div> KEY ONE </div>,
-  'key 2': <div> KEY TWO </div>,
+  key: <div>im a widget</div>,
+  'Reddit Front Page': <Reddit />,
   'Todo List': <Todo />,
 };
 
