@@ -199,7 +199,9 @@ class GithubWidget extends Component {
   }
 
   updateReposAvailable(resp) {
-    /* handles the response from the githubAPI.getRepos() */
+    /* handles the response from the githubAPI.getRepos()
+      removes any deleted repos from this.state.settings.reposWatching
+    */
     if (!resp.success) {
       return;
     }
