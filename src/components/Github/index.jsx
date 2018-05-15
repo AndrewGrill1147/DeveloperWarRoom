@@ -20,8 +20,8 @@ const styles = {
   },
   floatRight: {
     float: 'right',
-    margin: '5px'
-  }
+    margin: '5px',
+  },
 };
 
 
@@ -186,15 +186,15 @@ class GithubWidget extends Component {
   }
 
 
-  updateReposWatching(newReposAvailable){
+  updateReposWatching(newReposAvailable) {
     /* verify the repos we are watching are still available to watch */
-    if (this.state.settings.reposWatching.length === 0 ){ return };
-    let repoIdsAvailable = {};
-    newReposAvailable.forEach(repo => {
+    if (this.state.settings.reposWatching.length === 0) { return; }
+    const repoIdsAvailable = {};
+    newReposAvailable.forEach((repo) => {
       repoIdsAvailable[repo.id] = true;
     });
 
-    const reposWatchingStill = this.state.settings.reposWatching.filter(repo =>  repo.id in repoIdsAvailable);
+    const reposWatchingStill = this.state.settings.reposWatching.filter(repo => repo.id in repoIdsAvailable);
     this.setState({ settings: { ...this.state.settings, ...{ reposWatching: reposWatchingStill } } });
   }
 
@@ -212,7 +212,7 @@ class GithubWidget extends Component {
 
   refresh() {
     /* refresh (once) repo and PR data */
-    console.log('refresh')
+    console.log('refresh');
     this.checkPullRequests();
     this.updateReposAvailable();
   }
@@ -220,8 +220,8 @@ class GithubWidget extends Component {
   renderSettingsTab() {
     return (
       <div>
-        <RaisedButton label="Refresh" onClick={this.refresh} style={styles.floatRight}/>
-        
+        <RaisedButton label="Refresh" onClick={this.refresh} style={styles.floatRight} />
+
         <SelectField
           fullWidth
           floatingLabelFixed
@@ -256,7 +256,7 @@ class GithubWidget extends Component {
         />
 
         {/* https://www.npmjs.com/package/material-ui-superselectfield#usage */}
-        {/* note: reset means reset to the values that SuperSelect has at mount time*/}
+        {/* note: reset means reset to the values that SuperSelect has at mount time */}
         <SuperSelectField
           style={{ marginTop: '45px', fontSize: '16px', lineHeight: '24px' }}
           checkPosition="left"

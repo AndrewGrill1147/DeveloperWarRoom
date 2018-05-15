@@ -1,7 +1,7 @@
 
 /*
   How to construct a filter,
-  const NAME_FILTER = {    
+  const NAME_FILTER = {
   }
 
   if a key maps to a sub object, {}, then the subobject will
@@ -11,7 +11,7 @@
 
   e.g
 
-  given, 
+  given,
   data = {
     key: {
       one: 1,
@@ -24,7 +24,7 @@
   {
     key: ''
   }
-  
+
   will return a clone of data
 
   and,
@@ -64,12 +64,12 @@ const PR_FILTER = {
 };
 
 const REPO_FILTER = {
-	id: "",
-	name: "",
-	owner: {
-    name: "",
-    login: ""
-	}
+  id: '',
+  name: '',
+  owner: {
+    name: '',
+    login: '',
+  },
 
 };
 
@@ -96,7 +96,7 @@ function applyFilter(data, filter) {
       continue;
     }
 
-    //if a key is a sub object {}, then continue filtering recursively
+    // if a key is a sub object {}, then continue filtering recursively
     filteredData[key] = isObject(data[key]) ? applyFilter(data[key], filter[key]) : data[key];
   }
   return filteredData;

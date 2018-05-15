@@ -27,7 +27,8 @@ const PullRequestCard = props => (
       <div dangerouslySetInnerHTML={{ __html: converter.makeHtml(props.pullRequest.body) }} />
       <Divider />
       <p><b>Status: </b>
-        {props.pullRequest.state}</p>
+        {props.pullRequest.state}
+      </p>
       <p><b>Assignee: </b>
         {props.pullRequest.assignee ? props.pullRequest.assignee.login : 'No assignee'}
       </p>

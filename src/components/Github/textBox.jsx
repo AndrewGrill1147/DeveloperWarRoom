@@ -41,12 +41,11 @@ class TextBox extends Component {
         value={this.state.value}
         onChange={this.onChange}
         onKeyDown={this.onKeyDown}
-        errorText={this.state.value !== this.props.savedvalue ?  'This value is not saved' : null}
+        errorText={this.state.value !== this.props.savedvalue ? 'This value is not saved' : null}
       />
     );
   }
 }
-
 
 
 export default TextBox;
