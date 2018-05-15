@@ -83,7 +83,7 @@ class GithubWidget extends Component {
     if (savedSettings) {
       this.setState({ settings: { ...this.state.settings, ...savedSettings } });
       this.state.githubAPI.setCredentials(savedSettings.username, savedSettings.oauthToken);
-      this.updateReposWatching();
+      // this.updateReposWatching();
     }
     // get repos
     this.state.githubAPI.getRepos(this.updateReposAvailable);
