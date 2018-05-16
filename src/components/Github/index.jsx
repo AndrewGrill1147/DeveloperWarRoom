@@ -60,9 +60,10 @@ class GithubWidget extends Component {
     this.onRepoChange = this.onRepoChange.bind(this);
     this.onRefreshRateChange = this.onRefreshRateChange.bind(this);
     this.onSettingsChange = this.onSettingsChange.bind(this);
-    this.updateReposAvailable = this.updateReposAvailable.bind(this);
-    this.checkPullRequests = this.checkPullRequests.bind(this);
     this.updateReposWatching = this.updateReposWatching.bind(this);
+    this.updateReposAvailable = this.updateReposAvailable.bind(this);
+    this.checkReposAvailable = this.checkReposAvailable.bind(this);
+    this.checkPullRequests = this.checkPullRequests.bind(this);
   }
 
   componentWillMount() {
@@ -71,10 +72,9 @@ class GithubWidget extends Component {
     if (savedSettings) {
       this.setState({ settings: { ...this.state.settings, ...savedSettings } });
       this.state.githubAPI.setCredentials(savedSettings.username, savedSettings.oauthToken);
-      // this.updateReposWatching();
     }
     // get repos
-    this.state.githubAPI.getRepos(this.updateReposAvailable);
+    this.checkReposAvailable();
   }
 
   componentDidMount() {
@@ -210,11 +210,15 @@ class GithubWidget extends Component {
     this.updateReposWatching(availableRepos);
   }
 
+  checkReposAvailable() {
+    this.state.githubAPI.getRepos(this.updateReposAvailable);    
+  }
+
   refresh() {
     /* refresh (once) repo and PR data */
     console.log('refresh');
     this.checkPullRequests();
-    this.updateReposAvailable();
+    this.checkReposAvailable();
   }
 
   renderSettingsTab() {
