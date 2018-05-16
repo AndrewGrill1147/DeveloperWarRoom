@@ -147,7 +147,7 @@ class Todo extends Component {
     return (
       <div style={styles.divStyle}>
         <Paper zDepth={0} rounded={false} style={styles.expand}>
-          {/*<TextField
+          <TextField
             id="newTodo"
             value={this.state.newTodo}
             hintText="Todo List - What needs to be done?"
@@ -156,7 +156,7 @@ class Todo extends Component {
             onKeyDown={this.handleNewTodoKeyDown.bind(this)}
             fullWidth
             multiLine
-          />*/}
+          />
 
           <Divider />
           <Tabs>
