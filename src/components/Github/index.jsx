@@ -291,7 +291,7 @@ class GithubWidget extends Component {
     const state = { ...this.state };
     const openPullRequestsList = this.state.settings.reposWatching.map(repo => (
       <RepoPullRequestList
-        key={repo.name}
+        key={repo.id}
         repoName={repo.name}
         pullRequests={state.pullRequests[repo.name] || []}
       />
