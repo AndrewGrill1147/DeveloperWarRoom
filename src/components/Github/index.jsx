@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Paper, Tabs, Tab, SelectField, MenuItem, RaisedButton } from 'material-ui';
+import { Paper, Tabs, Tab, SelectField, MenuItem, RaisedButton, Toggle} from 'material-ui';
 import SuperSelectField from 'material-ui-superselectfield';
 import _ from 'lodash';
 import RepoPullRequestList from './repoPullRequestList';
@@ -10,6 +10,9 @@ import GithubAPI from '../../helpers/githubAPI';
 import { FilterPullRequestData, FilterRepoData } from './dataFiltering';
 
 const styles = {
+  margin: {
+    margin: '3px'
+  },
   errorMessage: {
     padding: '20px',
     backgroundColor: '#f44336',
@@ -22,6 +25,12 @@ const styles = {
     float: 'right',
     margin: '5px',
   },
+  toggle: {
+    label: {
+      fontSize: '16px',
+      marginBottom: '10px',
+    }
+  }
 };
 
 
@@ -44,6 +53,8 @@ class GithubWidget extends Component {
     this.state = {
       githubAPI: new GithubAPI(),
       settings: {
+        watchAllrepos: false,
+        translateMarkdownToHTML: false,
         refreshRate: null,
         refreshRateOptions: [null, 1, 5, 15, 30, 60],
         username: null,
@@ -131,6 +142,11 @@ class GithubWidget extends Component {
     const settingsSubset = {};
     settingsSubset[key] = newValue;
     this.setState({ settings: { ...this.state.settings, ...settingsSubset } });
+  }
+
+  onToggle(key, event, isInputChecked) {
+    console.log('toggle event ');
+    this.onSettingsChange(key, isInputChecked);
   }
 
   setPolling(rate = null) {
@@ -223,8 +239,24 @@ class GithubWidget extends Component {
 
   renderSettingsTab() {
     return (
-      <div>
+      <div style={styles.margin}>
         <RaisedButton label="Refresh" onClick={this.refresh} style={styles.floatRight} />
+
+        <Toggle
+          label="Display markdown"
+          labelStyle={styles.toggle.label}
+          labelPosition="left"
+          toggled={this.state.settings.translateMarkdownToHTML}
+          onToggle={this.onToggle.bind(this, "translateMarkdownToHTML")}
+        />
+
+        <Toggle
+          label="Watch all repos"
+          labelStyle={styles.toggle.label}
+          labelPosition="left"
+          toggled={false}
+          onToggle={this.onToggle.bind(this, "watchAllRepos")}
+        />
 
         <SelectField
           fullWidth
@@ -291,6 +323,7 @@ class GithubWidget extends Component {
     const state = { ...this.state };
     const openPullRequestsList = this.state.settings.reposWatching.map(repo => (
       <RepoPullRequestList
+        translateMarkDownToHTML={this.state.settings.translateMarkdownToHTML}
         key={repo.id}
         repoName={repo.name}
         pullRequests={state.pullRequests[repo.name] || []}

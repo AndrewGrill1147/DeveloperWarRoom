@@ -10,6 +10,18 @@ const multiLineStyle = {
   whiteSpace: 'pre-line',
 };
 
+const handleMarkdownString = (translateToHTML, markdownString) => {
+  if(!translateToHTML){
+    return (
+      markdownString
+    );
+  }
+
+  return (
+    <div dangerouslySetInnerHTML={{ __html: converter.makeHtml(markdownString) }} />
+  );
+}
+
 const PullRequestCard = props => (
   <Card>
     <CardHeader
@@ -24,7 +36,8 @@ const PullRequestCard = props => (
     <CardActions />
     <CardText expandable>
       {/* text must be from Github to ensure html string validation */}
-      <div dangerouslySetInnerHTML={{ __html: converter.makeHtml(props.pullRequest.body) }} />
+      {/*<div dangerouslySetInnerHTML={{ __html: converter.makeHtml(props.pullRequest.body) }} />*/}
+      {handleMarkdownString(props.translateMarkDownToHTML, props.pullRequest.body)}
       <Divider />
       <p><b>Status: </b>
         {props.pullRequest.state}
