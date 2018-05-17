@@ -162,7 +162,7 @@ class Todo extends Component {
           <Tabs>
             <Tab label="active">
               <div>
-                <List>
+                <List styles={styles.expand}>
                   {todosByStatus[status.ACTIVE]}
                   <Subheader inset={false}>
                     {todosByStatus[status.ACTIVE].length} items
@@ -182,10 +182,12 @@ class Todo extends Component {
             </Tab>
             <Tab label="all">
               <div>
-                {todosByStatus[status.ALL]}
-                <Subheader inset={false}>
-                  {todosByStatus[status.ALL].length} items
-                </Subheader>
+                <List styles={styles.expand}>
+                  {todosByStatus[status.ALL]}
+                  <Subheader inset={false}>
+                    {todosByStatus[status.ALL].length} items
+                  </Subheader>
+                </List>
               </div>
             </Tab>
           </Tabs>

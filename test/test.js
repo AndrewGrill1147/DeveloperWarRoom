@@ -11,7 +11,6 @@ describe('<Grid />', () => {
     it('edit button clicked changes state', () => {
       const wrapper = shallow(<Grid />);
       //List Item at(1) is the editButton in the drawer
-      console.log(wrapper.find(Drawer).find(ListItem));
       wrapper.find(Drawer).find(ListItem).at(1).simulate('click');
       expect(wrapper.state().editMode).toEqual(true);      
     });
@@ -80,24 +79,8 @@ describe('<Todo />', () => {
     expect(newTodo).toEqual(false);
     expect(completeTodo).toEqual(true);
     expect(undoComplete).toEqual(false);
-  })
-  it('complete a Todo item', () => {
-    const wrapper = shallow(<Todo />);
-    wrapper.instance().addTodo("test Todo item");
-    console.log(wrapper.find(Tabs).find(Tab).at(0).find(List).find(TodoItem).at(0));
-    wrapper.find(Tabs).find(Tab).at(0).find(List).find(TodoItem).at(1).simulate('click');
-    expect(wrapper.state().todos[0].completed).toEqual(true);
   });
 });
 
 /* Bookmarker */
-describe('<Bookmarker />', () => {
-  it('add a quick link', () => {
-    const wrapper = shallow(<Bookmarker />);
-    console.log(wrapper);
-    wrapper.find(ContentAdd).at(0).simulate('click');
-    wrapper.find(TextField).at(0).onInput="test";
-    wrapper.find(TextField).at(1).onInput="google.com";
-  });
-});
 /********************************/
