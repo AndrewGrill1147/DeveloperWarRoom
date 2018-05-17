@@ -60,6 +60,7 @@
   },
   "jest": {
     "setupTestFrameworkScriptFile": "./test/helpers.js",
+    "automock": false,
     "setupFiles": [
       "jest-localstorage-mock"
     ]

@@ -87,6 +87,7 @@ class Bookmarkers extends Component {
     newBookmarks[objIndex].dialogOpen = !(listValue.dialogOpen);
     this.setState({ bookmarks: newBookmarks });
   }
+
   cancelDialogEvent(evt, listValue) {
     const objIndex = this.state.bookmarks.findIndex((obj => obj.id === listValue.id));
     const newBookmarks = this.state.bookmarks;
@@ -95,6 +96,7 @@ class Bookmarkers extends Component {
     newBookmarks[objIndex].urlInput = listValue.url;
     this.setState({ bookmarks: newBookmarks });
   }
+
   saveDialogEvent(evt, listValue) {
     const objIndex = this.state.bookmarks.findIndex((obj => obj.id === listValue.id));
     const newBookmarks = this.state.bookmarks;
@@ -109,6 +111,7 @@ class Bookmarkers extends Component {
     newBookmarks[objIndex].url = siteUrl;
     this.setState({ bookmarks: newBookmarks });
   }
+
   rightIconMenu(listValue) {
     return (
       <IconMenu iconButtonElement={iconButtonElement} style={styles.buttonAlignment}>
@@ -117,18 +120,21 @@ class Bookmarkers extends Component {
       </IconMenu>
     );
   }
+
   handleUrlChange(evt, listValue) {
     const objIndex = this.state.bookmarks.findIndex((obj => obj.id === listValue.id));
     const newBookmarks = this.state.bookmarks;
     newBookmarks[objIndex].urlInput = evt.target.value;
     this.setState({ bookmarks: newBookmarks });
   }
+
   handleNameChange(evt, listValue) {
     const objIndex = this.state.bookmarks.findIndex((obj => obj.id === listValue.id));
     const newBookmarks = this.state.bookmarks;
     newBookmarks[objIndex].nameInput = evt.target.value;
     this.setState({ bookmarks: newBookmarks });
   }
+
   listMapping(listValue) {
     const actions = [
       <FlatButton
@@ -228,6 +234,7 @@ class Bookmarkers extends Component {
     });
     LocalStorageAPI.put(this.state.storageKey, this.state.bookmarks);
   }
+
   render() {
     const actions = [
       <FlatButton

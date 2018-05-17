@@ -122,9 +122,9 @@ class Todo extends Component {
 
   render() {
     const todosByStatus = {};
-    Object.values(status).forEach((s) => {
-      todosByStatus[s] = [];
-    });
+    todosByStatus[status.ALL] = [];
+    todosByStatus[status.ACTIVE] = [];
+    todosByStatus[status.COMPLETED] = [];
 
     [...this.state.todos].forEach((todo) => {
       const todoComponent = (
