@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Paper, Tabs, Tab, SelectField, MenuItem, RaisedButton, Toggle} from 'material-ui';
+import { Paper, Tabs, Tab, SelectField, MenuItem, RaisedButton, Toggle } from 'material-ui';
 import SuperSelectField from 'material-ui-superselectfield';
 import _ from 'lodash';
 import RepoPullRequestList from './repoPullRequestList';
@@ -53,7 +53,7 @@ class GithubWidget extends Component {
     this.state = {
       githubAPI: new GithubAPI(),
       settings: {
-        watchAllrepos: false,
+        watchAllRepos: false,
         translateMarkdownToHTML: false,
         refreshRate: null,
         refreshRateOptions: [null, 1, 5, 15, 30, 60],
@@ -141,6 +141,9 @@ class GithubWidget extends Component {
     /* updates settings with ...{key: newvalue} */
     const settingsSubset = {};
     settingsSubset[key] = newValue;
+    console.log(key);
+    console.log(newValue);
+
     this.setState({ settings: { ...this.state.settings, ...settingsSubset } });
   }
 
@@ -227,7 +230,7 @@ class GithubWidget extends Component {
   }
 
   checkReposAvailable() {
-    this.state.githubAPI.getRepos(this.updateReposAvailable);    
+    this.state.githubAPI.getRepos(this.updateReposAvailable);
   }
 
   refresh() {
@@ -254,7 +257,7 @@ class GithubWidget extends Component {
           label="Watch all repos"
           labelStyle={styles.toggle.label}
           labelPosition="left"
-          toggled={false}
+          toggled={this.state.settings.watchAllRepos}
           onToggle={this.onToggle.bind(this, "watchAllRepos")}
         />
 
