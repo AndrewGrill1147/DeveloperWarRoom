@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
+import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
+import IconButton from 'material-ui/IconButton';
+import FlatButton from 'material-ui/FlatButton';
+import LocalStorageAPI from './../../helpers/localstorageAPI';
 /* global chrome */
 /* global navigator */
 
@@ -12,8 +16,22 @@ const styles = {
     marginLeft: '50px',
     color: '#00bcd4',
   },
-  visited: {
-    color: '#999999',
+  loginButton: {
+    marginTop: '5px',
+  },
+  headerBar: {
+    height: '40px',
+  },
+  refreshIconButton: {
+    position: 'absolute',
+    top: '0px',
+    right: '0px',
+    color: 'gray',
+  },
+  refreshIcon: {
+    color: 'gray',
+    height: '30px',
+    width: '30px',
   },
   secondaryText: {
     display: 'block',
@@ -50,9 +68,14 @@ const styles = {
   },
   expand: {
     width: '100%',
+    height: 'calc(100% - 40px)',
+    maxHeight: 'calc(100% - 40px)',
+    overflow: 'auto',
+  },
+  expand2: {
+    width: '100%',
     height: '100%',
     maxHeight: '100%',
-    overflow: 'auto',
   },
   listItemStyle: {
     minHeight: '100px',
@@ -64,7 +87,8 @@ class Reddit extends Component {
   constructor(props) {
     super(props);
     this.baseUrl = 'https://www.reddit.com';
-    this.state = { accessToken: null, hotList: [] };
+    this.state = { accessToken: null, hotList: [], storageKey: this.constructor.name };
+    this.state.accessToken = LocalStorageAPI.get(this.state.storageKey);
     this.login = this.login.bind(this);
     this.redditHot = this.redditHot.bind(this);
   }
@@ -75,8 +99,9 @@ class Reddit extends Component {
     chrome.identity.launchWebAuthFlow(
       { url: authUrl, interactive: true },
       (responseUrl) => {
-        const token = responseUrl.match(/\#(?:access_token)\=([\S\s]*?)\&/)[1];
+        const token = responseUrl.match(/#(?:access_token)=([\S\s]*?)&/)[1];
         console.log(token);
+        LocalStorageAPI.put(this.state.storageKey, token);
         this.setState({ accessToken: token });
       },
     );
@@ -132,12 +157,18 @@ class Reddit extends Component {
   }
   render() {
     return (
-      <div style={styles.expand}>
-        <button onClick={this.login}>login</button>
-        <button onClick={this.redditHot}>get stuff</button>
-        <List>
-          {this.state.hotList.map(item => this.redditList(item))}
-        </List>
+      <div style={styles.expand2}>
+        <div style={styles.headerBar}>
+          <FlatButton onClick={this.login} label="login" style={styles.loginButton} />
+          <IconButton style={styles.refreshIconButton}>
+            <NavigationRefresh onClick={this.redditHot} color="gray" />
+          </IconButton>
+        </div>
+        <div style={styles.expand}>
+          <List>
+            {this.state.hotList.map(item => this.redditList(item))}
+          </List>
+        </div>
       </div>
     );
   }
