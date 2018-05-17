@@ -70,7 +70,7 @@ const REPO_FILTER = {
     name: '',
     login: '',
   },
-
+  created_at: '',
 };
 
 function basicApplyFilter(data, filter) {
