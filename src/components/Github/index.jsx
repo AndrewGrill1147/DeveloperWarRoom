@@ -114,7 +114,7 @@ class GithubWidget extends Component {
         this.state.settings.username,
         this.state.settings.oauthToken,
       );
-      this.state.githubAPI.getRepos(this.updateReposAvailable);
+      this.checkReposAvailable();
     }
     LocalStorageAPI.put(this.state.storageKey, this.state.settings);
   }
@@ -153,10 +153,28 @@ class GithubWidget extends Component {
     const settingsSubset = {};
     settingsSubset[key] = newValue;
     this.setState({ settings: { ...this.state.settings, ...settingsSubset } });
+
+    console.log("watchallrepos");
+    if(this.state.settings.watchAllRepos){
+      //Make reposwatching list to include all repos available
+      
+      console.log(this.state.settings.watchAllRepos);
+      this.setState({
+        settings: {
+          ...this.state.settings,
+          ...{ reposWatching: this.state.reposAvailable },
+        },
+      });
+    }
+
+
   }
 
   onToggle(key, event, isInputChecked) {
     this.onSettingsChange(key, isInputChecked);
+
+ 
+
   }
 
   setPolling(rate = null) {
@@ -197,7 +215,7 @@ class GithubWidget extends Component {
     if (!resp.success) {
       if (resp.error.status === 404) {
         // if repo is not found it may have been deleted so trigger an update
-        this.state.githubAPI.getRepos(this.updateReposAvailable);
+        this.checkReposAvailable();
       }
       // trigger reRender to show error message
       this.setState({ githubFailed: true });
