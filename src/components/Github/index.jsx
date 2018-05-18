@@ -132,7 +132,7 @@ class GithubWidget extends Component {
     this.setState({ settings: { ...this.state.settings, ...{ refreshRate: value } } });
   }
 
-  onRepoChange(itemsSelected) {
+  onRepoChange() {
     /* can expand to include args, name */
     /* Is sent the current selection of repos to watch */
     const updatedReposWatching = [];
@@ -154,11 +154,13 @@ class GithubWidget extends Component {
     settingsSubset[key] = newValue;
     this.setState({ settings: { ...this.state.settings, ...settingsSubset } });
 
-    console.log("watchallrepos");
-    if(this.state.settings.watchAllRepos){
+    console.log("watchallrepos"); 
+    console.log(this.state.settings.reposWatching);
+    if(this.state.settings.watchAllRepos && 
+      this.state.settings.reposWatching != this.state.reposAvailable){
       //Make reposwatching list to include all repos available
-      
       console.log(this.state.settings.watchAllRepos);
+
       this.setState({
         settings: {
           ...this.state.settings,
@@ -332,10 +334,12 @@ class GithubWidget extends Component {
         {/* https://www.npmjs.com/package/material-ui-superselectfield#usage */}
         {/* note: reset means reset to the values that SuperSelect has at mount time */}
         <SuperSelectField
+          id="aha"  
           style={{ marginTop: '45px', fontSize: '16px', lineHeight: '24px' }}
           checkPosition="left"
           keepSearchOnSelect
           withResetSelectAllButtons
+          disabled={this.state.settings.watchAllRepos}
           multiple
           name="ReposToWatch"
           value={reposWatchingToSelectInDropdown}
