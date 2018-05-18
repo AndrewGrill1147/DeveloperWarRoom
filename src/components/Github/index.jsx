@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Paper, Tabs, Tab, SelectField, MenuItem, RaisedButton, Toggle} from 'material-ui';
+import { Paper, Tabs, Tab, SelectField, MenuItem, RaisedButton, Toggle, IconButton } from 'material-ui';
 import SuperSelectField from 'material-ui-superselectfield';
 import _ from 'lodash';
 import RepoPullRequestList from './repoPullRequestList';
-import { PullRequestIcon, SettingsIcon } from './icons';
+import { PullRequestIcon, SettingsIcon, RefreshIcon } from './icons';
 import TextBox from './textBox';
 import LocalStorageAPI from '../../helpers/localstorageAPI';
 import GithubAPI from '../../helpers/githubAPI';
@@ -30,6 +30,15 @@ const styles = {
       fontSize: '16px',
       marginBottom: '10px',
     }
+  },
+  refreshDropdown: {
+    float: 'left',
+    width: '95%',
+  },
+  refreshButton: {
+    float: 'left',
+    width: '5%',
+    marginTop: '27px',
   }
 };
 
@@ -240,8 +249,7 @@ class GithubWidget extends Component {
   renderSettingsTab() {
     return (
       <div style={styles.margin}>
-        <RaisedButton label="Refresh" onClick={this.refresh} style={styles.floatRight} />
-
+      
         <Toggle
           label="Display markdown"
           labelStyle={styles.toggle.label}
@@ -259,7 +267,7 @@ class GithubWidget extends Component {
         />
 
         <SelectField
-          fullWidth
+          style={styles.refreshDropdown}
           floatingLabelFixed
           floatingLabelText="Refresh rate"
           hintText="How often should we check Github for you?"
@@ -268,6 +276,10 @@ class GithubWidget extends Component {
         >
           {refreshRateMenuItems}
         </SelectField>
+
+        <IconButton style={styles.refreshButton} onClick={this.refresh}>
+          <RefreshIcon/>
+        </IconButton>
 
         <TextBox
           fullWidth
