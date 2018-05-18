@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Paper, Tabs, Tab, SelectField, MenuItem, RaisedButton, Toggle, IconButton } from 'material-ui';
+import { Paper, Tabs, Tab, SelectField, MenuItem, Toggle, IconButton } from 'material-ui';
 import SuperSelectField from 'material-ui-superselectfield';
 import _ from 'lodash';
 import RepoPullRequestList from './repoPullRequestList';
@@ -11,7 +11,7 @@ import { FilterPullRequestData, FilterRepoData } from './dataFiltering';
 
 const styles = {
   margin: {
-    margin: '3px'
+    margin: '3px',
   },
   errorMessage: {
     padding: '20px',
@@ -29,7 +29,7 @@ const styles = {
     label: {
       fontSize: '16px',
       marginBottom: '10px',
-    }
+    },
   },
   refreshDropdown: {
     float: 'left',
@@ -39,7 +39,7 @@ const styles = {
     float: 'left',
     width: '5%',
     marginTop: '27px',
-  }
+  },
 };
 
 
@@ -143,21 +143,19 @@ class GithubWidget extends Component {
         updatedReposWatching.push(matchingRepos[0]);
       }
     });
-    this.setState({ settings: { ...this.state.settings, ...{ reposWatching: updatedReposWatching } } });
+    this.setState({
+      settings: { ...this.state.settings, ...{ reposWatching: updatedReposWatching } },
+    });
   }
 
   onSettingsChange(key, newValue) {
     /* updates settings with ...{key: newvalue} */
     const settingsSubset = {};
     settingsSubset[key] = newValue;
-    console.log(key);
-    console.log(newValue);
-
     this.setState({ settings: { ...this.state.settings, ...settingsSubset } });
   }
 
   onToggle(key, event, isInputChecked) {
-    console.log('toggle event ');
     this.onSettingsChange(key, isInputChecked);
   }
 
@@ -222,8 +220,14 @@ class GithubWidget extends Component {
       repoIdsAvailable[repo.id] = true;
     });
 
-    const reposWatchingStill = this.state.settings.reposWatching.filter(repo => repo.id in repoIdsAvailable);
-    this.setState({ settings: { ...this.state.settings, ...{ reposWatching: reposWatchingStill } } });
+    const reposWatchingStill = this.state.settings.reposWatching.filter(repo =>
+      repo.id in repoIdsAvailable);
+    this.setState({
+      settings: {
+        ...this.state.settings,
+        ...{ reposWatching: reposWatchingStill },
+      },
+    });
   }
 
   updateReposAvailable(resp) {
@@ -242,23 +246,24 @@ class GithubWidget extends Component {
     this.state.githubAPI.getRepos(this.updateReposAvailable);
   }
 
+  /* refresh (once) repo and PR data */
   refresh() {
-    /* refresh (once) repo and PR data */
-    console.log('refresh');
     this.checkPullRequests();
     this.checkReposAvailable();
   }
 
   renderSettingsTab() {
+    const reposWatchingToSelectInDropdown = this.state.settings.reposWatching.map(repo => (
+      { value: repo.id, label: repo.name }
+    ));
     return (
       <div style={styles.margin}>
-      
         <Toggle
           label="Display markdown"
           labelStyle={styles.toggle.label}
           labelPosition="left"
           toggled={this.state.settings.translateMarkdownToHTML}
-          onToggle={this.onToggle.bind(this, "translateMarkdownToHTML")}
+          onToggle={this.onToggle.bind(this, 'translateMarkdownToHTML')}
         />
 
         <Toggle
@@ -266,7 +271,7 @@ class GithubWidget extends Component {
           labelStyle={styles.toggle.label}
           labelPosition="left"
           toggled={this.state.settings.watchAllRepos}
-          onToggle={this.onToggle.bind(this, "watchAllRepos")}
+          onToggle={this.onToggle.bind(this, 'watchAllRepos')}
         />
 
         <SelectField
@@ -281,7 +286,7 @@ class GithubWidget extends Component {
         </SelectField>
 
         <IconButton style={styles.refreshButton} onClick={this.refresh}>
-          <RefreshIcon/>
+          <RefreshIcon />
         </IconButton>
 
         <TextBox
@@ -315,7 +320,7 @@ class GithubWidget extends Component {
           withResetSelectAllButtons
           multiple
           name="ReposToWatch"
-          value={this.state.settings.reposWatching.map(repo => ({ value: repo.id, label: repo.name }))}
+          value={reposWatchingToSelectInDropdown}
           onSelect={this.onRepoChange}
           floatingLabel="Repository List"
           dataSource={this.state.reposAvailable}
@@ -334,7 +339,7 @@ class GithubWidget extends Component {
   }
 
   render() {
-    console.log('state', this.state);
+    console.log('state: ', this.state);
     const state = { ...this.state };
     const openPullRequestsList = this.state.settings.reposWatching.map(repo => (
       <RepoPullRequestList

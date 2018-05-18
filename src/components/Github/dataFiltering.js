@@ -67,22 +67,12 @@ const REPO_FILTER = {
   id: '',
   name: '',
   owner: {
-    name: '',
     login: '',
+    id: '',
+    avatar_url: '',
   },
   created_at: '',
 };
-
-function basicApplyFilter(data, filter) {
-  const filteredData = {};
-
-  Object.keys(filter).forEach((key) => {
-    if (key in data) {
-      filteredData[key] = data[key];
-    }
-  });
-  return filteredData;
-}
 
 function isObject(object) {
   return object !== null && typeof (object) === 'object' && !Array.isArray(object);
@@ -91,23 +81,22 @@ function isObject(object) {
 function applyFilter(data, filter) {
   const filteredData = {};
 
-  for (const key in filter) {
-    if (!(key in data)) {
-      continue;
+  // ugh, use object.keys to avoid linting complaints :(
+  Object.keys(filter).forEach((key) => {
+    if (key in data) {
+      // if a key is a sub object {}, then continue filtering recursively
+      filteredData[key] = isObject(data[key]) ? applyFilter(data[key], filter[key]) : data[key];
     }
-
-    // if a key is a sub object {}, then continue filtering recursively
-    filteredData[key] = isObject(data[key]) ? applyFilter(data[key], filter[key]) : data[key];
-  }
+  });
   return filteredData;
 }
 
+/* returns a filtered pullRequest object in O(|keys|) */
 function FilterPullRequestData(pullRequestData) {
-  /* returns a filtered pullRequest object in O(|keys|) time */
-  // TODO: filter sub-objects recursively
   return applyFilter(pullRequestData, PR_FILTER);
 }
 
+/* returns a filtered Repo object in O(|keys|) */
 function FilterRepoData(repoData) {
   return applyFilter(repoData, REPO_FILTER);
 }

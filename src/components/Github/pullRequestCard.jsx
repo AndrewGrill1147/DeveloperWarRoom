@@ -1,7 +1,8 @@
+/* eslint-disable react/no-danger */
 import React from 'react';
 import { Card, CardHeader, CardActions, CardText, RaisedButton, Divider } from 'material-ui';
-import { GithubLogo } from './icons';
 import showdown from 'showdown';
+import { GithubLogo } from './icons';
 
 const converter = new showdown.Converter();
 
@@ -11,7 +12,7 @@ const multiLineStyle = {
 };
 
 const handleMarkdownString = (translateToHTML, markdownString) => {
-  if(!translateToHTML){
+  if (!translateToHTML) {
     return (
       markdownString
     );
@@ -20,7 +21,7 @@ const handleMarkdownString = (translateToHTML, markdownString) => {
   return (
     <div dangerouslySetInnerHTML={{ __html: converter.makeHtml(markdownString) }} />
   );
-}
+};
 
 const PullRequestCard = props => (
   <Card>
@@ -35,8 +36,6 @@ const PullRequestCard = props => (
     />
     <CardActions />
     <CardText expandable>
-      {/* text must be from Github to ensure html string validation */}
-      {/*<div dangerouslySetInnerHTML={{ __html: converter.makeHtml(props.pullRequest.body) }} />*/}
       {handleMarkdownString(props.translateMarkDownToHTML, props.pullRequest.body)}
       <Divider />
       <p><b>Status: </b>

@@ -5,7 +5,11 @@ import PullRequestCard from './pullRequestCard';
 
 const RepoPullRequestList = (props) => {
   const pullRequestCards = props.pullRequests.map(pullRequest => (
-    <PullRequestCard translateMarkDownToHTML={props.translateMarkDownToHTML} key={pullRequest.id} pullRequest={pullRequest} />
+    <PullRequestCard
+      translateMarkDownToHTML={props.translateMarkDownToHTML}
+      key={pullRequest.id}
+      pullRequest={pullRequest}
+    />
   ));
   return (
     <div>
