@@ -155,23 +155,23 @@ class GithubWidget extends Component {
 
     const settingsSubset = {};
     settingsSubset[key] = newValue;
-    this.setState({ settings: { ...this.state.settings, ...settingsSubset } });
 
-    console.log("watchallrepos"); 
-    console.log(this.state.settings.reposWatching);
-    if(this.state.settings.watchAllRepos && 
-      this.state.settings.reposWatching != this.state.reposAvailable){
-      //Make reposwatching list to include all repos available
-      console.log("new value bi false ma vao day van duoc luon ha");
-      console.log(this.state.settings.watchAllRepos);
 
-      this.setState({
-        settings: {
-          ...this.state.settings,
-          ...{ reposWatching: this.state.reposAvailable },
-        },
-      });
-    }
+    this.setState({ settings: { ...this.state.settings, ...settingsSubset } },
+      () => {
+        if (this.state.settings.watchAllRepos &&
+          this.state.settings.reposWatching != this.state.reposAvailable) {
+    
+            this.setState({
+            settings: {
+              ...this.state.settings,
+              ...{ reposWatching: this.state.reposAvailable },
+            },
+          });
+        }
+      }
+
+    );
   }
 
   onToggle(key, event, isInputChecked) {
@@ -333,7 +333,7 @@ class GithubWidget extends Component {
         {/* https://www.npmjs.com/package/material-ui-superselectfield#usage */}
         {/* note: reset means reset to the values that SuperSelect has at mount time */}
         <SuperSelectField
-          id="aha"  
+          id="aha"
           style={{ marginTop: '45px', fontSize: '16px', lineHeight: '24px' }}
           checkPosition="left"
           keepSearchOnSelect
