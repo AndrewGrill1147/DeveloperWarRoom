@@ -132,7 +132,7 @@ class GithubWidget extends Component {
     this.setState({ settings: { ...this.state.settings, ...{ refreshRate: value } } });
   }
 
-  onRepoChange() {
+  onRepoChange(itemsSelected) {
     /* can expand to include args, name */
     /* Is sent the current selection of repos to watch */
     const updatedReposWatching = [];
@@ -150,6 +150,9 @@ class GithubWidget extends Component {
 
   onSettingsChange(key, newValue) {
     /* updates settings with ...{key: newvalue} */
+    console.log("key" + key);
+    console.log("new value " + newValue);
+
     const settingsSubset = {};
     settingsSubset[key] = newValue;
     this.setState({ settings: { ...this.state.settings, ...settingsSubset } });
@@ -159,6 +162,7 @@ class GithubWidget extends Component {
     if(this.state.settings.watchAllRepos && 
       this.state.settings.reposWatching != this.state.reposAvailable){
       //Make reposwatching list to include all repos available
+      console.log("new value bi false ma vao day van duoc luon ha");
       console.log(this.state.settings.watchAllRepos);
 
       this.setState({
@@ -168,15 +172,10 @@ class GithubWidget extends Component {
         },
       });
     }
-
-
   }
 
   onToggle(key, event, isInputChecked) {
     this.onSettingsChange(key, isInputChecked);
-
- 
-
   }
 
   setPolling(rate = null) {
