@@ -73,11 +73,11 @@ class Grid extends Component {
       storageKey: this.constructor.name,
     };
 
-    this.editButtonClicked = this.editButtonClicked.bind(this);
+    this.onEditButtonClick = this.onEditButtonClick.bind(this);
     this.onLayoutChange = this.onLayoutChange.bind(this);
     this.elementinArray = this.elementinArray.bind(this);
     this.onLayoutChange = this.onLayoutChange.bind(this);
-    this.settingsButtonClicked = this.settingsButtonClicked.bind(this);
+    this.onSettingsButtonClick = this.onSettingsButtonClick.bind(this);
     this.setStrikethrough = this.setStrikethrough.bind(this);
 
     const localValue = LocalStorageAPI.get(this.state.storageKey);
@@ -93,7 +93,7 @@ class Grid extends Component {
     this.setState({ layout: newLayout });
   }
 
-  settingsButtonClicked() {
+  onSettingsButtonClick() {
     const opened = !this.state.sideBarOpen;
     this.setState({ sideBarOpen: opened });
   }
@@ -106,12 +106,7 @@ class Grid extends Component {
   }
 
   elementinArray(key) {
-    for (let i = 0; i < this.state.layout.length; i += 1) {
-      if (this.state.layout[i].i === key) {
-        return true;
-      }
-    }
-    return false;
+    return this.state.layout.some(layoutItem => layoutItem.i === key);
   }
 
   createElement(element) {
@@ -169,12 +164,33 @@ class Grid extends Component {
     });
   }
 
-  editButtonClicked() {
+  onEditButtonClick() {
     const flipped = !this.state.editMode;
     this.setState({ editMode: flipped });
     if (flipped === false && this.state.sideBarMenu === true) {
       this.setState({ sideBarMenu: false });
     }
+  }
+
+  renderSettingsDrawer() {
+    return (
+      <div>
+          <AppBar style={styles.menuBarStyle} title="Settings" showMenuIconButton={false} />
+          <List>
+            <ListItem
+              primaryText="Widget List"
+              initiallyOpen
+              primaryTogglesNestedList
+              nestedItems={this.widgetsMenu()}
+            />
+            <Divider />
+            <ListItem primaryText="Toggle Edit" onClick={this.onEditButtonClick} rightIcon={this.state.editMode ? <EditorEdit /> : <ActionLockClosed />} />
+            <Divider />
+            <ListItem primaryText="Switch Theme" onClick={this.props.ThemeButton} />
+            <Divider />
+          </List>
+      </div>
+    );
   }
 
   render() {
@@ -198,25 +214,11 @@ class Grid extends Component {
         </GridLayout>
 
         <Drawer open={this.state.sideBarOpen} width={200}>
-          <AppBar style={styles.menuBarStyle} title="Settings" showMenuIconButton={false} />
-
-          <List>
-            <ListItem
-              primaryText="Widget List"
-              initiallyOpen
-              primaryTogglesNestedList
-              nestedItems={this.widgetsMenu()}
-            />
-            <Divider />
-            <ListItem primaryText="Toggle Edit" onClick={this.editButtonClicked} rightIcon={this.state.editMode ? <EditorEdit /> : <ActionLockClosed />} />
-            <Divider />
-            <ListItem primaryText="Switch Theme" onClick={this.props.ThemeButton} />
-            <Divider />
-          </List>
-
+          {this.renderSettingsDrawer()}
         </Drawer>
 
-        <FloatingActionButton style={styles.fixedToBottom} onClick={this.settingsButtonClicked}>
+        {/* Bottom-right settings icon*/}
+        <FloatingActionButton style={styles.fixedToBottom} onClick={this.onSettingsButtonClick}>
           <SettingIcon />
         </FloatingActionButton>
       </div>
