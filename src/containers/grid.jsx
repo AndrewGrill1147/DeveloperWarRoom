@@ -85,7 +85,7 @@ class Grid extends Component {
   }
 
   onRemoveItem(i) {
-    if(this.state.layout.includes(i) === true){
+    if (this.state.layout.includes(i) === true) {
       return;
     }
     this.setState({ layout: _.reject(this.state.layout, { i }) });
@@ -127,7 +127,7 @@ class Grid extends Component {
       <div key={element.i} data-grid={element}>
         <Paper style={styles.style} zDepth={3}>
 
-          {Widgets[element.i]}
+          {Widgets[element.i].component}
           {removeButton}
         </Paper>
       </div>
@@ -149,20 +149,24 @@ class Grid extends Component {
   }
 
   addWidget(key) {
-    //Check if the key is not already rendered
+    // Check if the key is not already rendered
+    console.log('bacon');
+
     if (this.state.layout.filter(widgetLayout => widgetLayout.i === key).length !== 0) {
       return;
     }
-    //Check if the key is a valid widget that can be added
-    if(Object.keys(Widgets).includes(key) === false)
-      return;
+    // Check if the key is a valid widget that can be added
+    if (Object.keys(Widgets).includes(key) === false) {
+      console.log('bacon');
 
+      return;
+    }
     const newWidget = {
       i: key,
       x: (this.state.layout.length * 3) % (this.state.cols || 12),
       y: Infinity, // puts it at the bottom
-      w: 3,
-      h: 2,
+      w: Widgets[key].DefaultSize.w,
+      h: Widgets[key].DefaultSize.h,
     };
     this.setState({
       // Add a new item. It must have a unique key!
@@ -226,3 +230,4 @@ class Grid extends Component {
 }
 
 export default Grid;
+
