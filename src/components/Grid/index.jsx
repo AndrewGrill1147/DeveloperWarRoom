@@ -128,9 +128,8 @@ class Grid extends Component {
     }
 
     return (
-      <div key={element.i} data-grid={element}>
+      <div key={element.i}>
         <Paper style={styles.style} zDepth={3}>
-
           {Widgets[element.i]}
           {removeButton}
         </Paper>
