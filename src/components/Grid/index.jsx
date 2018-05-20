@@ -75,7 +75,7 @@ class Grid extends Component {
 
     this.onEditButtonClick = this.onEditButtonClick.bind(this);
     this.onLayoutChange = this.onLayoutChange.bind(this);
-    this.elementinArray = this.elementinArray.bind(this);
+    this.componentInGrid = this.componentInGrid.bind(this);
     this.onLayoutChange = this.onLayoutChange.bind(this);
     this.onSettingsButtonClick = this.onSettingsButtonClick.bind(this);
     this.setStrikethrough = this.setStrikethrough.bind(this);
@@ -99,14 +99,14 @@ class Grid extends Component {
   }
 
   setStrikethrough(key) {
-    if (this.elementinArray(key)) {
+    if (this.componentInGrid(key)) {
       return { textDecorationLine: 'line-through' };
     }
     return {};
   }
 
-  elementinArray(key) {
-    return this.state.layout.some(layoutItem => layoutItem.i === key);
+  componentInGrid(key) {
+    return this.state.layout.some(gridItem => gridItem.i === key);
   }
 
   createElement(element) {
@@ -137,7 +137,7 @@ class Grid extends Component {
       const returnVal = (<ListItem
         key={key}
         primaryText={key}
-        disabled={this.elementinArray(key)}
+        disabled={this.componentInGrid(key)}
         onClick={() => { this.addWidget(key); }}
         style={this.setStrikethrough(key)}
       />);
@@ -153,6 +153,7 @@ class Grid extends Component {
     }
     const newWidget = {
       i: key,
+      //make this bottom left
       x: (this.state.layout.length * 3) % (this.state.cols || 12),
       y: Infinity, // puts it at the bottom
       w: 3,
