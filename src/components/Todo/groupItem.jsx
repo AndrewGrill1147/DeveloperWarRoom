@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ListItem, Checkbox, TextField, IconButton, IconMenu, MenuItem } from 'material-ui';
+import { ListItem, TextField, IconButton, IconMenu, MenuItem } from 'material-ui';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 const iconButtonElement = (
@@ -15,38 +15,38 @@ const iconButtonElement = (
 const ENTER_KEY = 13;
 const ESC_KEY = 27;
 
-class TodoItem extends Component {
+class GroupItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      editText: this.props.todo.title,
+      editText: this.props.group.title,
     };
 
     this.startEdit = this.startEdit.bind(this);
     this.handleInput = this.handleInput.bind(this);
-    this.handleEditTodoKeyDown = this.handleEditTodoKeyDown.bind(this);
+    this.handleEditGroupKeyDown = this.handleEditGroupKeyDown.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleSubmit(event) {
     const val = event.target.value.trim();
     if (val) {
-      this.props.onTodoSave({ ...this.props.todo, ...{ title: val } });
+      this.props.onGroupSave({ ...this.props.group, ...{ title: val } });
     } else {
-      this.props.onTodoDelete();
+      this.props.onGroupDelete();
     }
   }
 
   startEdit() {
-    this.props.onTodoEdit();
-    this.setState({ editText: this.props.todo.title });
+    this.props.onGroupEdit();
+    this.setState({ editText: this.props.group.title });
   }
 
   handleInput(event) {
     this.setState({ editText: event.target.value });
   }
 
-  handleEditTodoKeyDown(event) {
+  handleEditGroupKeyDown(event) {
     if (event.which === ESC_KEY) {
       this.setState({ editText: this.props.title });
       this.props.onCancel();
@@ -59,20 +59,14 @@ class TodoItem extends Component {
     const rightIconButtons = (
       <IconMenu iconButtonElement={iconButtonElement}>
         <MenuItem onClick={this.startEdit}>Edit</MenuItem>
-        <MenuItem onClick={this.props.onTodoDelete}>Delete</MenuItem>
+        <MenuItem onClick={this.props.onGroupDelete}>Delete</MenuItem>
       </IconMenu>
     );
 
     if (!this.props.editing) {
       return (
         <ListItem
-          primaryText={this.props.todo.title}
-          leftCheckbox={
-            <Checkbox
-              onCheck={this.props.onToggle}
-              checked={this.props.todo.completed}
-            />
-          }
+          primaryText={this.props.group.title}
           rightIconButton={rightIconButtons}
         />
       );
@@ -82,11 +76,11 @@ class TodoItem extends Component {
     return (
       <ListItem>
         <TextField
-          id={this.props.todo.id.toString()}
+          id={this.props.group.id.toString()}
           value={this.state.editText}
           underlineShow
           onInput={this.handleInput}
-          onKeyDown={this.handleEditTodoKeyDown}
+          onKeyDown={this.handleEditGroupKeyDown}
           autoFocus
           fullWidth
         />
@@ -95,4 +89,4 @@ class TodoItem extends Component {
   }
 }
 
-export default TodoItem;
+export default GroupItem;
