@@ -6,7 +6,7 @@ const Widgets = {
     component: <div> Pull Request </div>,
     DefaultSize: { w: 4, h: 2 },
   },
-  'Reddit ': {
+  'Reddit': {
     component: <div> Reddit </div>,
     DefaultSize: { w: 3, h: 3 },
   },

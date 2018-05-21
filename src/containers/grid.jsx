@@ -150,15 +150,12 @@ class Grid extends Component {
 
   addWidget(key) {
     // Check if the key is not already rendered
-    console.log('bacon');
 
     if (this.state.layout.filter(widgetLayout => widgetLayout.i === key).length !== 0) {
       return;
     }
     // Check if the key is a valid widget that can be added
     if (Object.keys(Widgets).includes(key) === false) {
-      console.log('bacon');
-
       return;
     }
     const newWidget = {

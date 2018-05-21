@@ -1,11 +1,9 @@
 import React from 'react';
 import Grid from '../src/containers/grid';
-import { Drawer, ListItem, Dialog, TextField } from 'material-ui';
-import Bookmarker from '../src/components/bookmarker';
-import IconButton from 'material-ui/IconButton/IconButton';
+import { Drawer, ListItem } from 'material-ui';
+
 
 /* Testing the Grid Component */
-/* Unit Tests */
 describe('<Grid />', () => {
   it('edit button clicked changes state', () => {
     const wrapper = shallow(<Grid />);
@@ -15,8 +13,8 @@ describe('<Grid />', () => {
   });
   it('cannot add the same widget twice', () => {
     const wrapper = shallow(<Grid />);
-    wrapper.instance().addWidget('key');
-    wrapper.instance().addWidget('key');
+    wrapper.instance().addWidget('Todo List');
+    wrapper.instance().addWidget('Todo List');
     expect(wrapper.state().layout.length).toEqual(1);
   });
   it('adding widget needs to be in widget list', () => {
@@ -26,46 +24,26 @@ describe('<Grid />', () => {
   });
   it('doesnt try and remove the widget if its not in layout', () => {
     const wrapper = shallow(<Grid />);
-    wrapper.instance().addWidget('key');
+    wrapper.instance().addWidget('Todo List');
     wrapper.instance().onRemoveItem('NOT A VALID KEY');
     expect(wrapper.state().layout.length).toEqual(1);
   });
   it('elementInArray function returning correct values', () => {
     const wrapper = shallow(<Grid />);
-    wrapper.instance().addWidget('key');
-    wrapper.instance().addWidget('key 2');
-    const found1 = wrapper.instance().elementinArray('key');
+    wrapper.instance().addWidget('Todo List');
+    wrapper.instance().addWidget('Reddit');
+    const found1 = wrapper.instance().elementinArray('Reddit');
     const found2 = wrapper.instance().elementinArray('NOT A VALID KEY');
     expect(found1).toEqual(true);
     expect(found2).toEqual(false);
   });
-
   it('removes widget if its in the list', () => {
     const wrapper = shallow(<Grid />);
-    wrapper.instance().addWidget('key');
+    wrapper.instance().addWidget('Reddit');
     expect(wrapper.state().layout.length).toEqual(1);
-    wrapper.instance().onRemoveItem('key');
+    wrapper.instance().onRemoveItem('Reddit');
     expect(wrapper.state().layout.length).toEqual(0);
   });
 });
 
-describe('<Bookmarker />', () => {
-  it('add bookmark button changes state', () => {
-    const wrapper = shallow(<Bookmarker />);
-    wrapper.find(IconButton).simulate('click');
-    expect(wrapper.state().dialogOpen).toEqual(true);
-  });
-/*
-  it('add a bookmark', () => {
-    const wrapper = shallow(<Bookmarker />);
-    wrapper.find(Dialog).at(1).find(TextField).simulate('input');
-    wrapper.find(Dialog).at(2).find(TextField).simulate('input');
-    expect(wrapper.state().dialogOpen).toEqual(true);
-  }); */
-});
 
-
-/* Integration Tests */
-/* TODO */
-
-/** ***************************** */
