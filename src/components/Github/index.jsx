@@ -40,6 +40,11 @@ const styles = {
     width: '5%',
     marginTop: '27px',
   },
+  superSelectField: {
+    marginTop: '45px',
+    fontSize: '16px',
+    lineHeight: '24px'
+  }
 };
 
 
@@ -150,9 +155,6 @@ class GithubWidget extends Component {
 
   onSettingsChange(key, newValue) {
     /* updates settings with ...{key: newvalue} */
-    console.log("key" + key);
-    console.log("new value " + newValue);
-
     const settingsSubset = {};
     settingsSubset[key] = newValue;
 
@@ -334,7 +336,7 @@ class GithubWidget extends Component {
         {/* note: reset means reset to the values that SuperSelect has at mount time */}
         <SuperSelectField
           id="aha"
-          style={{ marginTop: '45px', fontSize: '16px', lineHeight: '24px' }}
+          style={styles.superSelectField}
           checkPosition="left"
           keepSearchOnSelect
           withResetSelectAllButtons
@@ -360,7 +362,6 @@ class GithubWidget extends Component {
   }
 
   render() {
-    console.log('state: ', this.state);
     const state = { ...this.state };
     const openPullRequestsList = this.state.settings.reposWatching.map(repo => (
       <RepoPullRequestList
