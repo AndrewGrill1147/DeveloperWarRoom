@@ -1,7 +1,6 @@
 /* eslint-env browser */
 import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
-import ActionDelete from 'material-ui/svg-icons/action/delete';
 import ActionLockClosed from 'material-ui/svg-icons/action/lock';
 import EditorEdit from 'material-ui/svg-icons/editor/mode-edit';
 import _ from 'lodash';
@@ -16,6 +15,7 @@ import { List, ListItem } from 'material-ui/List';
 import Bookmarker from './../../components/Bookmarker';
 import Widgets from './../../helpers/widgetRegistration';
 import LocalStorageAPI from './../../helpers/localstorageAPI';
+import {RemoveIcon} from './icons';
 
 const styles = {
   fixedToBottom: {
@@ -29,10 +29,6 @@ const styles = {
     right: '2px',
     top: 0,
     cursor: 'pointer',
-  },
-  removeIconSize: {
-    width: 20,
-    height: 20,
   },
   horizontalHeaderBarStyle: {
     display: 'inline',
@@ -54,13 +50,6 @@ const styles = {
     backgroundColor: 'rgb(0, 188, 212)',
   },
 };
-
-const RemoveIcon = props => (
-  <IconButton iconStyle={styles.removeIconSize}>
-    <ActionDelete {...props} />
-  </IconButton>
-);
-
 
 class Grid extends Component {
   constructor(props) {
