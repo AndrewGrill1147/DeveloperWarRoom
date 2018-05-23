@@ -7,7 +7,6 @@ import _ from 'lodash';
 import SettingIcon from 'material-ui/svg-icons/action/settings';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import GridLayout from 'react-grid-layout';
-import IconButton from 'material-ui/IconButton/IconButton';
 import Paper from 'material-ui/Paper';
 import Drawer from 'material-ui/Drawer';
 import Divider from 'material-ui/Divider';
@@ -15,7 +14,7 @@ import { List, ListItem } from 'material-ui/List';
 import Bookmarker from './../../components/Bookmarker';
 import Widgets from './widgetRegistration';
 import LocalStorageAPI from './../../helpers/localstorageAPI';
-import {RemoveIcon} from './icons';
+import RemoveIcon from './icons';
 
 const styles = {
   fixedToBottom: {

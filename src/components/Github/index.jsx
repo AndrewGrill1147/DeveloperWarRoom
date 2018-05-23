@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
+import SettingsIcon from 'material-ui/svg-icons/action/settings';
+import RefreshIcon from 'material-ui/svg-icons/navigation/refresh';
 import { Paper, Tabs, Tab, SelectField, MenuItem, Toggle, IconButton } from 'material-ui';
 import SuperSelectField from 'material-ui-superselectfield';
 import _ from 'lodash';
 import RepoPullRequestList from './repoPullRequestList';
-import { PullRequestIcon } from './icons';
+import {PullRequestIcon} from './icons';
 import TextBox from './textBox';
 import LocalStorageAPI from '../../helpers/localstorageAPI';
 import GithubAPI from '../../helpers/githubAPI';
 import { FilterPullRequestData, FilterRepoData } from './dataFiltering';
-import SettingsIcon from 'material-ui/svg-icons/action/settings';
-import RefreshIcon from 'material-ui/svg-icons/navigation/refresh';
 
 const styles = {
   margin: {
@@ -55,8 +55,8 @@ const styles = {
   superSelectField: {
     marginTop: '45px',
     fontSize: '16px',
-    lineHeight: '24px'
-  }
+    lineHeight: '24px',
+  },
 };
 
 
@@ -171,19 +171,19 @@ class GithubWidget extends Component {
     settingsSubset[key] = newValue;
 
 
-    this.setState({ settings: { ...this.state.settings, ...settingsSubset } },
+    this.setState(
+      { settings: { ...this.state.settings, ...settingsSubset } },
       () => {
         if (this.state.settings.watchAllRepos &&
-          this.state.settings.reposWatching != this.state.reposAvailable) {
-    
-            this.setState({
+          this.state.settings.reposWatching !== this.state.reposAvailable) {
+          this.setState({
             settings: {
               ...this.state.settings,
               ...{ reposWatching: this.state.reposAvailable },
             },
           });
         }
-      }
+      },
 
     );
   }
@@ -308,20 +308,20 @@ class GithubWidget extends Component {
         />
 
         <div>
-        <SelectField
-          style={styles.refreshDropdown}
-          floatingLabelFixed
-          floatingLabelText="Refresh rate"
-          hintText="How often should we check Github for you?"
-          value={this.state.settings.refreshRate}
-          onChange={this.onRefreshRateChange}
-        >
-          {refreshRateMenuItems}
-        </SelectField>
+          <SelectField
+            style={styles.refreshDropdown}
+            floatingLabelFixed
+            floatingLabelText="Refresh rate"
+            hintText="How often should we check Github for you?"
+            value={this.state.settings.refreshRate}
+            onChange={this.onRefreshRateChange}
+          >
+            {refreshRateMenuItems}
+          </SelectField>
 
-        <IconButton style={styles.refreshButton} onClick={this.refresh}>
-          <RefreshIcon color="gray"/>
-        </IconButton>
+          <IconButton style={styles.refreshButton} onClick={this.refresh}>
+            <RefreshIcon color="gray" />
+          </IconButton>
         </div>
 
         <TextBox
