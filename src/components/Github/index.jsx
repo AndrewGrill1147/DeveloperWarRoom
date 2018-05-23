@@ -42,6 +42,16 @@ const styles = {
     width: '5%',
     marginTop: '27px',
   },
+
+  divStyle: {
+    width: '100%',
+    height: '100%',
+  },
+  expand: {
+    maxHeight: '100%',
+    overflow: 'auto',
+  },
+
   superSelectField: {
     marginTop: '45px',
     fontSize: '16px',
@@ -386,8 +396,8 @@ class GithubWidget extends Component {
     }
 
     return (
-      <div>
-        <Paper>
+      <div style={styles.divStyle} >
+        <Paper style={styles.expand} >
           <Tabs>
             <Tab icon={<PullRequestIcon />}>
               {errorMessage}
