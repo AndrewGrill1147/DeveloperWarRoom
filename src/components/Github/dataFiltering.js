@@ -53,7 +53,6 @@ const PR_FILTER = {
   user: {
     avatar_url: '',
     login: '',
-    fakeKey: '',
   },
   body: '',
   title: '',
