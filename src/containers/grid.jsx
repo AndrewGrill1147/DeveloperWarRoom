@@ -92,8 +92,15 @@ class Grid extends Component {
   }
 
   onLayoutChange(newLayout) {
-    LocalStorageAPI.put(this.state.storageKey, newLayout);
-    this.setState({ layout: newLayout });
+    const layouts = newLayout;
+    for (let i = 0; i < layouts.length; i += 1) {
+      if (layouts[i].w < 2) { layouts[i].w = 2; }
+
+      if (layouts[i].h < 2) { layouts[i].h = 2; }
+    }
+    LocalStorageAPI.put(this.state.storageKey, layouts);
+
+    this.setState({ layout: layouts });
   }
 
   settingsButtonClicked() {
@@ -150,6 +157,7 @@ class Grid extends Component {
 
   addWidget(key) {
     // Check if the key is not already rendered
+
 
     if (this.state.layout.filter(widgetLayout => widgetLayout.i === key).length !== 0) {
       return;
@@ -227,4 +235,5 @@ class Grid extends Component {
 }
 
 export default Grid;
+
 
