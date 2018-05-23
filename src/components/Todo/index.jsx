@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { List, Subheader, Tabs, Tab, Paper, TextField, Divider } from 'material-ui';
+import { List, Subheader, Tabs, Tab, Paper, TextField, Divider, MenuItem, SelectField } from 'material-ui';
 import TodoItem from './todoItem';
 import LocalStorageAPI from './../../helpers/localstorageAPI';
 
@@ -44,18 +44,25 @@ class Todo extends Component {
       editing: null,
       newTodo: '',
       todos: [],
+      currentGroup: 'default',
+      groupList: [],
       storageKey: this.constructor.name,
     };
 
     // .bind(this) can be placed here
     this.componentDidUpdate = this.componentDidUpdate.bind(this);
+    this.handleGroupChange = this.handleGroupChange.bind(this);
+    this.groupListMapping = this.groupListMapping.bind(this);
 
     const savedState = LocalStorageAPI.get(this.state.storageKey);
     if (savedState !== null) {
       this.state = savedState;
     }
   }
-
+  componentDidMount() {
+    this.state.currentGroup = 10;
+    this.state.groupList = [{ default: 'default' }, { work: 'work' }];
+  }
   componentDidUpdate() {
     LocalStorageAPI.put(this.state.storageKey, this.state);
   }
@@ -94,6 +101,12 @@ class Todo extends Component {
     this.setState({ todos: updatedTodos });
   }
 
+  addGroup(newGroup) {
+    if (newGroup != null && newGroup !== '') {
+      this.setState({ groups: this.state.groups.push(newGroup) });
+    }
+  }
+
   handleNewTodoKeyDown(event) {
     if (event.keyCode !== ENTER_KEY) {
       return;
@@ -119,7 +132,19 @@ class Todo extends Component {
     };
     this.setState({ todos: [...this.state.todos, todo] });
   }
-
+  handleGroupChange(event, index, value) {
+    console.log('value:');
+    console.log(value);
+    this.setState({ currentGroup: value });
+  }
+  groupListMapping(listItem) {
+    const tmp = this.state.tmp;
+    console.log(listItem);
+    console.log('groups list item');
+    return (
+      <MenuItem value={Object.keys(listItem)[0]} primaryText={Object.values(listItem)[0]} />
+    );
+  }
   render() {
     const todosByStatus = {};
     Object.values(status).forEach((s) => {
@@ -142,7 +167,6 @@ class Todo extends Component {
       todosByStatus[status.ALL].push(todoComponent);
       todosByStatus[todo.completed ? status.COMPLETED : status.ACTIVE].push(todoComponent);
     }, this);
-
     // this was going to be a toggle button
     return (
       <div style={styles.divStyle}>
@@ -157,6 +181,11 @@ class Todo extends Component {
             fullWidth
             multiLine
           />
+          <SelectField
+            value={this.state.currentGroup}
+          >
+            {this.state.groupList ? this.state.groupList.map(this.groupListMapping) : <div>good try boiii</div>}
+          </SelectField>
 
           <Divider />
           <Tabs>
@@ -186,6 +215,11 @@ class Todo extends Component {
                 <Subheader inset={false}>
                   {todosByStatus[status.ALL].length} items
                 </Subheader>
+              </div>
+            </Tab>
+            <Tab label="groups">
+              <div>
+                this is the groups page
               </div>
             </Tab>
           </Tabs>
