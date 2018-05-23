@@ -1,6 +1,6 @@
 import React from 'react';
-import Todo from '../components/Todo';
-import Github from '../components/Github';
+import Todo from '../Todo';
+import Github from '../Github';
 
 const Widgets = {
   Github: <Github />,

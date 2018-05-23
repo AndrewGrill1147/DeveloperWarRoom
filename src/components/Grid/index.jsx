@@ -13,7 +13,7 @@ import Drawer from 'material-ui/Drawer';
 import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
 import Bookmarker from './../../components/Bookmarker';
-import Widgets from './../../helpers/widgetRegistration';
+import Widgets from './widgetRegistration';
 import LocalStorageAPI from './../../helpers/localstorageAPI';
 import {RemoveIcon} from './icons';
 
