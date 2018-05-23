@@ -5,7 +5,7 @@ import { Paper, Tabs, Tab, SelectField, MenuItem, Toggle, IconButton } from 'mat
 import SuperSelectField from 'material-ui-superselectfield';
 import _ from 'lodash';
 import RepoPullRequestList from './repoPullRequestList';
-import {PullRequestIcon} from './icons';
+import { PullRequestIcon } from './icons';
 import TextBox from './textBox';
 import LocalStorageAPI from '../../helpers/localstorageAPI';
 import GithubAPI from '../../helpers/githubAPI';
@@ -248,19 +248,34 @@ class GithubWidget extends Component {
   updateReposWatching(newReposAvailable) {
     /* verify the repos we are watching are still available to watch */
     if (this.state.settings.reposWatching.length === 0) { return; }
-    const repoIdsAvailable = {};
-    newReposAvailable.forEach((repo) => {
-      repoIdsAvailable[repo.id] = true;
-    });
 
-    const reposWatchingStill = this.state.settings.reposWatching.filter(repo =>
-      repo.id in repoIdsAvailable);
-    this.setState({
-      settings: {
-        ...this.state.settings,
-        ...{ reposWatching: reposWatchingStill },
-      },
-    });
+
+    //if the watchallrepos option is on and reposwatching list is different from updated repos available
+    //set reposWatching to newReposAvailable
+    else if (this.state.settings.watchAllRepos &&
+      this.state.settings.reposWatching !== newReposAvailable) {
+      this.setState({
+        settings: {
+          ...this.state.settings,
+          ...{ reposWatching: newReposAvailable },
+        }
+      });
+    }
+    else {
+      //check the currently repos watching list if some repos got removed 
+      const repoIdsAvailable = {};
+      newReposAvailable.forEach((repo) => {
+        repoIdsAvailable[repo.id] = true;
+      });
+      const reposWatchingStill = this.state.settings.reposWatching.filter(repo =>
+        repo.id in repoIdsAvailable);
+      this.setState({
+        settings: {
+          ...this.state.settings,
+          ...{ reposWatching: reposWatchingStill },
+        },
+      });
+    }
   }
 
   updateReposAvailable(resp) {
