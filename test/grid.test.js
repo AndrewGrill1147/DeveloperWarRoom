@@ -44,6 +44,19 @@ describe('<Grid />', () => {
     wrapper.instance().onRemoveItem('Reddit');
     expect(wrapper.state().layout.length).toEqual(0);
   });
+  
+  it('widget default sizes are accurate', () => {
+    const wrapper = shallow(<Grid />);
+    wrapper.instance().addWidget('Reddit ');
+    wrapper.instance().addWidget('Todo List');
+    wrapper.instance().addWidget('Pull Request');
+    expect(Widgets['Reddit '].DefaultSize.w).toEqual(3);
+    expect(Widgets['Reddit '].DefaultSize.h).toEqual(3);
+    expect(Widgets['Todo List'].DefaultSize.w).toEqual(2.5);
+    expect(Widgets['Todo List'].DefaultSize.h).toEqual(2.5);
+    expect(Widgets['Pull Request'].DefaultSize.w).toEqual(4);
+    expect(Widgets['Pull Request'].DefaultSize.h).toEqual(2);
+  });
 });
 
 
