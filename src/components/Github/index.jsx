@@ -3,11 +3,13 @@ import { Paper, Tabs, Tab, SelectField, MenuItem, Toggle, IconButton } from 'mat
 import SuperSelectField from 'material-ui-superselectfield';
 import _ from 'lodash';
 import RepoPullRequestList from './repoPullRequestList';
-import { PullRequestIcon, SettingsIcon, RefreshIcon } from './icons';
+import { PullRequestIcon } from './icons';
 import TextBox from './textBox';
 import LocalStorageAPI from '../../helpers/localstorageAPI';
 import GithubAPI from '../../helpers/githubAPI';
 import { FilterPullRequestData, FilterRepoData } from './dataFiltering';
+import SettingsIcon from 'material-ui/svg-icons/action/settings';
+import RefreshIcon from 'material-ui/svg-icons/navigation/refresh';
 
 const styles = {
   margin: {
@@ -295,6 +297,7 @@ class GithubWidget extends Component {
           onToggle={this.onToggle.bind(this, 'watchAllRepos')}
         />
 
+        <div>
         <SelectField
           style={styles.refreshDropdown}
           floatingLabelFixed
@@ -307,8 +310,9 @@ class GithubWidget extends Component {
         </SelectField>
 
         <IconButton style={styles.refreshButton} onClick={this.refresh}>
-          <RefreshIcon />
+          <RefreshIcon color="gray"/>
         </IconButton>
+        </div>
 
         <TextBox
           fullWidth
