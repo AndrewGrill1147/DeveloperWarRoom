@@ -79,6 +79,7 @@ class GithubWidget extends Component {
     this.state = {
       githubAPI: new GithubAPI(),
       settings: {
+        displayOauthTokenValue: true,
         watchAllRepos: false,
         translateMarkdownToHTML: false,
         refreshRate: null,
@@ -322,6 +323,14 @@ class GithubWidget extends Component {
           onToggle={this.onToggle.bind(this, 'watchAllRepos')}
         />
 
+        <Toggle
+          label="Display Github token value"
+          labelStyle={styles.toggle.label}
+          labelPosition="left"
+          toggled={this.state.settings.displayOauthTokenValue}
+          onToggle={this.onToggle.bind(this, 'displayOauthTokenValue')}
+        />
+
         <div>
           <SelectField
             style={styles.refreshDropdown}
@@ -344,6 +353,7 @@ class GithubWidget extends Component {
           floatingLabelFixed
           savedvalue={this.state.settings.oauthToken}
           floatingLabelText="Github Token"
+          type={this.state.settings.displayOauthTokenValue ? "text" : "password"}
           settingskey="oauthToken"
           value={this.state.settings.oauthToken || ''}
           hintText="Will you share your Oauth token?"
