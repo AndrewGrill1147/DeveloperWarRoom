@@ -17,18 +17,21 @@
     "build": "webpack --devtool source-map",
     "build:prod": "webpack -p",
     "watch": "webpack --devtool source-map --watch",
-    "lint": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx src/",
-    "lint:fix": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx src/ --fix",
-    "test": "jest"
+    "test": "jest",
+    "lint": "node ./node_modules/eslint/bin/eslint.js --ext .js,.jsx src/",
+    "lint:fix": "node ./node_modules/eslint/bin/eslint.js --ext .js,.jsx src/ --fix"
   },
   "dependencies": {
+    "buffer": "^5.1.0",
     "lodash": "^4.17.10",
     "material-ui": "^0.20.0",
     "npm": "^6.0.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-grid-layout": "^0.16.5",
-    "yarn": "^1.6.0"
+    "yarn": "^1.6.0",
+    "material-ui-superselectfield": "^1.9.2",
+    "showdown": "^1.8.6"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

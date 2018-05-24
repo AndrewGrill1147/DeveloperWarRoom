@@ -27,4 +27,3 @@ chrome.browserAction.onClicked.addListener(() => {
     }
   });
 });
-
