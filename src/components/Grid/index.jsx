@@ -158,17 +158,6 @@ class Grid extends Component {
     if (this.componentInGrid(key) || !Object.keys(Widgets).includes(key)) {
       return;
     }
-
-    /*
-    const newWidget = {
-      i: key,
-      x: (this.state.layout.length * 3) % (this.state.cols || 12),
-      y: Infinity, // puts it at the bottom
-      w: Widgets[key].DefaultSize.w,
-      h: Widgets[key].DefaultSize.h,
-    };
-    */
-
     const defaultWidgetLayout = {
       x: 0,
       y: Infinity,
@@ -177,13 +166,11 @@ class Grid extends Component {
       minW: 1,
       minH: 1
     };
-
     const widget = {...defaultWidgetLayout, ...Widgets[key].layout, ...{i: key}};
 
-    console.log('adding ', key, '\n', widget);
+    // add new widget first, s.t. its {x,y} pos is prioritized above all else
     this.setState({
-      // Add a new item. It must have a unique key!
-      layout: [...this.state.layout, ...[widget]],
+      layout: [...[widget], ...this.state.layout],
     });
   }
 
