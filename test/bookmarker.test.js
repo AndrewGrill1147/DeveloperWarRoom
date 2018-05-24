@@ -9,7 +9,7 @@ describe('<Bookmarker />', () => {
     wrapper.find(IconButton).simulate('click');
     expect(wrapper.state().dialogOpen).toEqual(true);
   });
-  it('add widget', () => {
+  it('add quick link', () => {
     const wrapper = shallow(<Bookmarker />);
     const value = {id: 10, nameInput: 'test', urlInput: 'www.google.com', dialogOpen: true};
     const value2 = {id: 4, nameInput: 'test2', urlInput: 'www.youtube.com', dialogOpen: true};
