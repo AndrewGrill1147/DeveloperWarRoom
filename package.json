@@ -17,29 +17,35 @@
     "build": "webpack --devtool source-map",
     "build:prod": "webpack -p",
     "watch": "webpack --devtool source-map --watch",
+    "test": "jest",
     "lint": "node ./node_modules/eslint/bin/eslint.js --ext .js,.jsx src/",
-    "lint:fix": "node ./node_modules/eslint/bin/eslint.js --ext .js,.jsx src/ --fix",
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "lint:fix": "node ./node_modules/eslint/bin/eslint.js --ext .js,.jsx src/ --fix"
   },
   "dependencies": {
     "buffer": "^5.1.0",
     "lodash": "^4.17.10",
     "material-ui": "^0.20.0",
-    "material-ui-superselectfield": "^1.9.2",
+    "npm": "^6.0.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-grid-layout": "^0.16.5",
+    "yarn": "^1.6.0",
+    "material-ui-superselectfield": "^1.9.2",
     "showdown": "^1.8.6"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
+    "babel-jest": "^22.4.3",
     "babel-loader": "^7.1.3",
     "babel-plugin-transform-react-jsx-source": "^6.22.0",
+    "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-react-app": "^3.1.1",
     "copy-webpack-plugin": "^4.4.2",
     "css-loader": "^0.28.10",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^4.18.2",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-loader": "^2.0.0",
@@ -48,7 +54,17 @@
     "eslint-plugin-react": "^7.7.0",
     "extract-text-webpack-plugin": "^3.0.2",
     "html-webpack-plugin": "^2.30.1",
+    "jest": "^22.4.4",
+    "jest-cli": "^22.4.3",
+    "jest-localstorage-mock": "^2.2.0",
+    "react-test-renderer": "^16.3.2",
     "style-loader": "^0.20.2",
     "webpack": "^3.11.0"
+  },
+  "jest": {
+    "setupTestFrameworkScriptFile": "./test/helpers.js",
+    "setupFiles": [
+      "jest-localstorage-mock"
+    ]
   }
 }

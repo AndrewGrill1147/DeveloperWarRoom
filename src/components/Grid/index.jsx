@@ -73,12 +73,22 @@ class Grid extends Component {
   }
 
   onRemoveItem(i) {
+    if (this.state.layout.includes(i) === true) {
+      return;
+    }
     this.setState({ layout: _.reject(this.state.layout, { i }) });
   }
 
   onLayoutChange(newLayout) {
-    LocalStorageAPI.put(this.state.storageKey, newLayout);
-    this.setState({ layout: newLayout });
+    const layouts = newLayout;
+    for (let i = 0; i < layouts.length; i += 1) {
+      if (layouts[i].w < 2) { layouts[i].w = 2; }
+
+      if (layouts[i].h < 2) { layouts[i].h = 2; }
+    }
+    LocalStorageAPI.put(this.state.storageKey, layouts);
+
+    this.setState({ layout: layouts });
   }
 
   settingsButtonClicked() {
@@ -119,7 +129,7 @@ class Grid extends Component {
       <div key={element.i} data-grid={element}>
         <Paper style={styles.style} zDepth={3}>
 
-          {Widgets[element.i]}
+          {Widgets[element.i].component}
           {removeButton}
         </Paper>
       </div>
@@ -142,15 +152,20 @@ class Grid extends Component {
   }
 
   addWidget(key) {
+    // Check if the key is not already rendered
     if (this.state.layout.filter(widgetLayout => widgetLayout.i === key).length !== 0) {
+      return;
+    }
+    // Check if the key is a valid widget that can be added
+    if (Object.keys(Widgets).includes(key) === false) {
       return;
     }
     const newWidget = {
       i: key,
       x: (this.state.layout.length * 3) % (this.state.cols || 12),
       y: Infinity, // puts it at the bottom
-      w: 3,
-      h: 2,
+      w: Widgets[key].DefaultSize.w,
+      h: Widgets[key].DefaultSize.h,
     };
     this.setState({
       // Add a new item. It must have a unique key!
@@ -209,8 +224,10 @@ class Grid extends Component {
           <SettingIcon />
         </FloatingActionButton>
       </div>
-    );
+  );
   }
 }
 
 export default Grid;
+
+
