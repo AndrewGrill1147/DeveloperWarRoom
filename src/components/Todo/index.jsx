@@ -60,8 +60,8 @@ class Todo extends Component {
     }
   }
   componentDidMount() {
-    this.state.currentGroup = 10;
     this.state.groupList = [{ default: 'default' }, { work: 'work' }];
+    this.state.currentGroup = 'dafault';
   }
   componentDidUpdate() {
     LocalStorageAPI.put(this.state.storageKey, this.state);
@@ -183,6 +183,7 @@ class Todo extends Component {
           />
           <SelectField
             value={this.state.currentGroup}
+            onChange={this.handleGroupChange}
           >
             {this.state.groupList ? this.state.groupList.map(this.groupListMapping) : <div>good try boiii</div>}
           </SelectField>
