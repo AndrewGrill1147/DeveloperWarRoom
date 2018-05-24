@@ -76,7 +76,7 @@ class Grid extends Component {
   }
 
   setStrikethrough(key) {
-    return this.componentInGrid(key) ? { textDecorationLine: 'line-through' }: {};
+    return this.componentInGrid(key) ? { textDecorationLine: 'line-through' } : {};
   }
 
   componentInGrid(key) {

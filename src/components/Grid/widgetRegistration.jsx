@@ -20,14 +20,14 @@ const Widgets = {
     component: <Github />,
     layout: {
       w: 12,
-      h: 15
+      h: 15,
     },
   },
   'Todo List': {
     component: <Todo />,
     layout: {
       w: 8,
-      h: 10
+      h: 10,
     },
   },
 };
