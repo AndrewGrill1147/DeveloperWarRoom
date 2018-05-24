@@ -59,6 +59,9 @@ class Grid extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      cols: 20,
+      rowHeight: 20,
+      gridWidth: 1000,
       editMode: false,
       sideBarMenu: false,
       sideBarOpen: false,
@@ -220,9 +223,11 @@ class Grid extends Component {
           layout={this.state.layout}
           onLayoutChange={this.onLayoutChange}
           autoSize
-          width={1400}
           isDraggable={this.state.editMode}
           isResizable={this.state.editMode}
+          width={this.state.gridWidth}
+          cols={this.state.cols}
+          rowHeight={this.state.rowHeight}
           {...this.props}
         >
           {this.state.layout.map(element => this.createElement(element))}
