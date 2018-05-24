@@ -50,7 +50,8 @@ const styles = {
     backgroundColor: 'rgb(0, 188, 212)',
   },
   gridItem: {
-    overflow: 'scroll',
+    //TODO?
+    //overflow: 'auto',
   }
 };
 
@@ -84,11 +85,12 @@ class Grid extends Component {
 
   onLayoutChange(newLayout) {
     const layouts = newLayout;
+    /*
     for (let i = 0; i < layouts.length; i += 1) {
       if (layouts[i].w < 2) { layouts[i].w = 2; }
 
       if (layouts[i].h < 2) { layouts[i].h = 2; }
-    }
+    } */
     LocalStorageAPI.put(this.state.storageKey, layouts);
 
     this.setState({ layout: layouts });
@@ -149,14 +151,12 @@ class Grid extends Component {
   }
 
   addWidget(key) {
-    // Check if the key is not already rendered
-    if (this.state.layout.filter(widgetLayout => widgetLayout.i === key).length !== 0) {
+    // Check if the component is already in the grid, and that the key exists
+    if (this.componentInGrid(key) || !Object.keys(Widgets).includes(key)) {
       return;
     }
-    // Check if the key is a valid widget that can be added
-    if (Object.keys(Widgets).includes(key) === false) {
-      return;
-    }
+
+    /*
     const newWidget = {
       i: key,
       x: (this.state.layout.length * 3) % (this.state.cols || 12),
@@ -164,9 +164,23 @@ class Grid extends Component {
       w: Widgets[key].DefaultSize.w,
       h: Widgets[key].DefaultSize.h,
     };
+    */
+
+    const defaultWidgetLayout = {
+      x: 0,
+      y: Infinity,
+      w: 3,
+      h: 3,
+      minW: 1,
+      minH: 1
+    };
+
+    const widget = {...defaultWidgetLayout, ...Widgets[key].layout, ...{i: key}};
+
+    console.log('adding ', key, '\n', widget);
     this.setState({
       // Add a new item. It must have a unique key!
-      layout: [...this.state.layout, ...[newWidget]],
+      layout: [...this.state.layout, ...[widget]],
     });
   }
 
@@ -202,11 +216,6 @@ class Grid extends Component {
   render() {
     return (
       <div>
-        <div style={styles.horizontalHeaderBarStyle}>
-          <Paper zDepth={2}>
-            <Bookmarker />
-          </Paper>
-        </div>
         <GridLayout
           layout={this.state.layout}
           onLayoutChange={this.onLayoutChange}
@@ -230,6 +239,15 @@ class Grid extends Component {
   );
   }
 }
+
+/* garbage 
+
+        <div style={styles.horizontalHeaderBarStyle}>
+          <Paper zDepth={2}>
+            <Bookmarker />
+          </Paper>
+        </div>
+  */
 
 export default Grid;
 
