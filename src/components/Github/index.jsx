@@ -12,16 +12,18 @@ import GithubAPI from '../../helpers/githubAPI';
 import { FilterPullRequestData, FilterRepoData } from './dataFiltering';
 
 const styles = {
-  margin: {
-    margin: '3px',
+  settings: {
+    //avoid overflow from switch
+    marginRight: '10px',
   },
   errorMessage: {
     padding: '20px',
     backgroundColor: '#f44336',
     color: 'white',
+    marginTop: '5px',
     marginBottom: '15px',
     textAlign: 'center',
-    margin: '5px',
+   // margin: '5px',
   },
   floatRight: {
     float: 'right',
@@ -306,7 +308,7 @@ class GithubWidget extends Component {
       { value: repo.id, label: repo.name }
     ));
     return (
-      <div style={styles.margin}>
+      <div style={styles.settings}>
         <Toggle
           label="Display markdown"
           labelStyle={styles.toggle.label}
@@ -326,6 +328,7 @@ class GithubWidget extends Component {
         <Toggle
           label="Display Github token value"
           labelStyle={styles.toggle.label}
+          inputStyle={{rightPadding: '100px'}}
           labelPosition="left"
           toggled={this.state.settings.displayOauthTokenValue}
           onToggle={this.onToggle.bind(this, 'displayOauthTokenValue')}
