@@ -13,7 +13,6 @@ import { FilterPullRequestData, FilterRepoData } from './dataFiltering';
 
 const styles = {
   settings: {
-    //avoid overflow from switch
     marginRight: '10px',
   },
   errorMessage: {
@@ -23,7 +22,6 @@ const styles = {
     marginTop: '5px',
     marginBottom: '15px',
     textAlign: 'center',
-   // margin: '5px',
   },
   floatRight: {
     float: 'right',
@@ -40,8 +38,10 @@ const styles = {
     width: '95%',
   },
   refreshButton: {
+    // this is hack. ewww.
     float: 'left',
     width: '5%',
+    paddingLeft: '15px',
     marginTop: '27px',
   },
 
