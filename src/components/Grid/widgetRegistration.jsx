@@ -4,11 +4,11 @@ import Github from '../Github';
 
 const Widgets = {
   'Github': {
-    component: <div> <Github /> </div>,
+    component:  <Github />,
     DefaultSize: { w: 4, h: 2 },
   },
   'Todo List': {
-    component: <div> <Todo /> </div>,
+    component: <Todo />,
     DefaultSize: { w: 2.5, h: 2.5 },
   },
 };

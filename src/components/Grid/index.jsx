@@ -39,15 +39,19 @@ const styles = {
     right: '0',
     marginTop: '8px',
   },
-  style: {
+  gridItemPaperStyle: {
     height: '100%',
     width: '100%',
+    margin: '0px',
     textAlign: 'left',
     display: 'inline-block',
   },
   menuBarStyle: {
     backgroundColor: 'rgb(0, 188, 212)',
   },
+  gridItem: {
+    overflow: 'scroll',
+  }
 };
 
 class Grid extends Component {
@@ -120,8 +124,8 @@ class Grid extends Component {
     }
 
     return (
-      <div key={element.i}>
-        <Paper style={styles.style} zDepth={3}>
+      <div style={styles.gridItem} key={element.i}>
+        <Paper style={styles.gridItemPaperStyle} zDepth={3}>
           {Widgets[element.i].component}
           {removeButton}
         </Paper>
