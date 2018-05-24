@@ -1,5 +1,4 @@
 /* eslint-env browser */
-/* eslint react/prop-types: 0 */
 import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
 import ActionDelete from 'material-ui/svg-icons/action/delete';
@@ -14,9 +13,9 @@ import Paper from 'material-ui/Paper';
 import Drawer from 'material-ui/Drawer';
 import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
-import Bookmarker from './../components/bookmarker';
-import Widgets from './widgetRegistration';
-import LocalStorageAPI from './../helpers/localstorageAPI';
+import Bookmarker from './../../components/Bookmarker';
+import Widgets from './../../helpers/widgetRegistration';
+import LocalStorageAPI from './../../helpers/localstorageAPI';
 
 const styles = {
   fixedToBottom: {
@@ -79,6 +78,7 @@ class Grid extends Component {
     this.elementinArray = this.elementinArray.bind(this);
     this.onLayoutChange = this.onLayoutChange.bind(this);
     this.settingsButtonClicked = this.settingsButtonClicked.bind(this);
+    this.setStrikethrough = this.setStrikethrough.bind(this);
 
     const localValue = LocalStorageAPI.get(this.state.storageKey);
     this.state.layout = localValue || [];
@@ -106,6 +106,13 @@ class Grid extends Component {
   settingsButtonClicked() {
     const opened = !this.state.sideBarOpen;
     this.setState({ sideBarOpen: opened });
+  }
+
+  setStrikethrough(key) {
+    if (this.elementinArray(key)) {
+      return { textDecorationLine: 'line-through' };
+    }
+    return {};
   }
 
   elementinArray(key) {
@@ -148,6 +155,7 @@ class Grid extends Component {
         primaryText={key}
         disabled={this.elementinArray(key)}
         onClick={() => { this.addWidget(key); }}
+        style={this.setStrikethrough(key)}
       />);
       return returnVal;
     });

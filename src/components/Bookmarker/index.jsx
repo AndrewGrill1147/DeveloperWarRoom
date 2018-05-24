@@ -7,7 +7,7 @@ import MenuItem from 'material-ui/MenuItem';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { FlatButton } from 'material-ui';
-import LocalStorageAPI from './../helpers/localstorageAPI';
+import LocalStorageAPI from './../../helpers/localstorageAPI';
 
 const iconButtonElement = (
   <IconButton
@@ -123,8 +123,8 @@ class Bookmarkers extends Component {
   rightIconMenu(listValue) {
     return (
       <IconMenu iconButtonElement={iconButtonElement} style={styles.buttonAlignment}>
-        <MenuItem onClick={evt => this.dialogEvent(evt, listValue)}>Edit</MenuItem>
-        <MenuItem onClick={evt => this.deleteItem(evt, listValue)}>Delete</MenuItem>
+        <MenuItem key="edit" onClick={evt => this.dialogEvent(evt, listValue)}>Edit</MenuItem>
+        <MenuItem key="delete" onClick={evt => this.deleteItem(evt, listValue)}>Delete</MenuItem>
       </IconMenu>
     );
   }
@@ -143,11 +143,13 @@ class Bookmarkers extends Component {
   listMapping(listValue) {
     const actions = [
       <FlatButton
+        key="cancel-button"
         label="Cancel"
         primary
         onClick={evt => this.cancelDialogEvent(evt, listValue)}
       />,
       <FlatButton
+        key="save-button"
         label="Save"
         primary
         keyboardFocused
