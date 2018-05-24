@@ -14,53 +14,24 @@ import { List, ListItem } from 'material-ui/List';
 import Widgets from './widgetRegistration';
 import LocalStorageAPI from './../../helpers/localstorageAPI';
 import RemoveIcon from './icons';
+import styles from './styles';
 
-const styles = {
-  fixedToBottom: {
-    position: 'fixed',
-    bottom: '0',
-    right: '0',
-    margin: '10px',
-  },
-  removeStyle: {
-    position: 'absolute',
-    right: '2px',
-    top: 0,
-    cursor: 'pointer',
-  },
-  horizontalHeaderBarStyle: {
-    display: 'inline',
-    whiteSpace: 'nowrap',
-  },
-  iconAlignment: {
-    position: 'fixed',
-    top: '0',
-    right: '0',
-    marginTop: '8px',
-  },
-  gridItemPaperStyle: {
-    height: '100%',
-    width: '100%',
-    margin: '0px',
-    textAlign: 'left',
-    display: 'inline-block',
-  },
-  menuBarStyle: {
-    backgroundColor: 'rgb(0, 188, 212)',
-  },
-  gridItem: {
-    // TODO?
-    // overflow: 'auto',
-  },
+const DEFAULT_LAYOUT = {
+  x: 0,
+  y: Infinity,
+  w: 10,
+  h: 10,
+  minW: 1,
+  minH: 1,
 };
 
 class Grid extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      cols: 20,
+      cols: 25,
       rowHeight: 20,
-      gridWidth: 1000,
+      gridWidth: 1450,
       editMode: false,
       sideBarMenu: false,
       sideBarOpen: false,
@@ -78,15 +49,14 @@ class Grid extends Component {
     this.state.layout = localValue || [];
   }
 
-  onRemoveItem(i) {
-    if (this.state.layout.includes(i) === true) {
+  onRemoveItem(key) {
+    if (this.state.layout.includes(key) === true) {
       return;
     }
-    this.setState({ layout: _.reject(this.state.layout, { i }) });
+    this.setState({ layout: _.reject(this.state.layout, { i: key }) });
   }
 
   onLayoutChange(newLayout) {
-    // ?
     const layout = [...newLayout];
     LocalStorageAPI.put(this.state.storageKey, layout);
     this.setState({ layout });
@@ -106,17 +76,14 @@ class Grid extends Component {
   }
 
   setStrikethrough(key) {
-    if (this.componentInGrid(key)) {
-      return { textDecorationLine: 'line-through' };
-    }
-    return {};
+    return this.componentInGrid(key) ? { textDecorationLine: 'line-through' }: {};
   }
 
   componentInGrid(key) {
     return this.state.layout.some(gridItem => gridItem.i === key);
   }
 
-  createElement(element) {
+  createGridElement(element) {
     let removeButton = null;
     if (this.state.editMode) {
       removeButton = (
@@ -159,15 +126,7 @@ class Grid extends Component {
     if (this.componentInGrid(key) || !Object.keys(Widgets).includes(key)) {
       return;
     }
-    const defaultWidgetLayout = {
-      x: 0,
-      y: Infinity,
-      w: 3,
-      h: 3,
-      minW: 1,
-      minH: 1,
-    };
-    const widget = { ...defaultWidgetLayout, ...Widgets[key].layout, ...{ i: key } };
+    const widget = { ...DEFAULT_LAYOUT, ...Widgets[key].layout, ...{ i: key } };
 
     // add new widget first, s.t. its {x,y} pos is prioritized above all else
     this.setState({
@@ -210,7 +169,7 @@ class Grid extends Component {
           rowHeight={this.state.rowHeight}
           {...this.props}
         >
-          {this.state.layout.map(element => this.createElement(element))}
+          {this.state.layout.map(element => this.createGridElement(element))}
         </GridLayout>
 
         <Drawer open={this.state.sideBarOpen} width={200}>
@@ -224,15 +183,6 @@ class Grid extends Component {
     );
   }
 }
-
-/* garbage
-
-        <div style={styles.horizontalHeaderBarStyle}>
-          <Paper zDepth={2}>
-            <Bookmarker />
-          </Paper>
-        </div>
-  */
 
 export default Grid;
 

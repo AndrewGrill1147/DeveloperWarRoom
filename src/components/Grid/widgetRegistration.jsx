@@ -3,30 +3,34 @@ import Todo from '../Todo';
 import Github from '../Github';
 import Bookmarker from '../Bookmarker';
 
+// see wiki: 'Adding a custom widget' for requirements
 const Widgets = {
   Bookmarker: {
     component: <Bookmarker />,
     layout: {
       x: 0,
       y: 0,
-      w: 20,
+      w: Infinity,
       h: 2,
       minW: 0,
-      maxW: Infinity,
       static: true,
     },
   },
   Github: {
     component: <Github />,
-    layout: { w: 4, h: 2 },
+    layout: {
+      w: 12,
+      h: 15
+    },
   },
   'Todo List': {
     component: <Todo />,
-    layout: { w: 2.5, h: 2.5 },
+    layout: {
+      w: 8,
+      h: 10
+    },
   },
 };
-
-// {i: 'b', x: 1, y: 0, w: 3, h: 2, minW: 2, maxW: 4}
 
 export default Widgets;
 
