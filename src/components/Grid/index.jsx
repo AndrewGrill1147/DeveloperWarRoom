@@ -153,8 +153,6 @@ class Grid extends Component {
 
   addWidget(key) {
     // Check if the key is not already rendered
-
-
     if (this.state.layout.filter(widgetLayout => widgetLayout.i === key).length !== 0) {
       return;
     }
