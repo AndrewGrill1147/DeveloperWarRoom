@@ -17,6 +17,7 @@ import Bookmarker from './../../components/Bookmarker';
 import Widgets from './../../helpers/widgetRegistration';
 import LocalStorageAPI from './../../helpers/localstorageAPI';
 
+// TESING MAsTER
 const styles = {
   fixedToBottom: {
     position: 'fixed',
