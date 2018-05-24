@@ -11,7 +11,6 @@ import Paper from 'material-ui/Paper';
 import Drawer from 'material-ui/Drawer';
 import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
-import Bookmarker from './../../components/Bookmarker';
 import Widgets from './widgetRegistration';
 import LocalStorageAPI from './../../helpers/localstorageAPI';
 import RemoveIcon from './icons';
@@ -50,9 +49,9 @@ const styles = {
     backgroundColor: 'rgb(0, 188, 212)',
   },
   gridItem: {
-    //TODO?
-    //overflow: 'auto',
-  }
+    // TODO?
+    // overflow: 'auto',
+  },
 };
 
 class Grid extends Component {
@@ -87,21 +86,23 @@ class Grid extends Component {
   }
 
   onLayoutChange(newLayout) {
-    const layouts = newLayout;
-    /*
-    for (let i = 0; i < layouts.length; i += 1) {
-      if (layouts[i].w < 2) { layouts[i].w = 2; }
-
-      if (layouts[i].h < 2) { layouts[i].h = 2; }
-    } */
-    LocalStorageAPI.put(this.state.storageKey, layouts);
-
-    this.setState({ layout: layouts });
+    // ?
+    const layout = [...newLayout];
+    LocalStorageAPI.put(this.state.storageKey, layout);
+    this.setState({ layout });
   }
 
   onSettingsButtonClick() {
     const opened = !this.state.sideBarOpen;
     this.setState({ sideBarOpen: opened });
+  }
+
+  onEditButtonClick() {
+    const flipped = !this.state.editMode;
+    this.setState({ editMode: flipped });
+    if (flipped === false && this.state.sideBarMenu === true) {
+      this.setState({ sideBarMenu: false });
+    }
   }
 
   setStrikethrough(key) {
@@ -164,22 +165,14 @@ class Grid extends Component {
       w: 3,
       h: 3,
       minW: 1,
-      minH: 1
+      minH: 1,
     };
-    const widget = {...defaultWidgetLayout, ...Widgets[key].layout, ...{i: key}};
+    const widget = { ...defaultWidgetLayout, ...Widgets[key].layout, ...{ i: key } };
 
     // add new widget first, s.t. its {x,y} pos is prioritized above all else
     this.setState({
       layout: [...[widget], ...this.state.layout],
     });
-  }
-
-  onEditButtonClick() {
-    const flipped = !this.state.editMode;
-    this.setState({ editMode: flipped });
-    if (flipped === false && this.state.sideBarMenu === true) {
-      this.setState({ sideBarMenu: false });
-    }
   }
 
   renderSettingsDrawer() {
@@ -200,7 +193,7 @@ class Grid extends Component {
           <Divider />
         </List>
       </div>
-    )
+    );
   }
 
   render() {
@@ -228,11 +221,11 @@ class Grid extends Component {
           <SettingIcon />
         </FloatingActionButton>
       </div>
-  );
+    );
   }
 }
 
-/* garbage 
+/* garbage
 
         <div style={styles.horizontalHeaderBarStyle}>
           <Paper zDepth={2}>
@@ -242,5 +235,4 @@ class Grid extends Component {
   */
 
 export default Grid;
-
 

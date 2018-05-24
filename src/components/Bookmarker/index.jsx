@@ -96,23 +96,24 @@ class Bookmarkers extends Component {
     this.setState({ bookmarks: newBookmarks });
   }
   saveDialogEvent(evt, listValue) {
-    let objIndex = this.state.bookmarks.findIndex((obj => obj.id === listValue.id));
+    const objIndex = this.state.bookmarks.findIndex((obj => obj.id === listValue.id));
     const newBookmarks = this.state.bookmarks;
-    //User can edit or add a quicklink, either way we still want to check for a valid url link
+    // User can edit or add a quicklink, either way we still want to check for a valid url link
     const checkHttp = '^https?://';
     const httpRegex = new RegExp(checkHttp);
     let siteUrl = listValue.urlInput;
     if (!httpRegex.test(siteUrl)) {
       siteUrl = `https://${siteUrl}`;
     }
-    //Adding a quicklink 
-    if(objIndex === -1){
-      newBookmarks.push({id: listValue.id, name: listValue.nameInput, url: siteUrl, dialogOpen: false});
+    // Adding a quicklink
+    if (objIndex === -1) {
+      newBookmarks.push({
+        id: listValue.id, name: listValue.nameInput, url: siteUrl, dialogOpen: false,
+      });
       const length = newBookmarks.length;
       newBookmarks[length - 1].dialogOpen = false;
-    }
-    //Editing a quicklink
-    else{
+    } else {
+      // Editing a quicklink
       newBookmarks[objIndex].dialogOpen = false;
       newBookmarks[objIndex].name = listValue.nameInput;
       newBookmarks[objIndex].url = siteUrl;
