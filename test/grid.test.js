@@ -1,5 +1,5 @@
 import React from 'react';
-import Grid from '../src/containers/grid';
+import Grid from '../src/components/Grid';
 import { Drawer, ListItem } from 'material-ui';
 
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import Todo from '../src/components/Todo/todo';
+import Todo from '../src/components/Todo';
 
 /* Testing the Todo Component */
 describe('<Todo />', () => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import Bookmarker from '../src/components/bookmarker';
+import Bookmarker from '../src/components/Bookmarker';
 import { Dialog, IconButton, TextField } from 'material-ui';
 
 /* Testing the Bookmarker Component */
