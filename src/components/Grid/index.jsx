@@ -61,11 +61,10 @@ class Grid extends Component {
       storageKey: this.constructor.name,
     };
 
-    this.editButtonClicked = this.editButtonClicked.bind(this);
+    this.onEditButtonClick = this.onEditButtonClick.bind(this);
     this.onLayoutChange = this.onLayoutChange.bind(this);
-    this.elementinArray = this.elementinArray.bind(this);
-    this.onLayoutChange = this.onLayoutChange.bind(this);
-    this.settingsButtonClicked = this.settingsButtonClicked.bind(this);
+    this.componentInGrid = this.componentInGrid.bind(this);
+    this.onSettingsButtonClick = this.onSettingsButtonClick.bind(this);
     this.setStrikethrough = this.setStrikethrough.bind(this);
 
     const localValue = LocalStorageAPI.get(this.state.storageKey);
@@ -91,25 +90,20 @@ class Grid extends Component {
     this.setState({ layout: layouts });
   }
 
-  settingsButtonClicked() {
+  onSettingsButtonClick() {
     const opened = !this.state.sideBarOpen;
     this.setState({ sideBarOpen: opened });
   }
 
   setStrikethrough(key) {
-    if (this.elementinArray(key)) {
+    if (this.componentInGrid(key)) {
       return { textDecorationLine: 'line-through' };
     }
     return {};
   }
 
-  elementinArray(key) {
-    for (let i = 0; i < this.state.layout.length; i += 1) {
-      if (this.state.layout[i].i === key) {
-        return true;
-      }
-    }
-    return false;
+  componentInGrid(key) {
+    return this.state.layout.some(gridItem => gridItem.i === key);
   }
 
   createElement(element) {
@@ -126,9 +120,8 @@ class Grid extends Component {
     }
 
     return (
-      <div key={element.i} data-grid={element}>
+      <div key={element.i}>
         <Paper style={styles.style} zDepth={3}>
-
           {Widgets[element.i].component}
           {removeButton}
         </Paper>
@@ -141,7 +134,7 @@ class Grid extends Component {
       const returnVal = (<ListItem
         key={key}
         primaryText={key}
-        disabled={this.elementinArray(key)}
+        disabled={this.componentInGrid(key)}
         onClick={() => { this.addWidget(key); }}
         style={this.setStrikethrough(key)}
       />);
@@ -173,12 +166,33 @@ class Grid extends Component {
     });
   }
 
-  editButtonClicked() {
+  onEditButtonClick() {
     const flipped = !this.state.editMode;
     this.setState({ editMode: flipped });
     if (flipped === false && this.state.sideBarMenu === true) {
       this.setState({ sideBarMenu: false });
     }
+  }
+
+  renderSettingsDrawer() {
+    return (
+      <div>
+        <AppBar style={styles.menuBarStyle} title="Settings" showMenuIconButton={false} />
+        <List>
+          <ListItem
+            primaryText="Widget List"
+            initiallyOpen
+            primaryTogglesNestedList
+            nestedItems={this.widgetsMenu()}
+          />
+          <Divider />
+          <ListItem primaryText="Toggle Edit" onClick={this.onEditButtonClick} rightIcon={this.state.editMode ? <EditorEdit /> : <ActionLockClosed />} />
+          <Divider />
+          <ListItem primaryText="Switch Theme" onClick={this.props.ThemeButton} />
+          <Divider />
+        </List>
+      </div>
+    )
   }
 
   render() {
@@ -202,25 +216,10 @@ class Grid extends Component {
         </GridLayout>
 
         <Drawer open={this.state.sideBarOpen} width={200}>
-          <AppBar style={styles.menuBarStyle} title="Settings" showMenuIconButton={false} />
-
-          <List>
-            <ListItem
-              primaryText="Widget List"
-              initiallyOpen
-              primaryTogglesNestedList
-              nestedItems={this.widgetsMenu()}
-            />
-            <Divider />
-            <ListItem primaryText="Toggle Edit" onClick={this.editButtonClicked} rightIcon={this.state.editMode ? <EditorEdit /> : <ActionLockClosed />} />
-            <Divider />
-            <ListItem primaryText="Switch Theme" onClick={this.props.ThemeButton} />
-            <Divider />
-          </List>
-
+          {this.renderSettingsDrawer()}
         </Drawer>
 
-        <FloatingActionButton style={styles.fixedToBottom} onClick={this.settingsButtonClicked}>
+        <FloatingActionButton style={styles.fixedToBottom} onClick={this.onSettingsButtonClick}>
           <SettingIcon />
         </FloatingActionButton>
       </div>
