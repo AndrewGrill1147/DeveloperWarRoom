@@ -20,4 +20,4 @@ so that anyone may add a widget (i.e. a react component) that provides some addi
 * [The Component Hierarchy](https://github.com/marcellabillett/DeveloperWarRoom/wiki/The-Component-Hierarchy)
 
 
-The original contributors of this project are [bbauley](https://github.com/bbauley), [mezau532](https://github.com/mezau532), [andy-keene](https://github.com/andy-keene), [vmann](https://github.com/vmannn), [smr6](https://github.com/smr6), [minphan](https://github.com/minphan), and [marcellabillet](https://github.com/marcellabillett)
+The original contributors of this project are: Ulysses Meza ([@mezau532](https://github.com/mezau532)), Andy Keene ([@andy-keene](https://github.com/andy-keene)), Victor Ochia ([@vmann](https://github.com/vmannn)), Stephen Rice ([@smr6](https://github.com/smr6)), Minh Phan ([@minphan](https://github.com/minphan)), Marcella Billet ([@marcellabillet](https://github.com/marcellabillett)), and Brandon Bauley ([@bbauley](https://github.com/bbauley)).
