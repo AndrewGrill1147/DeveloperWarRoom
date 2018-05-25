@@ -33,7 +33,6 @@ class Grid extends Component {
       rowHeight: 20,
       gridWidth: 1450,
       editMode: false,
-      sideBarMenu: false,
       sideBarOpen: false,
       layout: [],
       storageKey: this.constructor.name,
@@ -70,9 +69,6 @@ class Grid extends Component {
   onEditButtonClick() {
     const flipped = !this.state.editMode;
     this.setState({ editMode: flipped });
-    if (flipped === false && this.state.sideBarMenu === true) {
-      this.setState({ sideBarMenu: false });
-    }
   }
 
   setStrikethrough(key) {
@@ -122,14 +118,13 @@ class Grid extends Component {
   }
 
   addWidget(key) {
-    // Check if the component is already in the grid, and that the key exists
+    // new widget must exist and not be in grid
     if (this.componentInGrid(key) || !Object.keys(Widgets).includes(key)) {
       return;
     }
     const widget = { ...DEFAULT_LAYOUT, ...Widgets[key].layout, ...{ i: key } };
-
-    // add new widget first, s.t. its {x,y} pos is prioritized above all else
     this.setState({
+      // conflicting grid items are given position priority in order [1,2,3,..,n]
       layout: [...[widget], ...this.state.layout],
     });
   }
