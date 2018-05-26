@@ -29,6 +29,10 @@ const styles = {
     maxHeight: '100%',
     overflow: 'auto',
   },
+  groupTextField: {
+    width: '100%',
+    textAlign: 'center',
+  },
 };
 
 const status = {
@@ -57,7 +61,6 @@ class Todo extends Component {
     // .bind(this) can be placed here
     this.componentDidUpdate = this.componentDidUpdate.bind(this);
     this.handleGroupChange = this.handleGroupChange.bind(this);
-    this.groupListMapping = this.groupListMapping.bind(this);
 
     const savedState = LocalStorageAPI.get(this.state.storageKey);
     this.state.currentGroup = 0;
@@ -100,13 +103,10 @@ class Todo extends Component {
   }
 
   onEditGroup(editGroup) {
-    console.log("editing group");
-    console.log(editGroup);
     this.setState({ editingGroup: editGroup.id });
   }
 
   onSaveGroup(editedGroup) {
-    // update the todos
     const updatedGroups = [...this.state.groupList].map((group) => {
       if (group.id === editedGroup.id) {
         return editedGroup;
@@ -125,17 +125,14 @@ class Todo extends Component {
     this.setState({ todos: updatedTodos });
   }
   addGroup(value) {
-    console.log('adding group');
     const newGroup = {
       id: Date.now(),
       name: value,
     };
-    console.log(newGroup);
     this.setState({ groupList: [...this.state.groupList, newGroup] });
   }
 
   deleteGroup(groupId) {
-    console.log(`deleting: ${groupId}`);
     const updatedGroups = this.state.groupList.filter(group => group.id !== groupId);
     this.setState({ groupList: updatedGroups });
   }
@@ -154,7 +151,6 @@ class Todo extends Component {
   }
 
   handleNewGroupKeyDown(event) {
-    console.log('enter clicked');
     if (event.keyCode !== ENTER_KEY) {
       return;
     }
@@ -162,7 +158,6 @@ class Todo extends Component {
     const val = this.state.newGroup.trim();
 
     if (val) {
-      console.log(val);
       this.addGroup(val);
       this.setState({ newGroup: '' });
     }
@@ -186,17 +181,7 @@ class Todo extends Component {
     this.setState({ todos: [...this.state.todos, todo] });
   }
   handleGroupChange(event, index, value) {
-    console.log('value:');
-    console.log(value);
     this.setState({ currentGroup: value });
-  }
-  groupListMapping(listItem) {
-    const tmp = this.state.tmp;
-    console.log(listItem);
-    console.log('groups list item');
-    return (
-      <MenuItem value={listItem.id} primaryText={listItem.name} />
-    );
   }
   render() {
     const todosByStatus = {};
@@ -244,7 +229,7 @@ class Todo extends Component {
               style={{ display: 'inline-block', verticalAlign: 'middle', width: '50%' }}
             >
               <MenuItem value={0} primaryText="default" />
-              {this.state.groupList.map(this.groupListMapping)}
+              {this.state.groupList.map(listItem => <MenuItem value={listItem.id} primaryText={listItem.name} />)}
             </SelectField>
           </div>
 
@@ -313,8 +298,8 @@ class Todo extends Component {
                 id="newGroup"
                 fullWidth
                 hintText={<b>add group</b>}
-                hintStyle={{ width: '100%', textAlign: 'center' }}
-                inputStyle={{ width: '100%', textAlign: 'center' }}
+                hintStyle={styles.groupTextField}
+                inputStyle={styles.groupTextField}
                 underlineShow
                 value={this.state.newGroup}
                 onInput={this.handleInput.bind(this)}
