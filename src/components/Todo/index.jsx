@@ -43,6 +43,7 @@ class Todo extends Component {
     super(props);
     this.state = {
       editing: null,
+      editingGroup: null,
       newTodo: '',
       newGroup: '',
       todos: [],
@@ -92,6 +93,29 @@ class Todo extends Component {
 
     this.setState({ todos: updatedTodos });
     this.onCancel();
+  }
+
+  onCancelGroup() {
+    this.setState({ editingGroup: null });
+  }
+
+  onEditGroup(editGroup) {
+    console.log("editing group");
+    console.log(editGroup);
+    this.setState({ editingGroup: editGroup.id });
+  }
+
+  onSaveGroup(editedGroup) {
+    // update the todos
+    const updatedGroups = [...this.state.groupList].map((group) => {
+      if (group.id === editedGroup.id) {
+        return editedGroup;
+      }
+      return group;
+    });
+
+    this.setState({ groupList: updatedGroups });
+    this.onCancelGroup();
   }
   /* toggledTodo comes from binding, not call back signature */
   onToggle(toggledTodo) {
@@ -260,10 +284,12 @@ class Todo extends Component {
               label="all"
             >
               <div>
-                {todosByStatus[status.ALL]}
-                <Subheader inset={false}>
-                  {todosByStatus[status.ALL].length} items
-                </Subheader>
+                <List>
+                  {todosByStatus[status.ALL]}
+                  <Subheader inset={false}>
+                    {todosByStatus[status.ALL].length} items
+                  </Subheader>
+                </List>
               </div>
             </Tab>
             <Tab
@@ -276,6 +302,10 @@ class Todo extends Component {
                     (<GroupItem
                       group={group}
                       onDelete={this.deleteGroup.bind(this, group.id)}
+                      editing={this.state.editingGroup === group.id}
+                      onCancel={this.onCancelGroup.bind(this)}
+                      onEdit={this.onEditGroup.bind(this, group)}
+                      onSave={this.onSaveGroup.bind(this)}
                     />))
                 }
               </List>
