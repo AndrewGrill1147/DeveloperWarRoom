@@ -33,6 +33,17 @@ const styles = {
     width: '100%',
     textAlign: 'center',
   },
+  newTodoTextField: {
+    top: '0px',
+    display: 'inline-block',
+    verticalAlign: 'middle',
+    width: '50%',
+  },
+  selectGroup: {
+    display: 'inline-block',
+    verticalAlign: 'middle',
+    width: '50%',
+  },
 };
 
 const status = {
@@ -55,7 +66,6 @@ class Todo extends Component {
       groupList: [],
       storageKey: this.constructor.name,
       currentTab: 'active',
-      editGroup: '',
     };
 
     // .bind(this) can be placed here
@@ -212,11 +222,7 @@ class Todo extends Component {
           <div>
             <TextField
               id="newTodo"
-              style={
-                {
-                  top: '0px', display: 'inline-block', verticalAlign: 'middle', width: '50%',
-                }
-              }
+              style={styles.newTodoTextField}
               value={this.state.newTodo}
               hintText="Todo List - What needs to be done?"
               underlineShow
@@ -226,10 +232,11 @@ class Todo extends Component {
             <SelectField
               value={this.state.currentGroup}
               onChange={this.handleGroupChange}
-              style={{ display: 'inline-block', verticalAlign: 'middle', width: '50%' }}
+              style={styles.selectGroup}
             >
               <MenuItem value={0} primaryText="default" />
-              {this.state.groupList.map(listItem => <MenuItem value={listItem.id} primaryText={listItem.name} />)}
+              {this.state.groupList.map(listItem =>
+                <MenuItem value={listItem.id} primaryText={listItem.name} />)}
             </SelectField>
           </div>
 
