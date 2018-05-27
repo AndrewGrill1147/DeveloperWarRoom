@@ -69,7 +69,7 @@ class Todo extends Component {
       newGroup: '',
       todos: [],
       currentGroup: 0,
-      groupList: [],
+      groupList: [{ id: 0, name: 'default' }],
       storageKey: this.constructor.name,
       currentTab: 'active',
     };
@@ -245,7 +245,6 @@ class Todo extends Component {
               onChange={this.handleGroupChange}
               style={styles.selectGroup}
             >
-              <MenuItem value={0} primaryText="default" />
               {this.state.groupList.map(listItem =>
                 <MenuItem value={listItem.id} primaryText={listItem.name} />)}
             </SelectField>

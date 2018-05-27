@@ -65,7 +65,7 @@ class GroupItem extends Component {
       return (
         <ListItem
           primaryText={this.props.group.name}
-          rightIconButton={rightIconButtons}
+          rightIconButton={this.props.group.id !== 0 ? rightIconButtons : null}
         />
       );
     }
