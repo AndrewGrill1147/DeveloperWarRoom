@@ -62,7 +62,6 @@ class TodoItem extends Component {
         <MenuItem onClick={this.props.onDelete}>Delete</MenuItem>
       </IconMenu>
     );
-
     if (!this.props.editing) {
       return (
         <ListItem

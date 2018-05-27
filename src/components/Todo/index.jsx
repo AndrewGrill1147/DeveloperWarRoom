@@ -37,12 +37,18 @@ const styles = {
     top: '0px',
     display: 'inline-block',
     verticalAlign: 'middle',
-    width: '50%',
+    width: '60%',
   },
   selectGroup: {
     display: 'inline-block',
     verticalAlign: 'middle',
-    width: '50%',
+    width: '40%',
+  },
+  newTodoHint: {
+    width: '98%',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
   },
 };
 
@@ -225,6 +231,7 @@ class Todo extends Component {
               style={styles.newTodoTextField}
               value={this.state.newTodo}
               hintText="Todo List - What needs to be done?"
+              hintStyle={styles.newTodoHint}
               underlineShow
               onInput={this.handleInput.bind(this)}
               onKeyDown={this.handleNewTodoKeyDown.bind(this)}
