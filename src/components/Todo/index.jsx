@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { List, Subheader, Tabs, Tab, Paper, TextField, Divider, MenuItem, SelectField, ListItem } from 'material-ui';
+import { List, Subheader, Tabs, Tab, Paper, TextField, Divider, MenuItem, SelectField } from 'material-ui';
 import TodoItem from './todoItem';
 import GroupItem from './groupItem';
 import LocalStorageAPI from './../../helpers/localstorageAPI';
@@ -133,6 +133,7 @@ class Todo extends Component {
     this.setState({ groupList: updatedGroups });
     this.onCancelGroup();
   }
+
   /* toggledTodo comes from binding, not call back signature */
   onToggle(toggledTodo) {
     const updatedTodos = this.state.todos.map(todo => (todo !== toggledTodo ?
@@ -140,6 +141,7 @@ class Todo extends Component {
       { ...todo, ...{ completed: !todo.completed } }));
     this.setState({ todos: updatedTodos });
   }
+
   addGroup(value) {
     const newGroup = {
       id: Date.now(),
@@ -196,14 +198,16 @@ class Todo extends Component {
     };
     this.setState({ todos: [...this.state.todos, todo] });
   }
+
   handleGroupChange(event, index, value) {
     this.setState({ currentGroup: value });
   }
+
   render() {
     const todosByStatus = {};
-    Object.values(status).forEach((s) => {
-      todosByStatus[s] = [];
-    });
+    todosByStatus[status.ACTIVE] = [];
+    todosByStatus[status.COMPLETED] = [];
+    todosByStatus[status.ALL] = [];
 
     [...this.state.todos].filter(todo => todo.group === this.state.currentGroup).forEach((todo) => {
       const todoComponent = (
@@ -270,7 +274,7 @@ class Todo extends Component {
               label="completed"
             >
               <div>
-                <List styles={styles.expand}>
+                <List>
                   {todosByStatus[status.COMPLETED]}
                   <Subheader inset={false}>
                     {todosByStatus[status.COMPLETED].length} items
