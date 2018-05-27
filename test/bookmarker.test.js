@@ -9,7 +9,7 @@ describe('<Bookmarker />', () => {
     wrapper.find(IconButton).simulate('click');
     expect(wrapper.state().dialogOpen).toEqual(true);
   });
- /* it('add bookmark Edit Delete button changes state', () => {
+  /*it('add bookmark Edit Delete button changes state', () => {
    // error FlatButton not defined
     const wrapper = shallow(<Bookmarker />);
     wrapper.find(FlatButton).simulate('click');

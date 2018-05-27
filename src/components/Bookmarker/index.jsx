@@ -82,13 +82,19 @@ class Bookmarkers extends Component {
   }
 
   dialogEvent(evt, listValue) {
-    const objIndex = this.state.bookmarks.findIndex((obj => obj.id === listValue.id));
+    let objIndex = this.state.bookmarks.findIndex((obj => obj.id === listValue.id));
+    if (objIndex === -1) {
+      objIndex = this.state.bookmarks.length;
+    }
     const newBookmarks = this.state.bookmarks;
     newBookmarks[objIndex].dialogOpen = !(listValue.dialogOpen);
     this.setState({ bookmarks: newBookmarks });
   }
   cancelDialogEvent(evt, listValue) {
-    const objIndex = this.state.bookmarks.findIndex((obj => obj.id === listValue.id));
+    let objIndex = this.state.bookmarks.findIndex((obj => obj.id === listValue.id));
+    if (objIndex === -1) {
+      objIndex = this.state.bookmarks.length;
+    }
     const newBookmarks = this.state.bookmarks;
     newBookmarks[objIndex].dialogOpen = false;
     newBookmarks[objIndex].nameInput = listValue.name;
@@ -96,23 +102,25 @@ class Bookmarkers extends Component {
     this.setState({ bookmarks: newBookmarks });
   }
   saveDialogEvent(evt, listValue) {
-    let objIndex = this.state.bookmarks.findIndex((obj => obj.id === listValue.id));
+    const objIndex = this.state.bookmarks.findIndex((obj => obj.id === listValue.id));
     const newBookmarks = this.state.bookmarks;
-    //User can edit or add a quicklink, either way we still want to check for a valid url link
+    // User can edit or add a quicklink, either way we still want to check for a valid url link
     const checkHttp = '^https?://';
     const httpRegex = new RegExp(checkHttp);
     let siteUrl = listValue.urlInput;
     if (!httpRegex.test(siteUrl)) {
       siteUrl = `https://${siteUrl}`;
     }
-    //Adding a quicklink 
-    if(objIndex === -1){
-      newBookmarks.push({id: listValue.id, name: listValue.nameInput, url: siteUrl, dialogOpen: false});
+    // Adding a quicklink
+    if (objIndex === -1) {
+      newBookmarks.push({
+        id: listValue.id, name: listValue.nameInput, url: siteUrl, dialogOpen: false,
+      });
       const length = newBookmarks.length;
       newBookmarks[length - 1].dialogOpen = false;
     }
-    //Editing a quicklink
-    else{
+    // Editing a quicklink
+    else {
       newBookmarks[objIndex].dialogOpen = false;
       newBookmarks[objIndex].name = listValue.nameInput;
       newBookmarks[objIndex].url = siteUrl;
@@ -129,13 +137,19 @@ class Bookmarkers extends Component {
     );
   }
   handleUrlChange(evt, listValue) {
-    const objIndex = this.state.bookmarks.findIndex((obj => obj.id === listValue.id));
+    let objIndex = this.state.bookmarks.findIndex((obj => obj.id === listValue.id));
+    if (objIndex === -1) {
+      objIndex = this.state.bookmarks.length;
+    }
     const newBookmarks = this.state.bookmarks;
     newBookmarks[objIndex].urlInput = evt.target.value;
     this.setState({ bookmarks: newBookmarks });
   }
   handleNameChange(evt, listValue) {
-    const objIndex = this.state.bookmarks.findIndex((obj => obj.id === listValue.id));
+    let objIndex = this.state.bookmarks.findIndex((obj => obj.id === listValue.id));
+    if (objIndex === -1) {
+      objIndex = this.state.bookmarks.length;
+    }
     const newBookmarks = this.state.bookmarks;
     newBookmarks[objIndex].nameInput = evt.target.value;
     this.setState({ bookmarks: newBookmarks });
