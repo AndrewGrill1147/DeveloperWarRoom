@@ -66,6 +66,7 @@ class GroupItem extends Component {
         <ListItem
           primaryText={this.props.group.name}
           rightIconButton={this.props.group.id !== 0 ? rightIconButtons : null}
+          disabled
         />
       );
     }
