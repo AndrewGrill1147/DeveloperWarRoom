@@ -154,6 +154,7 @@ class Todo extends Component {
     const updatedGroups = this.state.groupList.filter(group => group.id !== groupId);
     const updatedTodos = this.state.todos.filter(todo => todo.group !== groupId);
     this.setState({ groupList: updatedGroups, todos: updatedTodos });
+    if (groupId === this.state.currentGroup) { this.setState({ currentGroup: 0 }); }
   }
 
   handleNewTodoKeyDown(event) {
