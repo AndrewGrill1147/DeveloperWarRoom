@@ -73,7 +73,6 @@ class Grid extends Component {
       storageKey: this.constructor.name,
     };
 
-    this.login = this.login.bind(this);
     this.editButtonClicked = this.editButtonClicked.bind(this);
     this.onLayoutChange = this.onLayoutChange.bind(this);
     this.elementinArray = this.elementinArray.bind(this);
@@ -178,20 +177,6 @@ class Grid extends Component {
       this.setState({ sideBarMenu: false });
     }
   }
-  login() {
-    const redirectUrl = chrome.identity.getRedirectURL('reddit');
-    const clientId = 'AxqQbiVl2sTS8Q';
-    const authUrl = `https://www.reddit.com/api/v1/authorize?client_id=${clientId}&response_type=token&state=random&scope=read&redirect_uri=${encodeURIComponent(redirectUrl)}`;
-    chrome.identity.launchWebAuthFlow(
-      { url: authUrl, interactive: true },
-      (responseUrl) => {
-        console.log(responseUrl);
-        const accessToken = responseUrl.substring(responseUrl.indexOf('=') + 1);
-        console.log(accessToken);
-        this.accessToken = accessToken;
-      },
-    );
-  }
   render() {
     return (
       <div>
@@ -228,7 +213,6 @@ class Grid extends Component {
             <ListItem primaryText="Switch Theme" onClick={this.props.ThemeButton} />
             <Divider />
           </List>
-          <button onClick={this.login}>login</button>
         </Drawer>
 
         <FloatingActionButton style={styles.fixedToBottom} onClick={this.settingsButtonClicked}>
