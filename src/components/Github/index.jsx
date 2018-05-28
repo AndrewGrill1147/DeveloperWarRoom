@@ -249,10 +249,6 @@ class GithubWidget extends Component {
 
 
   updateReposWatching(newReposAvailable) {
-    /* verify the repos we are watching are still available to watch */
-    // if (this.state.settings.reposWatching.length === 0) { }
-
-
     // if the watchallrepos option is on and reposwatching list is different from updated
     // repos available set reposWatching to newReposAvailable
     if (this.state.settings.watchAllRepos &&
