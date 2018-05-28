@@ -249,23 +249,18 @@ class GithubWidget extends Component {
 
 
   updateReposWatching(newReposAvailable) {
-    /* verify the repos we are watching are still available to watch */
-    if (this.state.settings.reposWatching.length === 0) { return; }
-
-
-    //if the watchallrepos option is on and reposwatching list is different from updated repos available
-    //set reposWatching to newReposAvailable
-    else if (this.state.settings.watchAllRepos &&
+    // if the watchallrepos option is on and reposwatching list is different from updated
+    // repos available set reposWatching to newReposAvailable
+    if (this.state.settings.watchAllRepos &&
       this.state.settings.reposWatching !== newReposAvailable) {
       this.setState({
         settings: {
           ...this.state.settings,
           ...{ reposWatching: newReposAvailable },
-        }
+        },
       });
-    }
-    else {
-      //check the currently repos watching list if some repos got removed 
+    } else {
+      // check the currently repos watching list if some repos got removed
       const repoIdsAvailable = {};
       newReposAvailable.forEach((repo) => {
         repoIdsAvailable[repo.id] = true;
@@ -328,7 +323,7 @@ class GithubWidget extends Component {
         <Toggle
           label="Display Github token value"
           labelStyle={styles.toggle.label}
-          inputStyle={{rightPadding: '100px'}}
+          inputStyle={{ rightPadding: '100px' }}
           labelPosition="left"
           toggled={this.state.settings.displayOauthTokenValue}
           onToggle={this.onToggle.bind(this, 'displayOauthTokenValue')}
@@ -356,7 +351,7 @@ class GithubWidget extends Component {
           floatingLabelFixed
           savedvalue={this.state.settings.oauthToken}
           floatingLabelText="Github Token"
-          type={this.state.settings.displayOauthTokenValue ? "text" : "password"}
+          type={this.state.settings.displayOauthTokenValue ? 'text' : 'password'}
           settingskey="oauthToken"
           value={this.state.settings.oauthToken || ''}
           hintText="Will you share your Oauth token?"

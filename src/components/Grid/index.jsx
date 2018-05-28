@@ -11,108 +11,75 @@ import Paper from 'material-ui/Paper';
 import Drawer from 'material-ui/Drawer';
 import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
-import Bookmarker from './../../components/Bookmarker';
 import Widgets from './widgetRegistration';
 import LocalStorageAPI from './../../helpers/localstorageAPI';
 import RemoveIcon from './icons';
+import styles from './styles';
 
-const styles = {
-  fixedToBottom: {
-    position: 'fixed',
-    bottom: '0',
-    right: '0',
-    margin: '10px',
-  },
-  removeStyle: {
-    position: 'absolute',
-    right: '2px',
-    top: 0,
-    cursor: 'pointer',
-  },
-  horizontalHeaderBarStyle: {
-    display: 'inline',
-    whiteSpace: 'nowrap',
-  },
-  iconAlignment: {
-    position: 'fixed',
-    top: '0',
-    right: '0',
-    marginTop: '8px',
-  },
-  style: {
-    height: '100%',
-    width: '100%',
-    textAlign: 'left',
-    display: 'inline-block',
-  },
-  menuBarStyle: {
-    backgroundColor: 'rgb(0, 188, 212)',
-  },
+const DEFAULT_LAYOUT = {
+  x: 0,
+  y: Infinity,
+  w: 10,
+  h: 10,
+  minW: 1,
+  minH: 1,
 };
 
 class Grid extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      cols: 25,
+      rowHeight: 20,
+      gridWidth: 1450,
       editMode: false,
-      sideBarMenu: false,
       sideBarOpen: false,
       layout: [],
       storageKey: this.constructor.name,
     };
 
-    this.editButtonClicked = this.editButtonClicked.bind(this);
+    this.onEditButtonClick = this.onEditButtonClick.bind(this);
     this.onLayoutChange = this.onLayoutChange.bind(this);
-    this.elementinArray = this.elementinArray.bind(this);
-    this.onLayoutChange = this.onLayoutChange.bind(this);
-    this.settingsButtonClicked = this.settingsButtonClicked.bind(this);
+    this.componentInGrid = this.componentInGrid.bind(this);
+    this.onSettingsButtonClick = this.onSettingsButtonClick.bind(this);
     this.setStrikethrough = this.setStrikethrough.bind(this);
 
     const localValue = LocalStorageAPI.get(this.state.storageKey);
     this.state.layout = localValue || [];
   }
 
-  onRemoveItem(i) {
-    if (this.state.layout.includes(i) === true) {
+  onRemoveItem(key) {
+    if (this.state.layout.includes(key) === true) {
       return;
     }
-    this.setState({ layout: _.reject(this.state.layout, { i }) });
+    this.setState({ layout: _.reject(this.state.layout, { i: key }) });
   }
 
   onLayoutChange(newLayout) {
-    const layouts = newLayout;
-    for (let i = 0; i < layouts.length; i += 1) {
-      if (layouts[i].w < 2) { layouts[i].w = 2; }
-
-      if (layouts[i].h < 2) { layouts[i].h = 2; }
-    }
-    LocalStorageAPI.put(this.state.storageKey, layouts);
-
-    this.setState({ layout: layouts });
+    const layout = [...newLayout];
+    LocalStorageAPI.put(this.state.storageKey, layout);
+    this.setState({ layout });
   }
 
-  settingsButtonClicked() {
+  onSettingsButtonClick() {
     const opened = !this.state.sideBarOpen;
     this.setState({ sideBarOpen: opened });
   }
 
+  onEditButtonClick() {
+    const flipped = !this.state.editMode;
+    this.setState({ editMode: flipped });
+  }
+
   setStrikethrough(key) {
-    if (this.elementinArray(key)) {
-      return { textDecorationLine: 'line-through' };
-    }
-    return {};
+    return this.componentInGrid(key) ? { textDecorationLine: 'line-through' } : {};
   }
 
-  elementinArray(key) {
-    for (let i = 0; i < this.state.layout.length; i += 1) {
-      if (this.state.layout[i].i === key) {
-        return true;
-      }
-    }
-    return false;
+  componentInGrid(key) {
+    return this.state.layout.some(gridItem => gridItem.i === key);
   }
 
-  createElement(element) {
+  createGridElement(element) {
     let removeButton = null;
     if (this.state.editMode) {
       removeButton = (
@@ -126,9 +93,8 @@ class Grid extends Component {
     }
 
     return (
-      <div key={element.i} data-grid={element}>
-        <Paper style={styles.style} zDepth={3}>
-
+      <div style={styles.gridItem} key={element.i}>
+        <Paper style={styles.gridItemPaperStyle} zDepth={3}>
           {Widgets[element.i].component}
           {removeButton}
         </Paper>
@@ -141,7 +107,7 @@ class Grid extends Component {
       const returnVal = (<ListItem
         key={key}
         primaryText={key}
-        disabled={this.elementinArray(key)}
+        disabled={this.componentInGrid(key)}
         onClick={() => { this.addWidget(key); }}
         style={this.setStrikethrough(key)}
       />);
@@ -152,82 +118,66 @@ class Grid extends Component {
   }
 
   addWidget(key) {
-    // Check if the key is not already rendered
-    if (this.state.layout.filter(widgetLayout => widgetLayout.i === key).length !== 0) {
+    // new widget must exist and not be in grid
+    if (this.componentInGrid(key) || !Object.keys(Widgets).includes(key)) {
       return;
     }
-    // Check if the key is a valid widget that can be added
-    if (Object.keys(Widgets).includes(key) === false) {
-      return;
-    }
-    const newWidget = {
-      i: key,
-      x: (this.state.layout.length * 3) % (this.state.cols || 12),
-      y: Infinity, // puts it at the bottom
-      w: Widgets[key].DefaultSize.w,
-      h: Widgets[key].DefaultSize.h,
-    };
+    const widget = { ...DEFAULT_LAYOUT, ...Widgets[key].layout, ...{ i: key } };
     this.setState({
-      // Add a new item. It must have a unique key!
-      layout: [...this.state.layout, ...[newWidget]],
+      // conflicting grid items are given position priority in order [1,2,3,..,n]
+      layout: [...[widget], ...this.state.layout],
     });
   }
 
-  editButtonClicked() {
-    const flipped = !this.state.editMode;
-    this.setState({ editMode: flipped });
-    if (flipped === false && this.state.sideBarMenu === true) {
-      this.setState({ sideBarMenu: false });
-    }
+  renderSettingsDrawer() {
+    return (
+      <div>
+        <AppBar style={styles.menuBarStyle} title="Settings" showMenuIconButton={false} />
+        <List>
+          <ListItem
+            primaryText="Widget List"
+            initiallyOpen
+            primaryTogglesNestedList
+            nestedItems={this.widgetsMenu()}
+          />
+          <Divider />
+          <ListItem primaryText="Toggle Edit" onClick={this.onEditButtonClick} rightIcon={this.state.editMode ? <EditorEdit /> : <ActionLockClosed />} />
+          <Divider />
+          <ListItem primaryText="Switch Theme" onClick={this.props.ThemeButton} />
+          <Divider />
+        </List>
+      </div>
+    );
   }
 
   render() {
     return (
       <div>
-        <div style={styles.horizontalHeaderBarStyle}>
-          <Paper zDepth={2}>
-            <Bookmarker />
-          </Paper>
-        </div>
         <GridLayout
           layout={this.state.layout}
           onLayoutChange={this.onLayoutChange}
           autoSize
-          width={1400}
           isDraggable={this.state.editMode}
           isResizable={this.state.editMode}
+          width={this.state.gridWidth}
+          cols={this.state.cols}
+          rowHeight={this.state.rowHeight}
           {...this.props}
         >
-          {this.state.layout.map(element => this.createElement(element))}
+          {this.state.layout.map(element => this.createGridElement(element))}
         </GridLayout>
 
         <Drawer open={this.state.sideBarOpen} width={200}>
-          <AppBar style={styles.menuBarStyle} title="Settings" showMenuIconButton={false} />
-
-          <List>
-            <ListItem
-              primaryText="Widget List"
-              initiallyOpen
-              primaryTogglesNestedList
-              nestedItems={this.widgetsMenu()}
-            />
-            <Divider />
-            <ListItem primaryText="Toggle Edit" onClick={this.editButtonClicked} rightIcon={this.state.editMode ? <EditorEdit /> : <ActionLockClosed />} />
-            <Divider />
-            <ListItem primaryText="Switch Theme" onClick={this.props.ThemeButton} />
-            <Divider />
-          </List>
-
+          {this.renderSettingsDrawer()}
         </Drawer>
 
-        <FloatingActionButton style={styles.fixedToBottom} onClick={this.settingsButtonClicked}>
+        <FloatingActionButton style={styles.fixedToBottom} onClick={this.onSettingsButtonClick}>
           <SettingIcon />
         </FloatingActionButton>
       </div>
-  );
+    );
   }
 }
 
 export default Grid;
-
 
