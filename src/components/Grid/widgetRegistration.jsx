@@ -21,6 +21,8 @@ const Widgets = {
     layout: {
       w: 12,
       h: 15,
+      minW: 8,
+      minH: 11,
     },
   },
   'Todo List': {
@@ -28,6 +30,8 @@ const Widgets = {
     layout: {
       w: 8,
       h: 10,
+      minW: 6,
+      minH: 10,
     },
   },
 };
