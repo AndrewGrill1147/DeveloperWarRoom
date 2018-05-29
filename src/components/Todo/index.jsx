@@ -9,6 +9,7 @@ const status = {
   ALL: 'all',
   ACTIVE: 'active',
   COMPLETED: 'completed',
+  GROUPS: 'groups',
 };
 const ENTER_KEY = 13;
 
@@ -250,8 +251,8 @@ class Todo extends Component {
               </div>
             </Tab>
             <Tab
-              value="groups"
-              label="groups"
+              value={status.GROUPS}
+              label={status.GROUPS}
             >
               <List>
                 {
