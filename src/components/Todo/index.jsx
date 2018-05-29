@@ -35,7 +35,7 @@ class Todo extends Component {
     const savedState = LocalStorageAPI.get(this.state.storageKey);
     this.state.currentGroup = 0;
     if (savedState !== null) {
-      this.state = savedState;
+      this.state = { ...this.state, ...savedState };
     }
   }
   componentDidUpdate() {
