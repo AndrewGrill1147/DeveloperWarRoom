@@ -3,54 +3,7 @@ import { List, Subheader, Tabs, Tab, Paper, TextField, Divider, MenuItem, Select
 import TodoItem from './todoItem';
 import GroupItem from './groupItem';
 import LocalStorageAPI from './../../helpers/localstorageAPI';
-
-const styles = {
-  tabHeadline: {
-    fontSize: 12,
-    paddingTop: 2,
-    marginBottom: 2,
-    fontWeight: 200,
-  },
-  listStyle: {
-    listStyleType: 'none',
-    margin: 0,
-    padding: 0,
-  },
-  divStyle: {
-    display: 'flex',
-    flexDirection: 'column',
-    background: '#75a3a3',
-    width: '100%',
-    height: '100%',
-  },
-  expand: {
-    width: '100%',
-    height: '100%',
-    maxHeight: '100%',
-    overflow: 'auto',
-  },
-  groupTextField: {
-    width: '100%',
-    textAlign: 'center',
-  },
-  newTodoTextField: {
-    top: '0px',
-    display: 'inline-block',
-    verticalAlign: 'middle',
-    width: '60%',
-  },
-  selectGroup: {
-    display: 'inline-block',
-    verticalAlign: 'middle',
-    width: '40%',
-  },
-  newTodoHint: {
-    width: '98%',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-  },
-};
+import styles from './styles';
 
 const status = {
   ALL: 'all',
@@ -71,7 +24,7 @@ class Todo extends Component {
       currentGroup: 0,
       groupList: [{ id: 0, name: 'default' }],
       storageKey: this.constructor.name,
-      currentTab: 'active',
+      currentTab: status.ACTIVE,
     };
 
     // .bind(this) can be placed here
@@ -248,7 +201,7 @@ class Todo extends Component {
               style={styles.selectGroup}
             >
               {this.state.groupList.map(listItem =>
-                <MenuItem value={listItem.id} primaryText={listItem.name} />)}
+                <MenuItem key={listItem.id} value={listItem.id} primaryText={listItem.name} />)}
             </SelectField>
           </div>
 
@@ -258,8 +211,8 @@ class Todo extends Component {
             onChange={value => this.setState({ currentTab: value })}
           >
             <Tab
-              value="active"
-              label="active"
+              value={status.ACTIVE}
+              label={status.ACTIVE}
             >
               <div>
                 <List>
@@ -271,8 +224,8 @@ class Todo extends Component {
               </div>
             </Tab>
             <Tab
-              value="completed"
-              label="completed"
+              value={status.COMPLETED}
+              label={status.COMPLETED}
             >
               <div>
                 <List>
@@ -284,8 +237,8 @@ class Todo extends Component {
               </div>
             </Tab>
             <Tab
-              value="all"
-              label="all"
+              value={status.ALL}
+              label={status.ALL}
             >
               <div>
                 <List>
@@ -304,12 +257,14 @@ class Todo extends Component {
                 {
                   this.state.groupList.map(group =>
                     (<GroupItem
+                      key={group.id}
                       group={group}
                       onDelete={this.deleteGroup.bind(this, group.id)}
                       editing={this.state.editingGroup === group.id}
                       onCancel={this.onCancelGroup.bind(this)}
                       onEdit={this.onEditGroup.bind(this, group)}
                       onSave={this.onSaveGroup.bind(this)}
+                      on
                     />))
                 }
               </List>
