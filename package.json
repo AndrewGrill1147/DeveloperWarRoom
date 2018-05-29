@@ -25,13 +25,13 @@
     "buffer": "^5.1.0",
     "lodash": "^4.17.10",
     "material-ui": "^0.20.0",
-    "npm": "^6.0.1",
+    "material-ui-superselectfield": "^1.9.2",
+    "npm": "^6.1.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-grid-layout": "^0.16.5",
-    "yarn": "^1.6.0",
-    "material-ui-superselectfield": "^1.9.2",
-    "showdown": "^1.8.6"
+    "showdown": "^1.8.6",
+    "yarn": "^1.6.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
