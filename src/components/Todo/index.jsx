@@ -227,7 +227,7 @@ class Todo extends Component {
       todosByStatus[status.ALL].push(todoComponent);
       todosByStatus[todo.completed ? status.COMPLETED : status.ACTIVE].push(todoComponent);
     }, this);
-    // this was going to be a toggle button
+
     return (
       <div style={styles.divStyle}>
         <Paper zDepth={0} rounded={false} style={styles.expand}>
@@ -247,6 +247,7 @@ class Todo extends Component {
               onChange={this.handleGroupChange}
               style={styles.selectGroup}
             >
+              <MenuItem primaryText="Select Group" disabled />
               {this.state.groupList.map(listItem =>
                 <MenuItem value={listItem.id} primaryText={listItem.name} />)}
             </SelectField>
@@ -302,15 +303,16 @@ class Todo extends Component {
             >
               <List>
                 {
-                  this.state.groupList.map(group =>
-                    (<GroupItem
+                  this.state.groupList.map(group => (
+                    <GroupItem
                       group={group}
                       onDelete={this.deleteGroup.bind(this, group.id)}
                       editing={this.state.editingGroup === group.id}
                       onCancel={this.onCancelGroup.bind(this)}
                       onEdit={this.onEditGroup.bind(this, group)}
                       onSave={this.onSaveGroup.bind(this)}
-                    />))
+                    />
+                  ))
                 }
               </List>
               <TextField

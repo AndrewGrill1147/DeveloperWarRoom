@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ListItem, TextField, IconButton, IconMenu, MenuItem } from 'material-ui';
+import { ListItem, TextField, IconButton, IconMenu, MenuItem, Dialog, FlatButton } from 'material-ui';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 const ENTER_KEY = 13;
@@ -16,6 +16,7 @@ class GroupItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      open: false,
       editText: this.props.group.name,
     };
     // edit functionality copied from todoItem
@@ -23,6 +24,9 @@ class GroupItem extends Component {
     this.handleInput = this.handleInput.bind(this);
     this.handleEditGroupKeyDown = this.handleEditGroupKeyDown.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleOpen = this.handleOpen.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleConfirm = this.handleConfirm.bind(this);
   }
 
   handleSubmit(event) {
@@ -52,24 +56,61 @@ class GroupItem extends Component {
     }
   }
 
+  handleOpen() {
+    this.setState({ open: true });
+  }
+
+  handleClose() {
+    this.setState({ open: false });
+  }
+
+  handleConfirm() {
+    this.props.onDelete();
+    this.handleClose();
+  }
+
   render() {
+    const deleteActions = [
+      <FlatButton
+        label="Cancel"
+        primary
+        onClick={this.handleClose}
+      />,
+      <FlatButton
+        label="Confirm"
+        primary
+        onClick={this.handleConfirm}
+      />,
+    ];
+
     const rightIconButtons = (
       <IconMenu
         iconButtonElement={iconButtonElement}
       >
         <MenuItem onClick={this.startEdit}>Edit</MenuItem>
-        <MenuItem onClick={this.props.onDelete}>Delete</MenuItem>
+        <MenuItem onClick={this.handleOpen}>Delete</MenuItem>
       </IconMenu>
     );
+
     if (!this.props.editing) {
       return (
-        <ListItem
-          primaryText={this.props.group.name}
-          rightIconButton={this.props.group.id !== 0 ? rightIconButtons : null}
-          disabled
-        />
+        <div>
+          <ListItem
+            primaryText={this.props.group.name}
+            rightIconButton={this.props.group.id !== 0 ? rightIconButtons : null}
+            disabled
+          />
+          <Dialog
+            actions={deleteActions}
+            open={this.state.open}
+            onRequestClose={this.handleClose}
+          >
+            Are you sure you want to delete this group? You will lose all its Todo items.
+          </Dialog>
+        </div>
       );
     }
+
     return (
       <ListItem>
         <TextField
