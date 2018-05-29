@@ -31,8 +31,8 @@ describe('<Grid />', () => {
   it('elementInArray function returning correct values', () => {
     const wrapper = shallow(<Grid />);
     wrapper.instance().addWidget('Todo List');
-    const found1 = wrapper.instance().elementinArray('Todo List');
-    const found2 = wrapper.instance().elementinArray('NOT A VALID KEY');
+    const found1 = wrapper.instance().componentInGrid('Todo List');
+    const found2 = wrapper.instance().componentInGrid('NOT A VALID KEY');
     expect(found1).toEqual(true);
     expect(found2).toEqual(false);
   });
